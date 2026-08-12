@@ -1,0 +1,634 @@
+/* ==========================================================================
+   MyLayer — feuille de style
+   Même famille que profiladrienredolat.netlify.app : couleur pleine, Anton
+   géant en capitales, traits blancs, apparitions au scroll.
+   Le vert sapin remplace le cobalt pour ne pas confondre la marque et son
+   créateur — même intensité, autre bout de la roue.
+   Mobile-first.
+   ========================================================================== */
+
+/* Couleurs déclarées en @property : elles deviennent animables, c’est ce qui
+   permet à la page de se repeindre quand le visiteur choisit sa couleur.
+   Navigateur trop ancien : la couleur change d’un coup, sans transition. */
+@property --c        { syntax: '<color>'; inherits: true; initial-value: #0F5C46; }
+@property --c-deep   { syntax: '<color>'; inherits: true; initial-value: #0A4536; }
+@property --c-bright { syntax: '<color>'; inherits: true; initial-value: #176E54; }
+
+:root {
+  --c:        #0F5C46;   /* vert sapin dominant */
+  --c-deep:   #0A4536;   /* profondeur */
+  --c-bright: #176E54;   /* accent haut de page */
+
+  --white:     #FFFFFF;
+  --line:      rgba(255, 255, 255, 0.85);
+  --line-soft: rgba(255, 255, 255, 0.30);
+  --dim:       rgba(255, 255, 255, 0.85);
+  --dimmer:    rgba(255, 255, 255, 0.62);
+
+  --cream: #F4F1EA;      /* fond clair alterné */
+  --ink:   #14201C;      /* encre sur fond clair */
+  --ink-2: rgba(20, 32, 28, 0.68);
+  --ink-3: rgba(20, 32, 28, 0.45);
+
+  --maxw:   720px;
+  --pad:    clamp(1.25rem, 6vw, 2.5rem);
+  --radius: 18px;
+  --ease:   cubic-bezier(.2, .65, .3, 1);
+
+  transition: --c 1.1s var(--ease), --c-deep 1.1s var(--ease), --c-bright 1.1s var(--ease);
+}
+
+/* ---------- reset léger ---------- */
+*, *::before, *::after { box-sizing: border-box; }
+* { margin: 0; }
+
+html {
+  scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  background: var(--c);
+  background-image: radial-gradient(120% 80% at 70% 0%,
+                    var(--c-bright) 0%, var(--c) 38%, var(--c-deep) 100%);
+  background-attachment: fixed;
+  color: var(--white);
+  font-family: Inter, system-ui, -apple-system, sans-serif;
+  font-size: 17px;
+  line-height: 1.6;
+  overflow-x: hidden;
+}
+
+img { max-width: 100%; display: block; }
+ul, ol { list-style: none; padding: 0; }
+a { color: inherit; text-decoration: none; }
+button { font: inherit; color: inherit; }
+
+code {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: .92em;
+  overflow-wrap: anywhere;
+}
+
+:focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+.skip { position: absolute; left: -9999px; }
+.skip:focus {
+  left: 12px; top: 12px; z-index: 100;
+  background: var(--white); color: var(--c-deep);
+  padding: 10px 18px; border-radius: 999px; font-weight: 700;
+}
+
+.wrap {
+  width: 100%;                 /* sinon un .wrap dans un flex se rétracte */
+  max-width: var(--maxw);
+  margin-inline: auto;
+  padding-inline: var(--pad);
+}
+
+/* ==========================================================================
+   Typographie
+   ========================================================================== */
+.titre,
+.hero__title,
+.promesse__titre,
+.f-name,
+.etape__num,
+.offre__montant,
+.f-stats b,
+.logo-word {
+  font-family: Anton, Inter, sans-serif;
+  font-weight: 400;
+  text-transform: uppercase;
+  letter-spacing: .5px;
+  line-height: .95;
+}
+
+.surtitre {
+  font-size: .78rem;
+  font-weight: 700;
+  letter-spacing: .18em;
+  text-transform: uppercase;
+  color: var(--dimmer);
+  margin-bottom: 1.1rem;
+}
+.band--light .surtitre { color: var(--ink-3); }
+
+.titre { font-size: clamp(2.1rem, 9vw, 3.6rem); }
+
+/* ==========================================================================
+   Apparitions au scroll  (même courbe que la page de référence)
+   ========================================================================== */
+.js .reveal {
+  opacity: 0;
+  transform: translateY(28px);
+  transition: opacity .7s ease, transform .7s var(--ease);
+  will-change: opacity, transform;
+}
+.reveal.is-in { opacity: 1; transform: none; }
+
+/* ==========================================================================
+   En-tête
+   ========================================================================== */
+/* Le contenu de l’en-tête s’aligne sur la même colonne que le reste de la
+   page : sans ça, le logo colle au bord de l’écran en grand format. */
+.site-header {
+  position: absolute;
+  top: 0; left: 50%; transform: translateX(-50%);
+  width: 100%; max-width: var(--maxw); z-index: 40;
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 1rem;
+  padding: 1.4rem var(--pad) 0;
+}
+.logo { display: inline-flex; align-items: center; gap: .55rem; }
+.logo-mark { width: 20px; height: 20px; fill: var(--white); flex: none; }
+.logo-word { font-size: 1.35rem; letter-spacing: .06em; }
+
+.reprendre {
+  font-size: .82rem;
+  color: var(--dimmer);
+  border-bottom: 1px solid var(--line-soft);
+  padding-bottom: 2px;
+  transition: color .2s, border-color .2s;
+}
+.reprendre:hover { color: var(--white); border-color: var(--line); }
+
+/* ==========================================================================
+   1 — ACCROCHE
+   ========================================================================== */
+.hero {
+  min-height: 100svh;
+  display: flex; flex-direction: column; justify-content: flex-end;
+  position: relative;
+  padding: 7rem var(--pad) 7.5rem;   /* la place de l’indicateur de scroll */
+  max-width: var(--maxw);
+  margin-inline: auto;
+}
+.hero__title {
+  /* « ce que t’as fait. » est la ligne la plus longue : c’est elle qui fixe
+     la mesure. On tient jusqu’aux petits iPhone sans casser le mot. */
+  font-size: clamp(2.5rem, 12.8vw, 6.2rem);
+  line-height: .92;
+}
+/* Le CV : lettres creuses. La fiche, juste en dessous, est pleine. */
+.hero__title em {
+  font-style: normal;
+  color: transparent;
+  -webkit-text-stroke: 1.5px rgba(255, 255, 255, .75);
+  text-stroke: 1.5px rgba(255, 255, 255, .75);
+}
+@supports not ((-webkit-text-stroke: 1px #fff) or (text-stroke: 1px #fff)) {
+  .hero__title em { color: rgba(255, 255, 255, .42); }
+}
+.hero__sub {
+  margin-top: 1.5rem;
+  font-size: 1.12rem;
+  max-width: 34ch;
+  color: var(--dim);
+}
+
+.scroll-hint {
+  position: absolute; left: 50%; bottom: 1.4rem; transform: translateX(-50%);
+  display: flex; flex-direction: column; align-items: center; gap: .35rem;
+  font-size: .68rem; letter-spacing: .22em; text-transform: uppercase;
+  color: var(--dim);
+}
+.scroll-hint__arrow { width: 20px; height: 32px; animation: bob 1.8s ease-in-out infinite; }
+@keyframes bob { 0%,100% { transform: translateY(0); } 50% { transform: translateY(7px); } }
+
+/* ==========================================================================
+   Bandes  (alternance fond plein / fond clair)
+   ========================================================================== */
+.band { padding-block: clamp(3.5rem, 12vw, 7rem); }
+.band--light {
+  background: var(--cream);
+  color: var(--ink);
+}
+.band--tight { padding-block: clamp(2.2rem, 7vw, 3.5rem); }
+
+.apres-demo {
+  font-size: clamp(1.15rem, 4.6vw, 1.5rem);
+  line-height: 1.35;
+  max-width: 24ch;
+}
+.apres-demo b { font-weight: 700; }
+
+/* ==========================================================================
+   2 — LES EXEMPLES
+   ========================================================================== */
+.demo {
+  padding-block: clamp(3rem, 11vw, 6rem);
+  position: relative;
+  /* chaque fiche impose sa propre couleur : c’est la démonstration */
+  background: var(--c);
+  background-image: radial-gradient(120% 80% at 70% 0%,
+                    var(--c-bright) 0%, var(--c) 40%, var(--c-deep) 100%);
+}
+.demo--lea  { --c: #B8432A; --c-deep: #8F3220; --c-bright: #D2542F; }
+.demo--sami { --c: #2A3FB8; --c-deep: #1B2A80; --c-bright: #3B52D8; }
+
+.demo__label {
+  font-size: .78rem; font-weight: 700;
+  letter-spacing: .18em; text-transform: uppercase;
+  color: var(--dimmer);
+}
+.demo__grid { display: grid; gap: 1.6rem; }
+.demo__mot {
+  font-size: 1.05rem;
+  color: var(--dim);
+  max-width: 28ch;
+  margin-top: .6rem;
+}
+
+/* ---------- le téléphone ---------- */
+.phone {
+  width: min(300px, 76vw);
+  margin-inline: auto;
+  flex: none;
+  border: 2px solid var(--line);
+  border-radius: 34px;
+  padding: 9px;
+  background: rgba(0,0,0,.16);
+  box-shadow: 0 24px 60px rgba(0,0,0,.28);
+}
+.phone__screen {
+  position: relative;
+  aspect-ratio: 9 / 17;
+  border-radius: 26px;
+  overflow: hidden;
+  background: var(--c-deep);
+}
+.phone__screen::before {          /* encoche */
+  content: "";
+  position: absolute; top: 8px; left: 50%; transform: translateX(-50%);
+  width: 78px; height: 5px; border-radius: 99px;
+  background: rgba(255,255,255,.35); z-index: 3;
+}
+.phone__scroll {
+  padding: 30px 20px 24px;
+  will-change: transform;
+}
+
+/* ---------- contenu d’une fiche (dans le téléphone et en grand) ---------- */
+.f-hi { font-size: .95rem; font-weight: 600; color: var(--dim); }
+.f-name {
+  font-size: clamp(2.6rem, 15vw, 3.4rem);
+  margin: .1rem 0 .9rem;
+}
+.f-tag { font-size: .95rem; color: var(--dim); margin-top: .85rem; }
+
+.f-bloc { margin-top: 2.1rem; }
+.f-bloc-title {
+  font-size: .72rem; font-weight: 700;
+  letter-spacing: .16em; text-transform: uppercase;
+  color: var(--dimmer); margin-bottom: .7rem;
+}
+.f-mots { display: flex; flex-wrap: wrap; gap: .45rem; }
+.f-mots li {
+  font-family: Anton, sans-serif; text-transform: uppercase;
+  font-size: .95rem; letter-spacing: .04em;
+  padding: .35rem .8rem;
+  border: 1.5px solid var(--line); border-radius: 999px;
+}
+.f-note { margin-top: .7rem; font-size: .8rem; color: var(--dimmer); }
+
+/* timeline miniature */
+.f-tl { position: relative; padding-left: 1.5rem; }
+.f-tl::before {
+  content: ""; position: absolute; left: 4px; top: .5rem; bottom: .5rem;
+  width: 2px; background: var(--line-soft);
+  transform: scaleY(0); transform-origin: top;
+  transition: transform 1.2s var(--ease);
+}
+.is-in .f-tl::before, .f-tl.is-in::before { transform: scaleY(1); }
+.f-tl li { position: relative; padding-bottom: 1.1rem; }
+.f-tl li:last-child { padding-bottom: 0; }
+.f-tl li::before {
+  content: ""; position: absolute; left: -1.5rem; top: .45rem;
+  width: 10px; height: 10px; border-radius: 50%;
+  background: var(--c); border: 2px solid var(--white);
+}
+.f-tl b { display: block; font-size: .7rem; letter-spacing: .1em; color: var(--dimmer); }
+.f-tl span { display: block; font-weight: 700; font-size: .95rem; line-height: 1.25; }
+.f-tl i { display: block; font-style: normal; font-size: .8rem; color: var(--dimmer); }
+
+/* cadre photo au trait blanc, en attente d’image */
+.frame {
+  position: relative;
+  border: 2px solid var(--line);
+  border-radius: var(--radius);
+  overflow: hidden;
+  background: rgba(255,255,255,.04);
+  aspect-ratio: 4 / 5;
+}
+.frame--empty::before {
+  content: ""; position: absolute; inset: 9px;
+  border: 1.5px dashed var(--line-soft);
+  border-radius: calc(var(--radius) - 6px);
+}
+.frame--empty::after {
+  content: attr(data-file);
+  position: absolute; inset: 0;
+  display: flex; align-items: center; justify-content: center;
+  text-align: center; padding: 1rem;
+  font-size: .7rem; letter-spacing: .04em; text-transform: uppercase;
+  color: var(--dimmer);
+}
+
+/* ---------- exemple B : plein écran ---------- */
+.f-hero--large { margin-top: 1.2rem; }
+.f-name--large { font-size: clamp(3.4rem, 19vw, 7rem); }
+.f-tag--large  { font-size: clamp(1.05rem, 4.4vw, 1.3rem); max-width: 30ch; }
+.f-bloc-title--large { margin-top: 3rem; font-size: .8rem; }
+.f-sub { font-size: 1.05rem; color: var(--dim); margin-bottom: 1.2rem; }
+
+/* ---------- carte du monde ---------- */
+.map {
+  border: 2px solid var(--line);
+  border-radius: var(--radius);
+  padding: 1rem;
+  background: rgba(0,0,0,.10);
+}
+.map svg { width: 100%; height: auto; display: block; }
+.map svg path {
+  fill: rgba(255,255,255,.05);
+  stroke: rgba(255,255,255,.16);
+  stroke-width: .4;
+  transition: fill .9s ease;
+}
+.map svg path.visited { fill: var(--white); stroke: var(--white); }
+
+/* ---------- chiffres ---------- */
+.f-stats {
+  display: grid; grid-template-columns: repeat(2, 1fr);
+  gap: 2.2rem 1.2rem;
+  margin-top: 2.6rem;
+}
+.f-stats b {
+  display: block;
+  font-size: clamp(2.8rem, 16vw, 4.4rem);
+  line-height: .9;
+  font-variant-numeric: tabular-nums;
+}
+.f-stats span {
+  display: block; margin-top: .25rem;
+  font-size: .82rem; text-transform: uppercase; letter-spacing: .07em;
+  color: var(--dim);
+}
+
+/* ==========================================================================
+   3 — COMMENT ÇA MARCHE
+   ========================================================================== */
+.etapes__list { display: grid; gap: 2.4rem; }
+.etape { border-top: 2px solid rgba(20,32,28,.14); padding-top: 1rem; }
+.etape__num {
+  display: block;
+  font-size: 2.4rem;
+  color: var(--c);
+  line-height: 1;
+  margin-bottom: .5rem;
+}
+.etape__titre { font-size: 1.45rem; font-weight: 700; line-height: 1.15; }
+.etape__desc { margin-top: .3rem; color: var(--ink-2); }
+
+/* ==========================================================================
+   4 — TU RACONTES. JE CONÇOIS.
+   ========================================================================== */
+.promesse {
+  min-height: 88svh;
+  display: flex; align-items: center;
+  padding-block: clamp(4rem, 14vw, 8rem);
+}
+.promesse__titre { font-size: clamp(2.9rem, 14vw, 6rem); }
+.promesse__texte {
+  margin-top: 1.6rem;
+  font-size: clamp(1.1rem, 4.4vw, 1.35rem);
+  line-height: 1.55;
+  max-width: 36ch;
+  color: var(--dim);
+}
+
+/* ==========================================================================
+   5 — LES PREMIÈRES QUESTIONS
+   ========================================================================== */
+.debut { padding-block: clamp(3.5rem, 12vw, 7rem); }
+
+.q { margin-bottom: 3.2rem; }
+.q__label {
+  display: block;
+  font-family: Anton, sans-serif; text-transform: uppercase;
+  letter-spacing: .04em; line-height: 1;
+  font-size: clamp(1.8rem, 8vw, 2.8rem);
+  margin-bottom: 1rem;
+}
+.q__aide { margin-top: .7rem; font-size: .85rem; color: var(--dimmer); }
+
+.q__input {
+  width: 100%;
+  background: transparent;
+  border: 0; border-bottom: 2px solid var(--line);
+  color: var(--white);
+  font-family: inherit; font-size: 1.4rem; font-weight: 600;
+  padding: .5rem 0;
+  border-radius: 0;                       /* iOS n’arrondit pas tout seul */
+  -webkit-appearance: none; appearance: none;
+}
+.q__input::placeholder { color: rgba(255,255,255,.35); }
+.q__input:focus { outline: none; border-bottom-color: var(--white); }
+
+.q__adresse {
+  margin-top: .8rem; font-size: .95rem; color: var(--dim);
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+}
+.q__adresse b { color: var(--white); }
+
+.q__curseur { display: flex; align-items: center; gap: 1.1rem; }
+.q__range {
+  flex: 1; -webkit-appearance: none; appearance: none;
+  height: 2px; background: var(--line-soft); border-radius: 99px;
+}
+.q__range::-webkit-slider-thumb {
+  -webkit-appearance: none; appearance: none;
+  width: 26px; height: 26px; border-radius: 50%;
+  background: var(--white); border: none; cursor: grab;
+}
+.q__range::-moz-range-thumb {
+  width: 26px; height: 26px; border-radius: 50%;
+  background: var(--white); border: none; cursor: grab;
+}
+.q__val {
+  font-family: Anton, sans-serif; font-size: 2rem; line-height: 1;
+  min-width: 2.2ch; text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+.palette { display: flex; flex-wrap: wrap; gap: .8rem; }
+.pastille {
+  width: 52px; height: 52px; border-radius: 50%;
+  border: 2px solid transparent;
+  background: var(--sw);
+  cursor: pointer; padding: 0;
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,.22);
+  transition: transform .2s var(--ease), border-color .2s;
+}
+.pastille:hover { transform: scale(1.08); }
+.pastille[aria-checked="true"] {
+  border-color: var(--white);
+  transform: scale(1.12);
+}
+
+.bascule {
+  border-top: 2px solid var(--line-soft);
+  padding-top: 1.8rem;
+  margin-top: .5rem;
+}
+.bascule__texte { font-size: 1.15rem; max-width: 32ch; }
+.bascule__texte b { font-weight: 700; }
+.bascule__lien {
+  display: inline-block; margin-top: 1.2rem;
+  font-family: Anton, sans-serif; text-transform: uppercase;
+  font-size: 1.5rem; letter-spacing: .04em;
+  border-bottom: 3px solid var(--white);
+  padding-bottom: .15rem;
+  transition: opacity .2s;
+}
+.bascule__lien:hover { opacity: .75; }
+.bascule__note { margin-top: 1rem; font-size: .82rem; color: var(--dimmer); }
+
+/* ==========================================================================
+   6 — LES PRIX
+   ========================================================================== */
+.prix__grid { display: grid; gap: 1.4rem; }
+.offre {
+  border: 2px solid rgba(20,32,28,.16);
+  border-radius: var(--radius);
+  padding: 1.6rem 1.4rem 1.8rem;
+}
+.offre--principale {
+  background: var(--c);
+  color: var(--white);
+  border-color: transparent;
+}
+.offre__tag {
+  font-size: .72rem; font-weight: 700;
+  letter-spacing: .16em; text-transform: uppercase;
+  color: var(--ink-3); margin-bottom: .5rem;
+}
+.offre__titre { font-size: 1.3rem; font-weight: 700; }
+.offre--principale .offre__titre { font-size: 1.5rem; }
+.offre__montant {
+  font-size: clamp(3rem, 15vw, 4.2rem);
+  margin-top: .4rem;
+}
+.offre__desc { margin-top: .6rem; color: var(--ink-2); }
+.offre--principale .offre__desc { color: var(--dim); }
+.offre__detail { margin-top: .7rem; font-size: .85rem; color: var(--ink-3); }
+
+/* ---------- carte de visite qui se retourne ---------- */
+.cartes { margin-top: 2.4rem; }
+.carte3d {
+  width: min(340px, 100%);
+  aspect-ratio: 89 / 50;               /* format réel */
+  perspective: 1200px;
+  cursor: pointer;
+  background: none; border: 0; padding: 0;
+}
+.carte3d__in {
+  position: relative; width: 100%; height: 100%;
+  transition: transform .8s var(--ease);
+  transform-style: preserve-3d;
+}
+.carte3d.is-flipped .carte3d__in,
+.carte3d:hover .carte3d__in { transform: rotateY(180deg); }
+
+.carte-face {
+  position: absolute; inset: 0;
+  backface-visibility: hidden;
+  border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: .78rem; letter-spacing: .12em; text-transform: uppercase;
+}
+.carte-face--recto { background: var(--c); color: var(--white); }
+.carte-face--verso {
+  background: var(--cream); color: var(--ink-3);
+  border: 2px solid rgba(20,32,28,.16);
+  transform: rotateY(180deg);
+}
+.est-en-attente .carte-face { border: 2px dashed currentColor; }
+.est-en-attente .carte-face--recto { border-color: rgba(255,255,255,.5); }
+.cartes__note { margin-top: .8rem; font-size: .82rem; color: var(--ink-3); }
+
+/* ==========================================================================
+   7 — OÙ LE METTRE
+   ========================================================================== */
+.usages { padding-block: clamp(3.5rem, 12vw, 7rem); }
+.usages__list { display: flex; flex-wrap: wrap; gap: .6rem; }
+.usages__list li {
+  font-family: Anton, sans-serif; text-transform: uppercase;
+  font-size: clamp(.95rem, 4vw, 1.2rem); letter-spacing: .04em;
+  padding: .5rem 1.05rem;
+  border: 1.5px solid var(--line); border-radius: 999px;
+}
+
+/* ==========================================================================
+   8 — LES PETITES LIGNES
+   ========================================================================== */
+.legal__texte { display: grid; gap: 1rem; max-width: 44ch; color: var(--ink-2); font-size: .95rem; }
+.legal code {
+  background: rgba(20,32,28,.07);
+  border-radius: 5px; padding: 1px 6px;
+}
+
+/* ==========================================================================
+   Pied de page
+   ========================================================================== */
+.site-footer {
+  padding: 2rem var(--pad) 3rem;
+  max-width: var(--maxw); margin-inline: auto;
+}
+.site-footer p { font-size: .82rem; font-style: italic; color: var(--dimmer); }
+
+/* ==========================================================================
+   Écrans larges
+   ========================================================================== */
+@media (min-width: 760px) {
+  :root { --maxw: 1000px; }
+  body { font-size: 18px; }
+
+  .hero__title { font-size: clamp(4rem, 8.5vw, 7.5rem); }
+  .hero__sub   { font-size: 1.28rem; }
+
+  .etapes__list { grid-template-columns: repeat(3, 1fr); gap: 2rem; }
+
+  /* Le téléphone à droite, le propos à gauche. */
+  .demo__grid {
+    grid-template-columns: 1fr auto;
+    align-items: center;
+    gap: 4rem;
+  }
+  .demo__mot { font-size: 1.35rem; }
+  .phone { width: 320px; margin-inline: 0; }
+
+  .f-stats { grid-template-columns: repeat(4, 1fr); }
+
+  .prix__grid { grid-template-columns: 1.15fr 1fr; align-items: start; }
+
+  .q__label { font-size: 3.2rem; }
+  .promesse__texte { font-size: 1.45rem; }
+}
+
+/* ==========================================================================
+   Mouvement réduit
+   ========================================================================== */
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .reveal { opacity: 1 !important; transform: none !important; transition: none !important; }
+  .scroll-hint__arrow { animation: none; }
+  .f-tl::before { transform: scaleY(1) !important; transition: none; }
+  .carte3d__in { transition: none; }
+  :root { transition: none; }
+}

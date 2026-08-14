@@ -191,6 +191,43 @@ code {
   color: var(--dim);
 }
 
+/* ---------- le QR de l’accroche ----------
+   Sur téléphone il passe sous le titre et doit rester dans le premier
+   écran ; sur ordinateur il se met à côté, aligné sur le bas du titre. */
+.hero__grid { display: grid; gap: 1.9rem; }
+
+.hero__qr { margin: 0; }
+.qr-carte {
+  display: block;
+  width: 140px;                     /* plancher mobile imposé */
+  padding: 10px;
+  background: var(--cream);
+  border-radius: 14px;
+  transition: transform .25s var(--ease);
+}
+.qr-carte:hover { transform: scale(1.03); }
+/* La zone de silence est dans le SVG lui-même : rien ne doit venir
+   par-dessus, d’où le padding sur la pastille et aucun contenu au-dessus. */
+.qr-carte .qr { display: block; width: 100%; height: auto; }
+
+.hero__qr figcaption {
+  margin-top: .7rem;
+  font-size: .88rem;
+  font-weight: 600;
+  color: var(--dim);
+}
+
+/* ---------- la phrase qui explique le produit ---------- */
+.explication {
+  padding: 0 0 clamp(2.5rem, 8vw, 4rem);
+}
+.explication p {
+  font-size: 1rem;
+  line-height: 1.55;
+  max-width: 46ch;
+  color: var(--dimmer);
+}
+
 .scroll-hint {
   position: absolute; left: 50%; bottom: 1.4rem; transform: translateX(-50%);
   display: flex; flex-direction: column; align-items: center; gap: .35rem;
@@ -209,6 +246,91 @@ code {
   color: var(--ink);
 }
 .band--tight { padding-block: clamp(2.2rem, 7vw, 3.5rem); }
+
+/* ==========================================================================
+   La séquence du geste : on scanne → ça s’ouvre
+   Empilée sur téléphone (le trait pivote), côte à côte sur ordinateur.
+   ========================================================================== */
+.sequence {
+  margin-top: clamp(2rem, 7vw, 3rem);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  color: var(--ink);
+}
+
+.sequence__qr  { width: 116px; flex: none; }
+.sequence__tel { flex: none; }
+.qr-schema { display: block; width: 100%; height: auto; }
+
+/* Le cadre porte la taille, le trait ne fait que pivoter dedans. */
+.sequence__lien {
+  width: 24px; height: 90px;
+  flex: none;
+  display: grid; place-items: center;
+}
+.sequence__trait {
+  width: 90px; height: 24px;
+  transform: rotate(90deg);
+}
+
+/* --- l’enchaînement, une seconde en tout --- */
+.js .sequence__qr,
+.js .sequence__tel {
+  opacity: 0;
+  transform: translateY(10px);
+  transition: opacity .4s ease, transform .4s var(--ease);
+}
+.js .sequence__ligne {
+  stroke-dasharray: 104;
+  stroke-dashoffset: 104;
+  transition: stroke-dashoffset .45s var(--ease) .25s;
+}
+.js .sequence__pointe { opacity: 0; transition: opacity .25s ease .62s; }
+
+.sequence.is-in .sequence__qr    { opacity: 1; transform: none; }
+.sequence.is-in .sequence__ligne { stroke-dashoffset: 0; }
+.sequence.is-in .sequence__pointe{ opacity: 1; }
+.sequence.is-in .sequence__tel   { opacity: 1; transform: none; transition-delay: .7s; }
+
+/* --- le téléphone en miniature : même cadre que celui de Léa --- */
+.mini-tel {
+  width: 100px;
+  border: 2px solid var(--ink);
+  border-radius: 17px;
+  padding: 5px;
+  background: var(--cream);
+}
+.mini-tel__ecran {
+  position: relative;
+  aspect-ratio: 9 / 17;
+  border-radius: 12px;
+  overflow: hidden;
+  padding: 13px 9px 9px;
+  /* la couleur de Léa : la fiche montrée juste en dessous */
+  background: #B8432A;
+  color: #fff;
+}
+.mini-tel__ecran::before {
+  content: "";
+  position: absolute; top: 5px; left: 50%; transform: translateX(-50%);
+  width: 26px; height: 3px; border-radius: 99px;
+  background: rgba(255,255,255,.45);
+}
+.mini-tel__hi  { font-size: 7px; font-weight: 600; opacity: .85; }
+.mini-tel__nom {
+  font-family: Anton, sans-serif; text-transform: uppercase;
+  font-size: 21px; line-height: 1; letter-spacing: .5px; margin-top: 1px;
+}
+.mini-tel__ligne {
+  display: block; height: 3px; border-radius: 2px;
+  background: rgba(255,255,255,.42);
+  margin-top: 7px;
+}
+.mini-tel__ligne:nth-of-type(1) { width: 100%; margin-top: 10px; }
+.mini-tel__ligne:nth-of-type(2) { width: 82%; }
+.mini-tel__ligne:nth-of-type(3) { width: 56%; }
 
 .apres-demo {
   font-size: clamp(1.15rem, 4.6vw, 1.5rem);
@@ -602,6 +724,21 @@ code {
   .hero__title { font-size: clamp(4rem, 8.5vw, 7.5rem); }
   .hero__sub   { font-size: 1.28rem; }
 
+  /* Le QR se met à côté du titre, calé sur sa base. */
+  .hero__grid {
+    grid-template-columns: 1fr auto;
+    align-items: end;
+    gap: 3.5rem;
+  }
+  .qr-carte { width: 160px; }
+
+  /* La séquence se déroule de gauche à droite. */
+  .sequence { flex-direction: row; align-items: center; gap: 1.6rem; justify-content: flex-start; }
+  .sequence__lien { width: 120px; height: 24px; }
+  .sequence__trait { transform: none; width: 120px; }
+  .sequence__qr { width: 132px; }
+  .mini-tel { width: 112px; }
+
   .etapes__list { grid-template-columns: repeat(3, 1fr); gap: 2rem; }
 
   /* Le téléphone à droite, le propos à gauche. */
@@ -630,5 +767,9 @@ code {
   .scroll-hint__arrow { animation: none; }
   .f-tl::before { transform: scaleY(1) !important; transition: none; }
   .carte3d__in { transition: none; }
+  .sequence__qr, .sequence__tel, .sequence__pointe {
+    opacity: 1 !important; transform: none !important; transition: none !important;
+  }
+  .sequence__ligne { stroke-dashoffset: 0 !important; transition: none !important; }
   :root { transition: none; }
 }

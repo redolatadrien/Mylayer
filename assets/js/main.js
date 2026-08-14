@@ -18,6 +18,9 @@
 
   function toutAfficher() {
     for (var i = 0; i < reveals.length; i++) reveals[i].classList.add('is-in');
+    // La séquence du geste démarre masquée elle aussi : même filet.
+    var seqs = document.querySelectorAll('[data-sequence]');
+    for (var j = 0; j < seqs.length; j++) seqs[j].classList.add('is-in');
   }
 
   var reduit = false;
@@ -287,13 +290,14 @@
     for (var i = 0; i < reveals.length; i++) io.observe(reveals[i]);
 
     /* déclencheurs propres à certains blocs */
-    var blocs = document.querySelectorAll('[data-map], [data-stats], [data-tl], .f-sub');
+    var blocs = document.querySelectorAll('[data-map], [data-stats], [data-tl], [data-sequence], .f-sub');
     var io2 = new IntersectionObserver(function (entrees) {
       entrees.forEach(function (e) {
         if (!e.isIntersecting) return;
         var el = e.target;
         if (el.hasAttribute('data-map')) remplirCarte(el);
         else if (el.hasAttribute('data-tl')) el.classList.add('is-in');
+        else if (el.hasAttribute('data-sequence')) el.classList.add('is-in');
         else monter(el);
         io2.unobserve(el);
       });

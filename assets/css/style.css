@@ -31,6 +31,10 @@
   --ink-3: rgba(20, 32, 28, 0.45);
 
   --maxw:   720px;
+  /* L’accroche respire plus large que le reste de la page : c’est le seul
+     écran à deux colonnes, il lui faut de la place pour les tenir. */
+  --hero-maxw: 720px;
+  --fente:     0rem;      /* l’écart de part et d’autre du filet vertical */
   --pad:    clamp(1.25rem, 6vw, 2.5rem);
   --radius: 18px;
   --ease:   cubic-bezier(.2, .65, .3, 1);
@@ -134,12 +138,13 @@ code {
 /* ==========================================================================
    En-tête
    ========================================================================== */
-/* Le contenu de l’en-tête s’aligne sur la même colonne que le reste de la
-   page : sans ça, le logo colle au bord de l’écran en grand format. */
+/* L’en-tête partage la largeur ET le découpage en colonnes de l’accroche :
+   le logo coiffe le titre, « reprendre » coiffe le QR. Les deux blocs lisent
+   les mêmes variables, ils ne peuvent donc pas se désaligner. */
 .site-header {
   position: absolute;
   top: 0; left: 50%; transform: translateX(-50%);
-  width: 100%; max-width: var(--maxw); z-index: 40;
+  width: 100%; max-width: var(--hero-maxw); z-index: 40;
   display: flex; align-items: center; justify-content: space-between;
   gap: 1rem;
   padding: 1.4rem var(--pad) 0;
@@ -162,12 +167,23 @@ code {
    ========================================================================== */
 .hero {
   min-height: 100svh;
-  display: flex; flex-direction: column; justify-content: flex-end;
+  display: flex;
   position: relative;
-  padding: 7rem var(--pad) 7.5rem;   /* la place de l’indicateur de scroll */
-  max-width: var(--maxw);
+  padding: 5.6rem var(--pad) 1.6rem;
+  max-width: var(--hero-maxw);
   margin-inline: auto;
 }
+/* Sur téléphone : une seule colonne, le titre puis le QR, le tout calé pour
+   tenir dans le premier écran. Sur ordinateur : les deux vraies colonnes. */
+.hero__grid {
+  flex: 1;
+  display: grid;
+  gap: 1.6rem;
+  align-content: center;
+}
+
+.hero__mot { display: flex; flex-direction: column; justify-content: center; }
+
 .hero__title {
   /* « ce que t’as fait. » est la ligne la plus longue : c’est elle qui fixe
      la mesure. On tient jusqu’aux petits iPhone sans casser le mot. */
@@ -184,38 +200,61 @@ code {
 @supports not ((-webkit-text-stroke: 1px #fff) or (text-stroke: 1px #fff)) {
   .hero__title em { color: rgba(255, 255, 255, .42); }
 }
+/* Le deuxième et dernier niveau de lecture. Il suit le titre de près : un
+   écart, pas un trou. Surtout pas de margin-top: auto ici — c’est ce qui
+   creusait la colonne en deux blocs séparés par du vide. */
 .hero__sub {
-  margin-top: 1.5rem;
-  font-size: 1.12rem;
-  max-width: 34ch;
+  margin-top: 1.1rem;
+  font-size: 1.32rem;
+  line-height: 1.45;
+  max-width: 30ch;
   color: var(--dim);
 }
 
-/* ---------- le QR de l’accroche ----------
-   Sur téléphone il passe sous le titre et doit rester dans le premier
-   écran ; sur ordinateur il se met à côté, aligné sur le bas du titre. */
-.hero__grid { display: grid; gap: 1.9rem; }
+/* ---------- la colonne de droite ---------- */
+.hero__droite {
+  position: relative;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  gap: 2.6rem;
+  text-align: center;
+}
 
+/* ==========================================================================
+   Le motif QR
+   Ce n’est pas un code : c’est la marque du produit. Il est en crème à même
+   le vert, sans pastille ni ombre — il appartient à la page, il n’est pas
+   posé dessus.
+   Les modules voisins sont fusionnés en traits à bouts ronds, les isolés
+   sont des points ; les yeux sont des anneaux arrondis à pastille ronde.
+   ========================================================================== */
 .hero__qr { margin: 0; }
-.qr-carte {
-  display: block;
-  width: 140px;                     /* plancher mobile imposé */
-  padding: 10px;
-  background: var(--cream);
-  border-radius: 14px;
-  transition: transform .25s var(--ease);
-}
-.qr-carte:hover { transform: scale(1.03); }
-/* La zone de silence est dans le SVG lui-même : rien ne doit venir
-   par-dessus, d’où le padding sur la pastille et aucun contenu au-dessus. */
-.qr-carte .qr { display: block; width: 100%; height: auto; }
 
-.hero__qr figcaption {
-  margin-top: .7rem;
-  font-size: .88rem;
-  font-weight: 600;
-  color: var(--dim);
+.qr-motif {
+  display: block;
+  width: 200px;                     /* mobile */
+  height: auto;
+  color: var(--cream);
 }
+.qr-motif line {
+  stroke: currentColor;
+  stroke-width: .72;
+  stroke-linecap: round;
+}
+.qr-motif circle { fill: currentColor; }
+.qr-motif .qr-oeil {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1;
+}
+
+/* Le code se compose : les yeux se posent, la trame se remplit par vagues
+   éparpillées. Une fois, à l’arrivée. Jamais en boucle. */
+.qr-motif g {
+  animation: qr-pose .3s ease-out both;
+  animation-delay: var(--d, 0s);
+}
+@keyframes qr-pose { from { opacity: 0; } to { opacity: 1; } }
 
 /* ---------- la phrase qui explique le produit ---------- */
 .explication {
@@ -228,12 +267,15 @@ code {
   color: var(--dimmer);
 }
 
+/* L’invitation à descendre appartient maintenant au module de droite :
+   elle suit le QR au lieu de flotter au milieu du bas de l’écran. */
 .scroll-hint {
-  position: absolute; left: 50%; bottom: 1.4rem; transform: translateX(-50%);
-  display: flex; flex-direction: column; align-items: center; gap: .35rem;
+  display: flex; flex-direction: column; align-items: center; gap: .3rem;
   font-size: .68rem; letter-spacing: .22em; text-transform: uppercase;
   color: var(--dim);
+  transition: color .2s;
 }
+.scroll-hint:hover { color: var(--white); }
 .scroll-hint__arrow { width: 20px; height: 32px; animation: bob 1.8s ease-in-out infinite; }
 @keyframes bob { 0%,100% { transform: translateY(0); } 50% { transform: translateY(7px); } }
 
@@ -248,89 +290,261 @@ code {
 .band--tight { padding-block: clamp(2.2rem, 7vw, 3.5rem); }
 
 /* ==========================================================================
-   La séquence du geste : on scanne → ça s’ouvre
-   Empilée sur téléphone (le trait pivote), côte à côte sur ordinateur.
+   2 — CE QUE C’EST
+   Un seul écran : un grand téléphone, la vraie fiche dedans. Le fond crème
+   de la bande fait ressortir la fiche colorée — c’est ce contraste qui fait
+   exister l’objet.
    ========================================================================== */
-.sequence {
-  margin-top: clamp(2rem, 7vw, 3rem);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 14px;
-  color: var(--ink);
+.voila { display: grid; gap: clamp(2rem, 7vw, 2.8rem); }
+
+.voila__sous {
+  margin-top: 1.2rem;
+  font-size: 1.1rem;
+  line-height: 1.5;
+  max-width: 26ch;
+  color: var(--ink-2);
 }
 
-.sequence__qr  { width: 116px; flex: none; }
-.sequence__tel { flex: none; }
-.qr-schema { display: block; width: 100%; height: auto; }
+/* ---------- le cadre du téléphone ---------- */
+.voila__tel { display: flex; justify-content: center; }
 
-/* Le cadre porte la taille, le trait ne fait que pivoter dedans. */
-.sequence__lien {
-  width: 24px; height: 90px;
-  flex: none;
-  display: grid; place-items: center;
+.tel {
+  width: min(320px, 75vw);
+  padding: 11px;                    /* l’épaisseur de bord, bien visible */
+  border-radius: 46px;
+  background: linear-gradient(155deg, #33413B 0%, #14201C 42%, #0A100E 100%);
+  box-shadow: 0 34px 72px rgba(20, 32, 28, .30),
+              0 4px 12px rgba(20, 32, 28, .18),
+              inset 0 1px 0 rgba(255, 255, 255, .20);
 }
-.sequence__trait {
-  width: 90px; height: 24px;
-  transform: rotate(90deg);
-}
-
-/* --- l’enchaînement, une seconde en tout --- */
-.js .sequence__qr,
-.js .sequence__tel {
-  opacity: 0;
-  transform: translateY(10px);
-  transition: opacity .4s ease, transform .4s var(--ease);
-}
-.js .sequence__ligne {
-  stroke-dasharray: 104;
-  stroke-dashoffset: 104;
-  transition: stroke-dashoffset .45s var(--ease) .25s;
-}
-.js .sequence__pointe { opacity: 0; transition: opacity .25s ease .62s; }
-
-.sequence.is-in .sequence__qr    { opacity: 1; transform: none; }
-.sequence.is-in .sequence__ligne { stroke-dashoffset: 0; }
-.sequence.is-in .sequence__pointe{ opacity: 1; }
-.sequence.is-in .sequence__tel   { opacity: 1; transform: none; transition-delay: .7s; }
-
-/* --- le téléphone en miniature : même cadre que celui de Léa --- */
-.mini-tel {
-  width: 100px;
-  border: 2px solid var(--ink);
-  border-radius: 17px;
-  padding: 5px;
-  background: var(--cream);
-}
-.mini-tel__ecran {
+.tel__ecran {
   position: relative;
-  aspect-ratio: 9 / 17;
-  border-radius: 12px;
+  aspect-ratio: 9 / 19;
+  border-radius: 36px;
   overflow: hidden;
-  padding: 13px 9px 9px;
-  /* la couleur de Léa : la fiche montrée juste en dessous */
-  background: #B8432A;
-  color: #fff;
+  background: #3B4DD4;              /* la couleur de la fiche d’Adrien */
 }
-.mini-tel__ecran::before {
+/* la barre du haut */
+.tel__ecran::before {
   content: "";
-  position: absolute; top: 5px; left: 50%; transform: translateX(-50%);
-  width: 26px; height: 3px; border-radius: 99px;
-  background: rgba(255,255,255,.45);
+  position: absolute; top: 9px; left: 50%; transform: translateX(-50%);
+  width: 84px; height: 5px; border-radius: 99px;
+  background: rgba(255, 255, 255, .38);
+  z-index: 4; pointer-events: none;
 }
-.mini-tel__hi  { font-size: 7px; font-weight: 600; opacity: .85; }
-.mini-tel__nom {
-  font-family: Anton, sans-serif; text-transform: uppercase;
-  font-size: 21px; line-height: 1; letter-spacing: .5px; margin-top: 1px;
+
+/* ---------- le défilement ----------
+   Il appartient au visiteur : molette ou doigt sur le téléphone, et la fiche
+   défile. Surtout PAS d’overscroll-behavior: contain — c’est lui qui
+   piégerait le curseur. Par défaut, une fois la fiche au bout, le navigateur
+   rend la main à la page, ce qui est exactement ce qu’on veut. */
+.tel__page {
+  position: absolute; inset: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, .45) transparent;
 }
-.mini-tel__ligne {
-  display: block; height: 3px; border-radius: 2px;
-  background: rgba(255,255,255,.42);
-  margin-top: 7px;
+.tel__page::-webkit-scrollbar { width: 4px; }
+.tel__page::-webkit-scrollbar-track { background: transparent; }
+.tel__page::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, .40);
+  border-radius: 99px;
 }
-.mini-tel__ligne:nth-of-type(1) { width: 100%; margin-top: 10px; }
-.mini-tel__ligne:nth-of-type(2) { width: 82%; }
-.mini-tel__ligne:nth-of-type(3) { width: 56%; }
+.tel__page:focus-visible { outline: none; }
+.tel:has(.tel__page:focus-visible) { box-shadow: 0 0 0 3px var(--ink); }
+
+/* le dégradé du bas : il dit qu’il reste à lire, et s’efface à la fin */
+.tel__voile {
+  position: absolute; left: 0; right: 0; bottom: 0; height: 58px;
+  background: linear-gradient(to top, #2A38A8 10%, rgba(42, 56, 168, 0));
+  pointer-events: none; z-index: 3;
+  transition: opacity .35s ease;
+}
+.tel__page.est-au-bout ~ .tel__voile { opacity: 0; }
+
+/* ==========================================================================
+   LA FICHE D’ADRIEN, dans le téléphone
+   Contenu repris de profiladrienredolat.netlify.app. Tout est en pixels :
+   à l’intérieur d’un cadre de 300 px, le vw n’a aucun sens.
+   Aucune classe « reveal » ici : ce qui est dans le téléphone est visible
+   tout de suite, même sans JavaScript.
+   ========================================================================== */
+.fa {
+  padding: 26px 18px 40px;
+  font-size: 12px;
+  line-height: 1.55;
+  color: #fff;
+  background: #3B4DD4;
+  background-image: radial-gradient(120% 80% at 70% 0%,
+                    #4759F0 0%, #3B4DD4 38%, #2A38A8 100%);
+}
+.fa b, .fa i { font-style: normal; }
+
+/* la bascule FR/EN, épinglée comme sur le vrai site */
+.fa-lang {
+  position: sticky; top: 0; z-index: 5;
+  width: fit-content; margin-left: auto;
+  display: flex; align-items: center; gap: 4px;
+  padding: 3px 9px;
+  font-size: 10px; font-weight: 700;
+  border: 1.5px solid rgba(255, 255, 255, .85);
+  border-radius: 999px;
+  background: rgba(42, 56, 168, .72);
+  backdrop-filter: blur(6px);
+}
+.fa-lang i { color: rgba(255, 255, 255, .45); }
+.fa-lang span { color: rgba(255, 255, 255, .55); }
+
+/* ---------- haut de fiche ---------- */
+.fa-hero { margin-top: 6px; }
+.fa-portrait {
+  width: 150px; margin: 0 auto 16px;
+  border: 2px solid rgba(255, 255, 255, .85);
+  border-radius: 14px;
+  overflow: hidden;
+  box-shadow: 0 14px 30px rgba(0, 0, 0, .22);
+}
+.fa-portrait img { width: 100%; height: auto; aspect-ratio: 9 / 16; object-fit: cover; }
+
+.fa-hi { font-size: 11px; font-weight: 600; opacity: .9; }
+.fa-nom {
+  font-family: Anton, Inter, sans-serif; font-weight: 400;
+  text-transform: uppercase; letter-spacing: .5px;
+  font-size: 40px; line-height: 1.02;
+  margin: 3px 0 9px;
+}
+.fa-tag { font-size: 11.5px; color: rgba(255, 255, 255, .95); }
+
+/* ---------- blocs ---------- */
+.fa-bloc { margin-top: 34px; }
+.fa-titre {
+  font-family: Anton, Inter, sans-serif; font-weight: 400;
+  text-transform: uppercase; letter-spacing: .5px;
+  font-size: 27px; line-height: .95;
+  margin-bottom: 10px;
+}
+.fa-sous { font-size: 11px; color: rgba(255, 255, 255, .85); margin-bottom: 14px; }
+.fa-surtitre {
+  font-size: 9.5px; text-transform: uppercase; letter-spacing: .12em;
+  color: rgba(255, 255, 255, .70);
+  margin: 14px 0 7px;
+}
+.fa-texte { font-size: 12px; }
+.fa-texte + .fa-texte { margin-top: 11px; }
+
+.fa-mots, .fa-puces { display: flex; flex-wrap: wrap; gap: 6px; }
+.fa-mots { margin-top: 18px; }
+.fa-mots li {
+  font-family: Anton, Inter, sans-serif; text-transform: uppercase;
+  font-size: 11px; letter-spacing: .04em;
+  padding: 4px 10px;
+  border: 1.5px solid rgba(255, 255, 255, .85); border-radius: 999px;
+}
+.fa-puces li {
+  font-size: 10.5px; font-weight: 500;
+  padding: 4px 10px;
+  border: 1.5px solid rgba(255, 255, 255, .85); border-radius: 999px;
+}
+
+/* ---------- parcours ---------- */
+.fa-parcours { position: relative; padding-left: 20px; }
+.fa-parcours::before {
+  content: ""; position: absolute; left: 5px; top: 5px; bottom: 5px;
+  width: 2px; background: rgba(255, 255, 255, .30);
+}
+.fa-etape { position: relative; }
+.fa-etape + .fa-etape { margin-top: 20px; }
+.fa-etape::before {
+  content: ""; position: absolute; left: -20px; top: 4px;
+  width: 12px; height: 12px; border-radius: 50%;
+  background: #3B4DD4; border: 2.5px solid #fff;
+}
+.fa-etape__titre { display: block; font-size: 12.5px; font-weight: 700; line-height: 1.25; }
+.fa-etape__lieu  { display: block; font-size: 10.5px; font-weight: 600; color: rgba(255, 255, 255, .72); margin: 1px 0 3px; }
+.fa-etape__desc  { display: block; font-size: 11px; color: rgba(255, 255, 255, .92); }
+.fa-etape__photos { display: flex; gap: 6px; margin-top: 9px; }
+.fa-vig {
+  flex: 1 1 0; margin: 0;
+  border: 2px solid rgba(255, 255, 255, .85); border-radius: 10px; overflow: hidden;
+}
+.fa-vig img { width: 100%; height: auto; aspect-ratio: 4 / 5; object-fit: cover; }
+
+/* ---------- carte du monde ---------- */
+.fa-carte {
+  border: 2px solid rgba(255, 255, 255, .85); border-radius: 14px;
+  padding: 8px; background: rgba(0, 0, 0, .10);
+}
+.fa-carte svg { width: 100%; height: auto; display: block; }
+.fa-carte svg path {
+  fill: rgba(255, 255, 255, .06);
+  stroke: rgba(255, 255, 255, .18);
+  stroke-width: .4;
+}
+/* les 16 pays : certains sont des <path>, d’autres des <g> de plusieurs
+   tracés (le Canada, l’Espagne, le Danemark…) — les deux cas sont couverts. */
+.fa-carte svg .visited,
+.fa-carte svg .visited path { fill: #fff; stroke: #fff; }
+
+.fa-photos { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; margin-top: 12px; }
+.fa-photo {
+  position: relative; margin: 0;
+  border: 2px solid rgba(255, 255, 255, .85); border-radius: 12px; overflow: hidden;
+}
+.fa-photo img { width: 100%; height: auto; aspect-ratio: 4 / 5; object-fit: cover; }
+.fa-photo figcaption {
+  position: absolute; left: 0; right: 0; bottom: 0;
+  padding: 12px 7px 5px;
+  font-size: 9px; letter-spacing: .05em; text-transform: uppercase; font-weight: 600;
+  background: linear-gradient(to top, rgba(42, 56, 168, .88), transparent);
+}
+
+/* ---------- langues ---------- */
+.fa-langues { display: flex; flex-direction: column; gap: 12px; }
+.fa-langue__tete { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 5px; }
+.fa-langue__tete b { font-size: 12.5px; font-weight: 700; }
+.fa-langue__tete i { font-size: 10px; font-weight: 600; color: rgba(255, 255, 255, .75); }
+.fa-jauge { display: flex; gap: 4px; }
+.fa-jauge__cran {
+  flex: 1 1 0; height: 6px; border-radius: 4px;
+  border: 1.5px solid rgba(255, 255, 255, .85);
+}
+.fa-jauge__cran.est-on { background: #fff; }
+
+/* ---------- chiffres ---------- */
+.fa-chiffres { display: grid; grid-template-columns: repeat(2, 1fr); gap: 18px 12px; }
+.fa-chiffres b {
+  display: block;
+  font-family: Anton, Inter, sans-serif; font-weight: 400;
+  font-size: 36px; line-height: .9;
+  font-variant-numeric: tabular-nums;
+}
+.fa-chiffres span {
+  display: block; margin-top: 2px;
+  font-size: 9.5px; text-transform: uppercase; letter-spacing: .06em;
+  color: rgba(255, 255, 255, .82);
+}
+
+/* ---------- contact ---------- */
+.fa-fin { text-align: center; }
+.fa-titre--fin { font-size: 34px; }
+.fa-fin .fa-sous { margin-bottom: 16px; }
+.fa-liens { display: grid; grid-template-columns: repeat(2, 1fr); gap: 7px; }
+/* Reproduits à l’identique mais inertes : on montre à quoi ressemble la
+   fiche, on n’envoie pas le visiteur ailleurs au milieu de la page. */
+.fa-lien {
+  padding: 9px 6px;
+  border: 1.5px solid rgba(255, 255, 255, .85); border-radius: 11px;
+  font-size: 10.5px; font-weight: 600;
+  background: rgba(255, 255, 255, .04);
+}
+.fa-lien--cv {
+  grid-column: 1 / -1;
+  background: #fff; color: #2A38A8;
+  border-color: #fff;
+}
+.fa-merci { margin-top: 20px; font-size: 9.5px; color: rgba(255, 255, 255, .60); }
 
 .apres-demo {
   font-size: clamp(1.15rem, 4.6vw, 1.5rem);
@@ -718,26 +932,62 @@ code {
    Écrans larges
    ========================================================================== */
 @media (min-width: 760px) {
-  :root { --maxw: 1000px; }
+  :root {
+    --maxw: 1000px;
+    /* L’accroche seule va plus large : à 7.5rem, « ce que t’as fait. »
+       réclame près de 710 px, et il lui faut cette place sans se couper. */
+    --hero-maxw: 1240px;
+    --fente: clamp(2rem, 3.4vw, 3.4rem);
+  }
   body { font-size: 18px; }
 
-  .hero__title { font-size: clamp(4rem, 8.5vw, 7.5rem); }
-  .hero__sub   { font-size: 1.28rem; }
+  .hero { padding: 6.2rem var(--pad) 2.6rem; }
 
-  /* Le QR se met à côté du titre, calé sur sa base. */
+  /* Les deux colonnes franches. La droite est fixe — elle n’a qu’un motif de
+     260 px à tenir — et le titre prend tout le reste. Pas de gap : l’écart
+     est porté par le padding de chaque colonne, pour que le filet tombe
+     pile entre les deux. */
   .hero__grid {
-    grid-template-columns: 1fr auto;
-    align-items: end;
-    gap: 3.5rem;
+    grid-template-columns: minmax(0, 1fr) 340px;
+    align-content: stretch;
+    gap: 0;
   }
-  .qr-carte { width: 160px; }
+  .hero__mot    { padding-right: var(--fente); }
+  .hero__droite { padding-left:  var(--fente); }
 
-  /* La séquence se déroule de gauche à droite. */
-  .sequence { flex-direction: row; align-items: center; gap: 1.6rem; justify-content: flex-start; }
-  .sequence__lien { width: 120px; height: 24px; }
-  .sequence__trait { transform: none; width: 120px; }
-  .sequence__qr { width: 132px; }
-  .mini-tel { width: 112px; }
+  /* Le filet. Il déborde en haut et en bas pour passer derrière le logo et
+     descendre jusqu’au bas de l’écran, et s’estompe à ses deux extrémités
+     pour ne pas se terminer sur une coupure nette. */
+  .hero__droite::before {
+    content: "";
+    position: absolute; left: 0; top: -3.6rem; bottom: -1.4rem; width: 1px;
+    background: linear-gradient(to bottom,
+                transparent 0%, rgba(255, 255, 255, .22) 14%,
+                rgba(255, 255, 255, .22) 86%, transparent 100%);
+  }
+
+  /* La taille d’origine, celle qui donnait sa force au titre. */
+  .hero__title { font-size: clamp(4rem, 8.5vw, 7.5rem); }
+  .hero__sub   { font-size: 1.55rem; margin-top: 1.4rem; }
+
+  /* Filet de sécurité : la colonne est calculée pour que 7.5rem passe, mais
+     un rendu de police un peu plus large suffirait à casser une ligne en
+     deux et à ruiner les quatre lignes. On plafonne donc aussi le titre à la
+     largeur de sa propre colonne : il ne peut plus se couper, jamais. */
+  @supports (container-type: inline-size) {
+    .hero__mot   { container-type: inline-size; }
+    .hero__title { font-size: min(clamp(4rem, 8.5vw, 7.5rem), 16.5cqw); }
+  }
+
+  .qr-motif { width: 260px; }
+
+  /* Le téléphone à droite, le propos à gauche. */
+  .voila {
+    grid-template-columns: 1fr auto;
+    align-items: center;
+    gap: clamp(2.5rem, 5vw, 4.5rem);
+  }
+  .voila__sous { font-size: 1.2rem; }
 
   .etapes__list { grid-template-columns: repeat(3, 1fr); gap: 2rem; }
 
@@ -767,9 +1017,6 @@ code {
   .scroll-hint__arrow { animation: none; }
   .f-tl::before { transform: scaleY(1) !important; transition: none; }
   .carte3d__in { transition: none; }
-  .sequence__qr, .sequence__tel, .sequence__pointe {
-    opacity: 1 !important; transform: none !important; transition: none !important;
-  }
-  .sequence__ligne { stroke-dashoffset: 0 !important; transition: none !important; }
+  .tel__voile { transition: none; }
   :root { transition: none; }
 }

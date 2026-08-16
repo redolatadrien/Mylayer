@@ -18,9 +18,6 @@
 
   function toutAfficher() {
     for (var i = 0; i < reveals.length; i++) reveals[i].classList.add('is-in');
-    // La séquence du geste démarre masquée elle aussi : même filet.
-    var seqs = document.querySelectorAll('[data-sequence]');
-    for (var j = 0; j < seqs.length; j++) seqs[j].classList.add('is-in');
   }
 
   var reduit = false;
@@ -118,6 +115,38 @@
     window.addEventListener('scroll', auScroll, { passive: true });
     window.addEventListener('resize', auScroll);
     placer();
+  }
+
+  /* ======================================================================
+     4 bis — La fiche d’Adrien, dans le grand téléphone
+     Le défilement lui-même est purement CSS (overflow-y: auto) : c’est le
+     visiteur qui l’actionne, et le navigateur rend la main à la page une
+     fois la fiche au bout. On ne s’occupe ici que du dégradé du bas, qui
+     s’efface quand il n’y a plus rien à lire — sans JS, il reste affiché,
+     ce qui n’enlève rien.
+     ====================================================================== */
+  function brancherFiche() {
+    var fiche = document.querySelector('[data-fiche]');
+    if (!fiche) return;
+
+    var tick = false;
+
+    function jauger() {
+      tick = false;
+      var reste = fiche.scrollHeight - fiche.scrollTop - fiche.clientHeight;
+      fiche.classList.toggle('est-au-bout', reste < 12);
+    }
+
+    fiche.addEventListener('scroll', function () {
+      if (tick) return;
+      tick = true;
+      requestAnimationFrame(jauger);
+    }, { passive: true });
+
+    window.addEventListener('resize', jauger);
+    // Les photos arrivent en différé : chacune rallonge la fiche.
+    window.addEventListener('load', jauger);
+    jauger();
   }
 
   /* ======================================================================
@@ -290,14 +319,13 @@
     for (var i = 0; i < reveals.length; i++) io.observe(reveals[i]);
 
     /* déclencheurs propres à certains blocs */
-    var blocs = document.querySelectorAll('[data-map], [data-stats], [data-tl], [data-sequence], .f-sub');
+    var blocs = document.querySelectorAll('[data-map], [data-stats], [data-tl], .f-sub');
     var io2 = new IntersectionObserver(function (entrees) {
       entrees.forEach(function (e) {
         if (!e.isIntersecting) return;
         var el = e.target;
         if (el.hasAttribute('data-map')) remplirCarte(el);
         else if (el.hasAttribute('data-tl')) el.classList.add('is-in');
-        else if (el.hasAttribute('data-sequence')) el.classList.add('is-in');
         else monter(el);
         io2.unobserve(el);
       });
@@ -310,6 +338,7 @@
   try {
     observer();
     brancherTelephone();
+    brancherFiche();
     brancherDebut();
     brancherCarte();
   } catch (err) {

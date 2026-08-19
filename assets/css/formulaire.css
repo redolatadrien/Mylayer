@@ -1,0 +1,468 @@
+/* ==========================================================================
+   MyLayer — le formulaire
+   --------------------------------------------------------------------------
+   Une question par écran, plein cadre. La page d’accueil pose déjà le décor
+   (couleur pleine, Anton, traits blancs) : cette feuille ne fait qu’ajouter
+   les objets propres au questionnaire. style.css est chargée avant.
+
+   Règle de construction : sans JavaScript, tous les écrans s’affichent à la
+   suite et le formulaire reste envoyable. C’est la classe « js » qui les
+   empile les uns sur les autres.
+   ========================================================================== */
+
+/* ==========================================================================
+   La coquille
+   ========================================================================== */
+.fm {
+  min-height: 100dvh;
+  display: flex; flex-direction: column;
+  padding-block: clamp(4.5rem, 12vw, 6rem) clamp(2rem, 8vw, 3rem);
+}
+
+/* La jauge. Elle ne dit pas « il en reste 28 » — elle avance, c’est tout.
+   Un compte à rebours chiffré décourage au tiers du parcours. */
+.fm__barre {
+  position: fixed; inset: 0 0 auto 0; z-index: 20;
+  height: 3px; background: rgba(255,255,255,.16);
+}
+.fm__jauge {
+  height: 100%; width: 0%;
+  background: var(--white);
+  transition: width .45s var(--ease);
+}
+
+/* Le retour, en haut à gauche, à la place du logo de l’accueil. */
+.fm__retour {
+  position: fixed; top: 14px; left: var(--pad); z-index: 20;
+  font-size: .8rem; letter-spacing: .12em; text-transform: uppercase;
+  color: var(--dimmer);
+  transition: color .2s;
+}
+.fm__retour:hover { color: var(--white); }
+
+/* ==========================================================================
+   L’écran
+   Chaque question occupe la hauteur disponible et se centre : le regard
+   tombe au même endroit d’un écran à l’autre, seul le contenu change.
+   ========================================================================== */
+.ec {
+  flex: 1;
+  display: flex; flex-direction: column; justify-content: center;
+}
+.js .ec { display: none; }
+.js .ec.est-actif { display: flex; animation: ec-entre .5s var(--ease) both; }
+
+@keyframes ec-entre {
+  from { opacity: 0; transform: translateY(22px); }
+  to   { opacity: 1; transform: none; }
+}
+
+/* Le compteur. Discret : il situe sans mettre la pression. */
+.ec__compteur {
+  font-size: .75rem; letter-spacing: .18em; text-transform: uppercase;
+  color: var(--dimmer);
+  margin-bottom: 1.1rem;
+  font-variant-numeric: tabular-nums;
+}
+
+/* La question. C’est le seul gros caractère de l’écran. */
+.ec__q {
+  display: block;
+  font-family: Anton, Inter, sans-serif; font-weight: 400;
+  text-transform: uppercase; letter-spacing: .04em; line-height: 1.02;
+  font-size: clamp(1.75rem, 7.5vw, 2.9rem);
+}
+
+/* La relance. Toute question ouverte en porte une : c’est elle qui débloque
+   ceux qui ne savent pas par quel bout prendre la question. */
+.ec__relance {
+  margin-top: .9rem;
+  font-size: 1rem; font-style: italic;
+  color: var(--dim); max-width: 46ch;
+}
+
+/* ==========================================================================
+   Les champs écrits
+   La hauteur dit ce qu’on attend. Un champ de deux lignes produit des
+   réponses de deux lignes — c’est le réglage le plus important de la page.
+   ========================================================================== */
+.ec__champ {
+  width: 100%;
+  margin-top: clamp(1.4rem, 5vw, 2rem);
+  background: rgba(255,255,255,.06);
+  border: 2px solid var(--line-soft);
+  border-radius: var(--radius);
+  color: var(--white);
+  font-family: inherit; font-size: 1.05rem; line-height: 1.55;
+  padding: 1rem 1.1rem;
+  resize: vertical;
+  -webkit-appearance: none; appearance: none;
+}
+.ec__champ::placeholder { color: rgba(255,255,255,.32); }
+.ec__champ:focus {
+  outline: none;
+  border-color: var(--white);
+  background: rgba(255,255,255,.10);
+}
+
+/* Les trois ambitions de réponse. Les valeurs sont des hauteurs de champ,
+   pas des maximums : on peut toujours écrire plus, le champ s’allonge. */
+.ec__champ--fond   { min-height: 15rem; }   /* 7 à 8 lignes  */
+.ec__champ--moyen  { min-height: 7.5rem; }  /* 3 lignes      */
+.ec__champ--ligne  { min-height: 0; }
+
+/* Le rappel de la dictée, sous chaque champ écrit. Il est répété partout :
+   posé une seule fois dans le pacte, il serait oublié dès l’écran suivant.
+   C’est le premier levier de longueur des réponses. */
+.ec__dictee {
+  margin-top: .6rem;
+  font-size: .82rem; font-style: italic;
+  color: var(--dimmer);
+  display: flex; align-items: center; gap: .45rem;
+}
+.ec__dictee svg { width: 13px; height: 18px; flex: none; }
+
+/* ==========================================================================
+   Les choix par tap
+   Assez grands pour le pouce, jamais des cases à cocher de bureau.
+   ========================================================================== */
+.choix { display: flex; flex-wrap: wrap; gap: .6rem; margin-top: clamp(1.4rem, 5vw, 2rem); }
+.choix__opt {
+  background: transparent;
+  border: 2px solid var(--line-soft);
+  border-radius: 999px;
+  padding: .7rem 1.15rem;
+  min-height: 48px;
+  cursor: pointer;
+  transition: background .18s, border-color .18s, transform .18s var(--ease);
+}
+.choix__opt:hover { border-color: var(--line); }
+.choix__opt[aria-pressed="true"],
+.choix__opt[aria-checked="true"] {
+  background: var(--white); color: var(--c-deep);
+  border-color: var(--white); font-weight: 600;
+}
+.choix__opt:active { transform: scale(.97); }
+
+/* Le compteur des mots : « 2 sur 3 ». Il évite d’avoir à recompter. */
+.choix__jauge {
+  margin-top: 1rem; font-size: .82rem; color: var(--dimmer);
+  font-variant-numeric: tabular-nums;
+}
+.choix__jauge.est-plein { color: var(--white); font-weight: 600; }
+
+/* Les familles de mots. Le titre de famille sert de repère visuel, il n’est
+   pas cliquable et ne veut rien dire pour la fiche. */
+.famille { margin-top: 1.3rem; }
+.famille__nom {
+  font-size: .68rem; letter-spacing: .16em; text-transform: uppercase;
+  color: var(--dimmer); margin-bottom: .55rem;
+}
+.famille .choix { margin-top: 0; }
+
+/* ==========================================================================
+   La porte de sortie
+   Une liste fermée n’est jamais un piège : on peut toujours écrire le sien.
+   ========================================================================== */
+.sortie { margin-top: 1.6rem; padding-top: 1.2rem; border-top: 1px solid var(--line-soft); }
+.sortie__label { font-size: .88rem; color: var(--dimmer); margin-bottom: .5rem; }
+.sortie__champ {
+  width: 100%;
+  background: transparent;
+  border: 0; border-bottom: 2px solid var(--line-soft);
+  color: var(--white);
+  font-family: inherit; font-size: 1rem;
+  padding: .45rem 0;
+  border-radius: 0;
+  -webkit-appearance: none; appearance: none;
+}
+.sortie__champ::placeholder { color: rgba(255,255,255,.3); }
+.sortie__champ:focus { outline: none; border-bottom-color: var(--white); }
+
+/* ==========================================================================
+   Les duels
+   Huit paires, un geste par paire. Le rythme est ce qui compte : l’écran
+   ne bouge pas, on descend la liste au pouce.
+   ========================================================================== */
+.duels { margin-top: clamp(1.4rem, 5vw, 2rem); display: grid; gap: .55rem; }
+.duel { display: grid; grid-template-columns: 1fr 1fr; gap: .5rem; }
+.duel__opt {
+  background: transparent;
+  border: 2px solid var(--line-soft);
+  border-radius: 999px;
+  padding: .65rem .8rem;
+  min-height: 46px;
+  cursor: pointer;
+  transition: background .18s, border-color .18s;
+}
+.duel__opt[aria-pressed="true"] {
+  background: var(--white); color: var(--c-deep);
+  border-color: var(--white); font-weight: 600;
+}
+
+/* ==========================================================================
+   Le curseur structuré / spontané
+   ========================================================================== */
+.curseur { margin-top: clamp(1.6rem, 5vw, 2.2rem); }
+.curseur__bornes {
+  display: flex; justify-content: space-between;
+  font-size: .82rem; letter-spacing: .1em; text-transform: uppercase;
+  color: var(--dimmer); margin-bottom: .7rem;
+}
+
+/* ==========================================================================
+   Le classement
+   Glisser-déposer à la souris, flèches au doigt : le glissé seul exclurait
+   une partie des gens et ne se rattrape pas au clavier.
+   ========================================================================== */
+.rang { margin-top: clamp(1.4rem, 5vw, 2rem); display: grid; gap: .5rem; }
+.rang__item {
+  display: grid; grid-template-columns: auto 1fr auto auto;
+  align-items: center; gap: .8rem;
+  background: rgba(255,255,255,.07);
+  border: 2px solid var(--line-soft);
+  border-radius: var(--radius);
+  padding: .8rem 1rem;
+  cursor: grab;
+}
+.rang__item.est-pris { opacity: .4; }
+.rang__item.est-cible { border-color: var(--white); }
+.rang__num {
+  font-family: Anton, Inter, sans-serif; font-size: 1.5rem; line-height: 1;
+  color: rgba(255,255,255,.42);
+  font-variant-numeric: tabular-nums; min-width: 1.2ch;
+}
+.rang__fleche {
+  background: transparent; border: 0; cursor: pointer;
+  padding: .35rem .5rem; line-height: 1;
+  color: var(--dimmer); font-size: 1.1rem;
+  transition: color .18s;
+}
+.rang__fleche:hover:not(:disabled) { color: var(--white); }
+.rang__fleche:disabled { opacity: .22; cursor: default; }
+
+/* ==========================================================================
+   Les langues
+   ========================================================================== */
+.langues { margin-top: clamp(1.4rem, 5vw, 2rem); display: grid; gap: .5rem; }
+.langue {
+  display: grid; grid-template-columns: 1fr auto; align-items: center; gap: .7rem;
+  border-bottom: 1px solid var(--line-soft); padding-bottom: .5rem;
+}
+.langue__niveau {
+  background: rgba(255,255,255,.10);
+  border: 1px solid var(--line-soft);
+  border-radius: 999px;
+  color: var(--white);
+  font: inherit; font-size: .85rem;
+  padding: .4rem .7rem;
+}
+.langue__niveau option { color: #14201C; }
+.langue__niveau[hidden] { display: none; }
+
+/* ==========================================================================
+   Les pays
+   Deux cent douze cases ne se parcourent pas au pouce : on tape trois
+   lettres, la liste se réduit. Les pays cochés remontent en haut, sinon on
+   perd de vue ce qu’on a déjà mis.
+   ========================================================================== */
+.pays { margin-top: clamp(1.4rem, 5vw, 2rem); }
+.pays__cherche {
+  width: 100%;
+  background: rgba(255,255,255,.08);
+  border: 2px solid var(--line-soft);
+  border-radius: 999px;
+  color: var(--white);
+  font: inherit; font-size: 1rem;
+  padding: .7rem 1.1rem;
+  -webkit-appearance: none; appearance: none;
+}
+.pays__cherche::placeholder { color: rgba(255,255,255,.32); }
+.pays__cherche:focus { outline: none; border-color: var(--white); }
+
+.pays__choisis { display: flex; flex-wrap: wrap; gap: .45rem; margin-top: .9rem; }
+.pays__choisis:empty { display: none; }
+
+.pays__liste {
+  margin-top: .9rem;
+  max-height: 45vh; overflow-y: auto;
+  border: 1px solid var(--line-soft); border-radius: var(--radius);
+  padding: .4rem;
+  overscroll-behavior: contain;
+}
+.pays__opt {
+  display: block; width: 100%; text-align: left;
+  background: transparent; border: 0; border-radius: 10px;
+  padding: .6rem .8rem; min-height: 44px; cursor: pointer;
+  transition: background .15s;
+}
+.pays__opt:hover { background: rgba(255,255,255,.09); }
+.pays__opt[aria-pressed="true"] { background: var(--white); color: var(--c-deep); font-weight: 600; }
+.pays__vide { padding: .9rem .8rem; font-size: .9rem; color: var(--dimmer); }
+
+/* ==========================================================================
+   Le dépôt du CV
+   ========================================================================== */
+.depot {
+  margin-top: clamp(1.4rem, 5vw, 2rem);
+  border: 2px dashed var(--line-soft);
+  border-radius: var(--radius);
+  padding: clamp(1.4rem, 6vw, 2.2rem);
+  text-align: center;
+  cursor: pointer;
+  transition: border-color .2s, background .2s;
+}
+.depot:hover, .depot.est-survole { border-color: var(--white); background: rgba(255,255,255,.06); }
+.depot input[type="file"] { position: absolute; width: 1px; height: 1px; opacity: 0; }
+.depot__titre { font-weight: 600; font-size: 1.05rem; }
+.depot__note { margin-top: .45rem; font-size: .85rem; color: var(--dimmer); }
+.depot.est-rempli { border-style: solid; border-color: var(--white); background: rgba(255,255,255,.09); }
+
+/* ==========================================================================
+   La navigation
+   « Continuer » est plein, « je passe » est un simple mot : la hiérarchie
+   dit qu’on préfère une réponse, sans jamais culpabiliser celui qui saute.
+   ========================================================================== */
+.ec__nav {
+  margin-top: clamp(1.8rem, 6vw, 2.6rem);
+  display: flex; align-items: center; gap: 1.4rem; flex-wrap: wrap;
+}
+.ec__passe {
+  background: transparent; border: 0; cursor: pointer;
+  color: var(--dimmer); font-size: .92rem;
+  text-decoration: underline; text-underline-offset: 4px;
+  padding: .6rem 0; min-height: 44px;
+  transition: color .2s;
+}
+.ec__passe:hover { color: var(--white); }
+
+/* Le message d’erreur d’un champ obligatoire. */
+.ec__erreur {
+  margin-top: .9rem; font-size: .9rem; font-weight: 600;
+  color: #FFD9CE;
+}
+.ec__erreur:empty { display: none; }
+
+/* ==========================================================================
+   Les écrans de texte — le seuil, le pacte, la validation
+   ========================================================================== */
+.mot { max-width: 34ch; }
+.mot__titre {
+  font-family: Anton, Inter, sans-serif; font-weight: 400;
+  text-transform: uppercase; letter-spacing: .04em; line-height: 1;
+  font-size: clamp(2.2rem, 10vw, 3.6rem);
+}
+.mot__texte { margin-top: 1.3rem; font-size: 1.1rem; color: var(--dim); }
+.mot__texte + .mot__texte { margin-top: 1rem; }
+.mot__fort { font-weight: 700; color: var(--white); font-size: 1.2rem; }
+.mot__aparte { font-style: italic; color: var(--dimmer); font-size: 1rem; }
+.mot__nav { margin-top: clamp(2rem, 7vw, 3rem); }
+
+/* La référence. Elle s’affiche à la validation et se retrouve dans le mail :
+   c’est elle qui rattache les photos aux réponses. */
+.ref {
+  margin-top: 1.6rem;
+  border: 2px solid var(--line-soft); border-radius: var(--radius);
+  padding: 1rem 1.2rem;
+  display: inline-block;
+}
+.ref__label { font-size: .72rem; letter-spacing: .16em; text-transform: uppercase; color: var(--dimmer); }
+.ref__code {
+  display: block; margin-top: .3rem;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 1.4rem; font-weight: 600; letter-spacing: .06em;
+}
+
+/* L’envoi en cours, et l’échec. Rien n’est jamais perdu : en cas d’échec les
+   réponses restent sur le téléphone et le bouton se represse. */
+.envoi { margin-top: 1.4rem; font-size: .95rem; color: var(--dim); }
+.envoi--rate { color: #FFD9CE; font-weight: 600; }
+
+/* ==========================================================================
+   Écran large
+   Le formulaire ne s’élargit pas : une question par écran se lit dans une
+   colonne, pas sur toute la largeur d’un portable.
+   ========================================================================== */
+@media (min-width: 720px) {
+  .ec__champ { font-size: 1.12rem; }
+  .duel { grid-template-columns: 1fr 1fr; max-width: 30rem; }
+}
+
+/* ==========================================================================
+   Mouvement réduit
+   ========================================================================== */
+@media (prefers-reduced-motion: reduce) {
+  .js .ec.est-actif { animation: none; }
+  .fm__jauge { transition: none; }
+  .choix__opt, .duel__opt, .pays__opt { transition: none; }
+}
+
+/* ==========================================================================
+   La page de dépôt
+   --------------------------------------------------------------------------
+   Ici, pas d’écrans successifs : tout tient sur une page qu’on descend. Le
+   dépôt de fichiers est une corvée, pas un parcours — mieux vaut la voir en
+   entier et savoir quand elle s’arrête.
+   ========================================================================== */
+.cases { margin-top: clamp(2.4rem, 8vw, 3.4rem); display: grid; gap: clamp(2rem, 7vw, 3rem); }
+
+.case { position: relative; }
+
+/* La lettre, en typographie de titre et très effacée : elle donne le rythme
+   du bloc, comme les chiffres de « Les choses claires ». */
+.case__lettre {
+  font-family: Anton, Inter, sans-serif; font-weight: 400;
+  font-size: clamp(2.2rem, 9vw, 3.2rem); line-height: .8;
+  color: rgba(255, 255, 255, .18);
+  margin-bottom: .5rem;
+}
+.case__titre { font-size: 1.25rem; font-weight: 700; }
+.case__note { margin-top: .35rem; font-size: .9rem; color: var(--dimmer); }
+.case .depot { margin-top: 1rem; }
+
+/* ---------- les vignettes ----------
+   On voit ce qu’on a déposé, et son poids une fois allégé : c’est ce qui
+   rend la compression crédible plutôt que magique. */
+.vignettes { display: flex; flex-wrap: wrap; gap: .7rem; margin-top: .9rem; }
+.vignettes:empty { display: none; }
+
+.vignette {
+  position: relative;
+  width: 92px;
+  border-radius: 12px;
+  overflow: hidden;
+  background: rgba(255,255,255,.08);
+  border: 1px solid var(--line-soft);
+}
+.vignette img { width: 92px; height: 92px; object-fit: cover; display: block; }
+
+/* Un PDF n’a pas d’aperçu : il porte son nom, tronqué proprement. */
+.vignette__doc {
+  height: 92px;
+  display: flex; align-items: center; justify-content: center;
+  padding: .5rem; text-align: center;
+  font-size: .68rem; color: var(--dim);
+  overflow: hidden; overflow-wrap: anywhere;
+}
+.vignette__poids {
+  display: block;
+  padding: .3rem .45rem;
+  font-size: .66rem; color: var(--dimmer);
+  font-variant-numeric: tabular-nums;
+  border-top: 1px solid var(--line-soft);
+}
+.vignette__retirer {
+  position: absolute; top: 4px; right: 4px;
+  width: 26px; height: 26px; border-radius: 50%;
+  background: rgba(0,0,0,.55); border: 0; cursor: pointer;
+  color: var(--white); font-size: .9rem; line-height: 1;
+  display: flex; align-items: center; justify-content: center;
+}
+.vignette__retirer:hover { background: rgba(0,0,0,.8); }
+
+/* La vignette encore en cours de compression. */
+.vignette.est-en-cours { opacity: .5; }
+
+/* Le poids total. Il ne s’affiche que quand il commence à compter : afficher
+   « 0,2 Mo » à la première photo n’apprendrait rien à personne. */
+.envoi--poids { font-size: .85rem; color: var(--dimmer); }

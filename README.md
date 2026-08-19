@@ -1,92 +1,104 @@
 # MyLayer
 
-Le site public de commande. Correspond aux sections 0 à 4 du document maître.
+Page publique de commande. Suit le **document de correction v2**, qui remplace
+les sections 3 et 4 du document maître.
 
 ```
 mylayer/
-├── index.html              → la page MyLayer (sections 4.1 à 4.8)
+├── index.html          → la page (carte du monde incluse en dur, ~88 Ko)
 ├── assets/
-│   ├── css/style.css       → identité « Ardoise » (§3)
-│   └── js/main.js          → apparitions au scroll + compteurs
-├── formulaire/             → partie 1 du formulaire  (§5)   — à construire
-├── fichiers/               → partie 2, dépôt de fichiers (§5.4) — à construire
-└── <prenom>/               → une fiche client par dossier (§7) — à venir
+│   ├── css/style.css   → identité vert sapin, Anton + Inter
+│   └── js/main.js      → scroll, compteurs, carte, téléphone, couleur, carte de visite
+├── formulaire/         → §5 du document maître — à construire
+└── <prenom>/           → une fiche client par dossier — à venir
 ```
 
-Site statique, aucune dépendance, aucun build. On ouvre `index.html`, ça marche.
-Déploiement Netlify : dossier `mylayer/` à la racine du dépôt, pas de commande de
-build, répertoire de publication = la racine.
+Statique, sans dépendance ni build. Déploiement Netlify : publier ce dossier.
 
 ---
 
-## Ce qui reste à brancher
+## L’identité
 
-**1. Le bouton « Commencer » pointe vers `formulaire/`, qui n’existe pas encore.**
-Trois occurrences dans `index.html` (accroche, prix, appel final). Elles renverront
-un 404 tant que la partie 5 n’est pas construite.
+Même famille que `profiladrienredolat.netlify.app`, valeurs reprises de son CSS :
+Anton en capitales géantes, Inter en corps, fond en couleur pleine avec
+`radial-gradient(120% 80% at 70% 0%)`, traits blancs, apparitions en
+`translateY(28px)` sur `cubic-bezier(.2,.65,.3,1)`.
 
-**2. Les visuels de cartes de visite sont des placeholders.**
-Section « Ce que ça coûte », bloc `.cartes-visu`. Format déjà au bon ratio
-(89 × 50 mm). Pour les remplacer :
+**Le vert sapin remplace le cobalt** pour ne pas confondre la marque et son
+créateur — même intensité, autre bout de la roue chromatique.
 
-- exporter les cartes depuis Canva en PNG ou JPG,
-- les déposer dans `assets/img/`,
-- dans chaque `<figure>`, remplacer
-  `<div class="cv-frame" role="img" aria-label="…"></div>`
-  par `<img class="cv-frame" src="assets/img/carte-recto.png" alt="…">`,
-- retirer la classe `est-en-attente` sur `.cartes-visu` (elle affiche la mention
-  « Visuel à venir »).
+| Rôle | Valeur |
+|---|---|
+| Dominante | `#0F5C46` |
+| Profondeur | `#0A4536` |
+| Accent haut de page | `#176E54` |
+| Fond clair alterné | `#F4F1EA` |
+| Encre sur fond clair | `#14201C` |
 
-Tant que les visuels ne sont pas prêts, il vaut mieux masquer tout le bloc
-`.cartes-visu` en production plutôt que de montrer des cadres vides.
-
-**3. Les liens « Voir un exemple » et « Voir une fiche en entier » ne sont pas là.**
-Prévus par §4.1 et §4.4, volontairement omis tant qu’aucune fiche n’est en ligne.
-À rajouter dès que `mylayer.netlify.app/adrien` existe.
+Les couleurs sont déclarées en `@property`, ce qui les rend **animables** :
+c’est ce qui permet à la page de se repeindre quand le visiteur choisit sa
+couleur. Navigateur trop ancien : la couleur change d’un coup, sans transition.
 
 ---
 
-## Le contenu des extraits (§4.4)
+## Les moments « whow » en place
 
-Trois extraits, dans trois couleurs, **sans aucun nom affiché** — §4 interdit de
-faire apparaître le nom d’Adrien, et faire signer trois extraits par la même
-personne contredirait « trois fiches différentes ».
+| Moment | Où |
+|---|---|
+| Accroche pleine couleur, CV en lettres creuses / fiche pleine | §1 |
+| Fiche qui défile dans un téléphone au scroll de la page | Exemple Léa |
+| Carte du monde qui se remplit pays par pays | Exemple Sami |
+| Compteurs qui montent | Exemple Sami |
+| Timeline qui se dessine | Exemple Léa |
+| **La couleur choisie repeint toute la page** | §5 |
+| Carte de visite qui se retourne | §6 |
 
-| Extrait | Couleur | Source |
-|---|---|---|
-| Les chiffres | cobalt `#3B4DD4` | **Réel** — repris du profil d’Adrien (16 pays, 400 personnes en banquet, 4 voyages solo, 4 langues) |
-| Le parcours | terre `#B85A38` | **Inventé** — profil crédible, à remplacer par du vrai dès le premier client |
-| En trois mots | forêt `#2F6B54` | **Inventé** — montre l’écart entre Q7 et Q8 du formulaire, ce qui est le plus parlant |
-
-Le dernier item de la timeline est volontairement estompé : c’est un extrait, pas
-une fiche. Voir la règle absolue de §4.4 — ne jamais montrer une fiche entière ici.
-
----
-
-## Décisions techniques
-
-**Rien n’est jamais masqué durablement.** La classe `js` est posée en ligne dans
-`<head>`, et c’est elle seule qui active `opacity: 0` sur les blocs à révéler.
-Sans JavaScript, la page s’affiche entière. Si le script plante, `toutAfficher()`
-prend le relais. Même chose avec `prefers-reduced-motion`.
-
-**Les chiffres sont écrits en dur dans le HTML** (`16`, `400`…), pas à `0`.
-Le compteur les remet à zéro juste avant d’animer. Sans JS, on lit les vraies
-valeurs au lieu de quatre zéros.
-
-**Une seule largeur de page sur desktop** (900 px) : tout s’aligne sur le même
-bord gauche, du logo au pied de page. La longueur de lecture est bridée bloc par
-bloc en `em`, jamais par le conteneur.
-
-**Une animation par bloc** (§7.5) : les chiffres montent, la timeline se dessine,
-les mots apparaissent en cascade. Jamais deux effets sur le même bloc.
+Une animation majeure par section, jamais deux.
 
 ---
 
-## Lancer en local
+## Ce qui reste à faire
+
+**1. Les photos.** Tous les emplacements sont des cadres au trait blanc portant
+leur légende (`data-file`). Pour poser une image : remplacer
+`<div class="frame frame--empty" data-file="…">` par
+`<img class="frame" src="assets/img/…" alt="…">`.
+
+**2. Les visuels de cartes de visite.** La carte 3D a le bon format (89 × 50 mm)
+mais ses deux faces sont vides. Remplacer le contenu de `.carte-face` par des
+`<img>`, puis retirer la classe `est-en-attente` sur `.cartes`.
+
+**3. Le formulaire.** « Continuer » et « reprendre » pointent vers `formulaire/`,
+qui n’existe pas encore → 404. Les trois premières questions (prénom, âge,
+couleur) vivent déjà dans la page et sont gardées en `localStorage` sous la clé
+`mylayer.debut` ; le formulaire devra les relire pour ne pas les redemander.
+
+**4. Les fiches d’exemple sont inventées.** Léa et Sami n’existent pas. À
+remplacer par de vrais clients dès les premiers. Aucun nom d’Adrien n’apparaît
+nulle part, conformément au document maître.
+
+---
+
+## Attribution
+
+La carte du monde vient du profil d’Adrien : *Simple World Map*, Al MacDonald /
+Fritz Lekschas, **CC BY-SA 3.0**. Identifiants ISO 3166-1. Le crédit doit
+figurer quelque part si la page est diffusée largement.
+
+Hong Kong est fondu dans la Chine sur cette carte : les 16 pays allumés sont
+choisis parmi ceux qui ont réellement un tracé, pour que le compteur et la carte
+disent la même chose.
+
+---
+
+## Vérifier en local
 
 ```
 npx serve . -p 4711
 ```
 
-Ou, depuis Claude Code, la configuration `mylayer` de `.claude/launch.json`.
+**Attention à la prévisualisation intégrée :** si l’onglet est en arrière-plan,
+`document.visibilityState` vaut `hidden`, les transitions CSS ne progressent pas
+et `requestAnimationFrame` ne se déclenche jamais. La page paraît alors vide et
+les captures sortent blanches, alors que tout va bien. Toujours juger dans un
+onglet au premier plan.

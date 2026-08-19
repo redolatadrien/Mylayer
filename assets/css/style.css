@@ -100,10 +100,8 @@ code {
 .titre,
 .hero__title,
 .promesse__titre,
-.f-name,
-.etape__num,
-.offre__montant,
-.f-stats b,
+.dm__mot,
+.impression__titre,
 .logo-word {
   font-family: Anton, Inter, sans-serif;
   font-weight: 400;
@@ -123,6 +121,25 @@ code {
 .band--light .surtitre { color: var(--ink-3); }
 
 .titre { font-size: clamp(2.1rem, 9vw, 3.6rem); }
+
+/* ==========================================================================
+   L’appel à commencer
+   Une seule occurrence : à la fin de l’offre des cartes, loin du formulaire.
+   Plus bas, les questions sont juste sous « Les choses claires » — là, c’est
+   la flèche de l’accroche qui invite à descendre, pas un bouton.
+   Il reprend la forme des pastilles de la page : plein, très arrondi.
+   ========================================================================== */
+.cta {
+  display: inline-flex; align-items: center; justify-content: center;
+  min-height: 52px;                      /* confortable au doigt */
+  padding: .75rem 2.4rem;
+  border-radius: 999px;
+  font-family: Anton, sans-serif; text-transform: uppercase;
+  font-size: 1.2rem; letter-spacing: .06em;
+  background: var(--c); color: var(--cream);
+  transition: transform .2s var(--ease), opacity .2s;
+}
+.cta:hover { transform: translateY(-2px); opacity: .92; }
 
 /* ==========================================================================
    Apparitions au scroll  (même courbe que la page de référence)
@@ -256,17 +273,6 @@ code {
 }
 @keyframes qr-pose { from { opacity: 0; } to { opacity: 1; } }
 
-/* ---------- la phrase qui explique le produit ---------- */
-.explication {
-  padding: 0 0 clamp(2.5rem, 8vw, 4rem);
-}
-.explication p {
-  font-size: 1rem;
-  line-height: 1.55;
-  max-width: 46ch;
-  color: var(--dimmer);
-}
-
 /* L’invitation à descendre appartient maintenant au module de droite :
    elle suit le QR au lieu de flotter au milieu du bas de l’écran. */
 .scroll-hint {
@@ -287,7 +293,10 @@ code {
   background: var(--cream);
   color: var(--ink);
 }
-.band--tight { padding-block: clamp(2.2rem, 7vw, 3.5rem); }
+/* Deux bandes claires qui se suivent se fondraient l’une dans l’autre : un
+   filet, dans la couleur de séparation déjà employée ailleurs, redonne la
+   coupure que l’alternance des fonds assurait. */
+.band--light + .band--light { border-top: 1px solid rgba(20, 32, 28, .12); }
 
 /* ==========================================================================
    2 — CE QUE C’EST
@@ -397,16 +406,11 @@ code {
 .fa-lang i { color: rgba(255, 255, 255, .45); }
 .fa-lang span { color: rgba(255, 255, 255, .55); }
 
-/* ---------- haut de fiche ---------- */
-.fa-hero { margin-top: 6px; }
-.fa-portrait {
-  width: 150px; margin: 0 auto 16px;
-  border: 2px solid rgba(255, 255, 255, .85);
-  border-radius: 14px;
-  overflow: hidden;
-  box-shadow: 0 14px 30px rgba(0, 0, 0, .22);
-}
-.fa-portrait img { width: 100%; height: auto; aspect-ratio: 9 / 16; object-fit: cover; }
+/* ---------- haut de fiche ----------
+   La fiche s’ouvre directement sur le nom. L’écart reprend celui qui sépare
+   les blocs plus bas, pour que le nom se pose au lieu de coller à la bascule
+   FR/EN épinglée juste au-dessus. */
+.fa-hero { margin-top: 34px; }
 
 .fa-hi { font-size: 11px; font-weight: 600; opacity: .9; }
 .fa-nom {
@@ -546,190 +550,145 @@ code {
 }
 .fa-merci { margin-top: 20px; font-size: 9.5px; color: rgba(255, 255, 255, .60); }
 
-.apres-demo {
-  font-size: clamp(1.15rem, 4.6vw, 1.5rem);
-  line-height: 1.35;
-  max-width: 24ch;
-}
-.apres-demo b { font-weight: 700; }
-
 /* ==========================================================================
-   2 — LES EXEMPLES
+   3 — COMMENT ÇA SE PASSE
+   Trois moments dans un même panneau. Le texte nomme, l’animation explique.
+   --------------------------------------------------------------------------
+   Règle de construction, la même que pour « reveal » : l’état écrit dans la
+   feuille est l’état FINAL. C’est la classe « js » qui creuse l’état de
+   départ, et l’animation qui le comble. Sans JavaScript, sans observateur,
+   ou en mouvement réduit, le panneau est simplement là, fini.
    ========================================================================== */
-.demo {
-  padding-block: clamp(3rem, 11vw, 6rem);
-  position: relative;
-  /* chaque fiche impose sa propre couleur : c’est la démonstration */
-  background: var(--c);
-  background-image: radial-gradient(120% 80% at 70% 0%,
-                    var(--c-bright) 0%, var(--c) 40%, var(--c-deep) 100%);
-}
-.demo--lea  { --c: #B8432A; --c-deep: #8F3220; --c-bright: #D2542F; }
-.demo--sami { --c: #2A3FB8; --c-deep: #1B2A80; --c-bright: #3B52D8; }
-
-.demo__label {
-  font-size: .78rem; font-weight: 700;
-  letter-spacing: .18em; text-transform: uppercase;
-  color: var(--dimmer);
-}
-.demo__grid { display: grid; gap: 1.6rem; }
-.demo__mot {
-  font-size: 1.05rem;
-  color: var(--dim);
-  max-width: 28ch;
-  margin-top: .6rem;
+/* Le terracotta est celui de la page — la pastille du formulaire porte déjà
+   ce trio. La section est la seule couleur chaude du parcours : elle sépare
+   les deux bandes claires qui l’encadraient. */
+.deroule {
+  --terracotta: #B8432A;
+  background: var(--terracotta);
+  color: var(--cream);
 }
 
-/* ---------- le téléphone ---------- */
-.phone {
-  width: min(300px, 76vw);
-  margin-inline: auto;
-  flex: none;
-  border: 2px solid var(--line);
-  border-radius: 34px;
-  padding: 9px;
-  background: rgba(0,0,0,.16);
-  box-shadow: 0 24px 60px rgba(0,0,0,.28);
-}
-.phone__screen {
-  position: relative;
-  aspect-ratio: 9 / 17;
-  border-radius: 26px;
-  overflow: hidden;
-  background: var(--c-deep);
-}
-.phone__screen::before {          /* encoche */
-  content: "";
-  position: absolute; top: 8px; left: 50%; transform: translateX(-50%);
-  width: 78px; height: 5px; border-radius: 99px;
-  background: rgba(255,255,255,.35); z-index: 3;
-}
-.phone__scroll {
-  padding: 30px 20px 24px;
-  will-change: transform;
+.deroule__frame {
+  margin-top: clamp(1.8rem, 5vw, 2.8rem);
+  display: grid;
+  padding: clamp(1.4rem, 5vw, 2.8rem);
+  background: rgba(255, 255, 255, .07);  /* juste assez pour se détacher */
+  border: 1px solid rgba(255, 255, 255, .16);
+  border-radius: calc(var(--radius) + 8px);
 }
 
-/* ---------- contenu d’une fiche (dans le téléphone et en grand) ---------- */
-.f-hi { font-size: .95rem; font-weight: 600; color: var(--dim); }
-.f-name {
-  font-size: clamp(2.6rem, 15vw, 3.4rem);
-  margin: .1rem 0 .9rem;
+/* ---------- un moment ---------- */
+.dm {
+  display: flex; flex-direction: column; align-items: center;
+  text-align: center;
 }
-.f-tag { font-size: .95rem; color: var(--dim); margin-top: .85rem; }
+/* Empilés au téléphone : le filet est horizontal. */
+.dm + .dm {
+  border-top: 1px solid var(--line-soft);
+  margin-top: clamp(1.6rem, 6vw, 2.2rem);
+  padding-top: clamp(1.6rem, 6vw, 2.2rem);
+}
 
-.f-bloc { margin-top: 2.1rem; }
-.f-bloc-title {
-  font-size: .72rem; font-weight: 700;
-  letter-spacing: .16em; text-transform: uppercase;
-  color: var(--dimmer); margin-bottom: .7rem;
-}
-.f-mots { display: flex; flex-wrap: wrap; gap: .45rem; }
-.f-mots li {
-  font-family: Anton, sans-serif; text-transform: uppercase;
-  font-size: .95rem; letter-spacing: .04em;
-  padding: .35rem .8rem;
-  border: 1.5px solid var(--line); border-radius: 999px;
-}
-.f-note { margin-top: .7rem; font-size: .8rem; color: var(--dimmer); }
-
-/* timeline miniature */
-.f-tl { position: relative; padding-left: 1.5rem; }
-.f-tl::before {
-  content: ""; position: absolute; left: 4px; top: .5rem; bottom: .5rem;
-  width: 2px; background: var(--line-soft);
-  transform: scaleY(0); transform-origin: top;
-  transition: transform 1.2s var(--ease);
-}
-.is-in .f-tl::before, .f-tl.is-in::before { transform: scaleY(1); }
-.f-tl li { position: relative; padding-bottom: 1.1rem; }
-.f-tl li:last-child { padding-bottom: 0; }
-.f-tl li::before {
-  content: ""; position: absolute; left: -1.5rem; top: .45rem;
-  width: 10px; height: 10px; border-radius: 50%;
-  background: var(--c); border: 2px solid var(--white);
-}
-.f-tl b { display: block; font-size: .7rem; letter-spacing: .1em; color: var(--dimmer); }
-.f-tl span { display: block; font-weight: 700; font-size: .95rem; line-height: 1.25; }
-.f-tl i { display: block; font-style: normal; font-size: .8rem; color: var(--dimmer); }
-
-/* cadre photo au trait blanc, en attente d’image */
-.frame {
-  position: relative;
-  border: 2px solid var(--line);
-  border-radius: var(--radius);
-  overflow: hidden;
-  background: rgba(255,255,255,.04);
-  aspect-ratio: 4 / 5;
-}
-.frame--empty::before {
-  content: ""; position: absolute; inset: 9px;
-  border: 1.5px dashed var(--line-soft);
-  border-radius: calc(var(--radius) - 6px);
-}
-.frame--empty::after {
-  content: attr(data-file);
-  position: absolute; inset: 0;
+/* La zone du geste. Hauteur commune aux trois : les mots se posent sur la
+   même ligne, quelle que soit la forme au-dessus. */
+.dm__vue {
   display: flex; align-items: center; justify-content: center;
-  text-align: center; padding: 1rem;
-  font-size: .7rem; letter-spacing: .04em; text-transform: uppercase;
-  color: var(--dimmer);
+  width: 100%; min-height: 152px;
+  margin-bottom: 1.25rem;
 }
 
-/* ---------- exemple B : plein écran ---------- */
-.f-hero--large { margin-top: 1.2rem; }
-.f-name--large { font-size: clamp(3.4rem, 19vw, 7rem); }
-.f-tag--large  { font-size: clamp(1.05rem, 4.4vw, 1.3rem); max-width: 30ch; }
-.f-bloc-title--large { margin-top: 3rem; font-size: .8rem; }
-.f-sub { font-size: 1.05rem; color: var(--dim); margin-bottom: 1.2rem; }
-
-/* ---------- carte du monde ---------- */
-.map {
-  border: 2px solid var(--line);
-  border-radius: var(--radius);
-  padding: 1rem;
-  background: rgba(0,0,0,.10);
-}
-.map svg { width: 100%; height: auto; display: block; }
-.map svg path {
-  fill: rgba(255,255,255,.05);
-  stroke: rgba(255,255,255,.16);
-  stroke-width: .4;
-  transition: fill .9s ease;
-}
-.map svg path.visited { fill: var(--white); stroke: var(--white); }
-
-/* ---------- chiffres ---------- */
-.f-stats {
-  display: grid; grid-template-columns: repeat(2, 1fr);
-  gap: 2.2rem 1.2rem;
-  margin-top: 2.6rem;
-}
-.f-stats b {
-  display: block;
-  font-size: clamp(2.8rem, 16vw, 4.4rem);
-  line-height: .9;
-  font-variant-numeric: tabular-nums;
-}
-.f-stats span {
-  display: block; margin-top: .25rem;
-  font-size: .82rem; text-transform: uppercase; letter-spacing: .07em;
+.dm__mot { font-size: 1.4rem; }
+.dm__note {
+  margin-top: .4rem;
+  font-size: .88rem;
   color: var(--dim);
+  max-width: 22ch;
+}
+/* Une information, pas une réclame : la même ligne, juste assumée. */
+.dm__note--gratuit { color: var(--white); font-weight: 700; }
+
+/* ---------- moment 1 : les mots se cochent ----------
+   La pastille du formulaire, dans le style des autres pastilles de la page.
+   Elle passe de contour vide à fond plein, d’un coup. */
+.dm-mots {
+  display: flex; flex-wrap: wrap; justify-content: center;
+  gap: .45rem;
+  max-width: 15.5rem;
+}
+.dm-mot {
+  font-family: Anton, sans-serif; text-transform: uppercase;
+  font-size: .88rem; letter-spacing: .04em;
+  padding: .32rem .8rem;
+  border: 1.5px solid var(--line);
+  border-radius: 999px;
+  color: var(--cream);
+}
+/* Cochée : le crème passe du contour au fond, et le mot se creuse. */
+.dm-mot--coche {
+  background: var(--cream);
+  border-color: var(--cream);
+  color: var(--terracotta);
+}
+.js .dm--1.is-in .dm-mot--coche {
+  animation: dm-coche .3s var(--ease) both;
+  animation-delay: var(--d, 0s);
+}
+@keyframes dm-coche {
+  0%   { background: transparent; border-color: var(--line);
+         color: var(--cream); transform: none; }
+  55%  { background: var(--cream); border-color: var(--cream);
+         color: var(--terracotta); transform: scale(1.07); }
+  100% { background: var(--cream); border-color: var(--cream);
+         color: var(--terracotta); transform: none; }
 }
 
-/* ==========================================================================
-   3 — COMMENT ÇA MARCHE
-   ========================================================================== */
-.etapes__list { display: grid; gap: 2.4rem; }
-.etape { border-top: 2px solid rgba(20,32,28,.14); padding-top: 1rem; }
-.etape__num {
-  display: block;
-  font-size: 2.4rem;
-  color: var(--c);
-  line-height: 1;
-  margin-bottom: .5rem;
+/* ---------- moment 2 : la fiche se compose ----------
+   La silhouette est au vert de marque : sur le terracotta de la section, sa
+   propre couleur la rendrait invisible. Dedans, des formes PLEINES en crème :
+   une barre de titre, une image, des lignes. Jamais un cadre vide, jamais un
+   pointillé — rien qui puisse se lire comme du contenu manquant. */
+.dm-fiche {
+  width: 94px; height: 146px;
+  padding: 11px;
+  border-radius: 15px;
+  background: var(--c);
+  display: flex; flex-direction: column; gap: 7px;
 }
-.etape__titre { font-size: 1.45rem; font-weight: 700; line-height: 1.15; }
-.etape__desc { margin-top: .3rem; color: var(--ink-2); }
+.dm-bloc { background: var(--cream); border-radius: 999px; }
+.dm-bloc--titre { height: 13px; width: 76%; border-radius: 5px; }
+.dm-bloc--image {
+  height: 40px; border-radius: 7px;
+  background: rgba(255, 255, 255, .55);
+}
+.dm-bloc--ligne { height: 5px; }
+.dm-bloc--court { width: 84%; }
+.dm-bloc--bref  { width: 58%; }
+
+.js .dm-bloc { opacity: 0; transform: translateY(7px); }
+.js .dm--2.is-in .dm-bloc {
+  animation: dm-pose .32s var(--ease) both;
+  animation-delay: var(--d, 0s);
+}
+@keyframes dm-pose {
+  from { opacity: 0; transform: translateY(7px); }
+  to   { opacity: 1; transform: none; }
+}
+
+/* ---------- moment 3 : le motif arrive ----------
+   C’est le motif de l’accroche, le même dessin et la même couleur, en petit.
+   Ici il n’a plus à se composer module par module : il arrive d’un bloc. */
+.deroule .qr-motif {
+  width: clamp(88px, 24vw, 108px);
+  color: var(--cream);
+}
+.deroule .qr-motif g { animation: none; }
+
+.js .deroule .qr-motif { opacity: 0; }
+.js .dm--3.is-in .qr-motif {
+  animation: dm-fondu .5s ease both;
+  animation-delay: .45s;
+}
+@keyframes dm-fondu { from { opacity: 0; } to { opacity: 1; } }
 
 /* ==========================================================================
    4 — TU RACONTES. JE CONÇOIS.
@@ -836,78 +795,259 @@ code {
 .bascule__note { margin-top: 1rem; font-size: .82rem; color: var(--dimmer); }
 
 /* ==========================================================================
-   6 — LES PRIX
+   5 — OÙ TU LE METS
+   Quatre objets dessinés : aucune image, aucun texte lisible, uniquement des
+   barres et des formes pleines. Ils sont posés comme sur une table — tailles
+   et inclinaisons différentes, léger chevauchement — et chacun porte le motif
+   là où il se trouverait vraiment.
+   Tout est en pixels : ce sont des objets de taille fixe, pas de la mise en
+   page. Le vw n’a aucun sens à l’intérieur d’un dessin de 130 px.
    ========================================================================== */
-.prix__grid { display: grid; gap: 1.4rem; }
-.offre {
-  border: 2px solid rgba(20,32,28,.16);
-  border-radius: var(--radius);
-  padding: 1.6rem 1.4rem 1.8rem;
+.ou__sous {
+  margin-top: 1.2rem;
+  font-size: 1.1rem;
+  line-height: 1.5;
+  max-width: 32ch;
+  color: var(--ink-2);
 }
-.offre--principale {
-  background: var(--c);
-  color: var(--white);
-  border-color: transparent;
-}
-.offre__tag {
-  font-size: .72rem; font-weight: 700;
-  letter-spacing: .16em; text-transform: uppercase;
-  color: var(--ink-3); margin-bottom: .5rem;
-}
-.offre__titre { font-size: 1.3rem; font-weight: 700; }
-.offre--principale .offre__titre { font-size: 1.5rem; }
-.offre__montant {
-  font-size: clamp(3rem, 15vw, 4.2rem);
-  margin-top: .4rem;
-}
-.offre__desc { margin-top: .6rem; color: var(--ink-2); }
-.offre--principale .offre__desc { color: var(--dim); }
-.offre__detail { margin-top: .7rem; font-size: .85rem; color: var(--ink-3); }
 
-/* ---------- carte de visite qui se retourne ---------- */
-.cartes { margin-top: 2.4rem; }
-.carte3d {
-  width: min(340px, 100%);
-  aspect-ratio: 89 / 50;               /* format réel */
-  perspective: 1200px;
-  cursor: pointer;
-  background: none; border: 0; padding: 0;
+/* ---------- la table ----------
+   Au téléphone : une colonne. Les objets gardent leur inclinaison.
+   Les dessins suivent le texte de près : pas de trou entre les deux. */
+.objets {
+  margin-top: clamp(1.4rem, 4vw, 2rem);
+  display: grid;
+  justify-items: center;
+  gap: clamp(2rem, 7vw, 2.8rem);
 }
-.carte3d__in {
-  position: relative; width: 100%; height: 100%;
-  transition: transform .8s var(--ease);
-  transform-style: preserve-3d;
+.objet { position: relative; }
+.objet__label {
+  margin-top: 1.4rem;
+  text-align: center;
+  font-size: .78rem;
+  font-weight: 700;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: var(--ink-3);
 }
-.carte3d.is-flipped .carte3d__in,
-.carte3d:hover .carte3d__in { transform: rotateY(180deg); }
 
-.carte-face {
-  position: absolute; inset: 0;
-  backface-visibility: hidden;
-  border-radius: 10px;
+/* Chaque objet a son inclinaison propre : c’est ce qui les fait lire comme
+   des choses posées plutôt que comme une grille. L’ombre est juste assez
+   marquée pour les décoller du crème.
+   --------------------------------------------------------------------------
+   Toutes les cotes d’un dessin sont des multiples de --u, son unité. Changer
+   --u agrandit l’objet entier — bordures, écarts, motif — sans toucher à ses
+   proportions. C’est le seul réglage de taille de cette section. */
+.dessin {
+  --u: 1px;
+  margin-inline: auto;
+  box-shadow: 0 calc(8 * var(--u)) calc(18 * var(--u)) rgba(20, 32, 28, .10);
+}
+.dessin--cv    { transform: rotate(-4deg); }
+.dessin--insta { transform: rotate(3.5deg); }
+.dessin--mail  { transform: rotate(-2.5deg); }
+.dessin--ordi  { transform: rotate(5deg); }
+
+/* La cascade. Le dernier objet finit d’arriver à 1,06 s. */
+.js .ou .objet:nth-child(2) { transition-delay: .12s; }
+.js .ou .objet:nth-child(3) { transition-delay: .24s; }
+.js .ou .objet:nth-child(4) { transition-delay: .36s; }
+
+/* Le motif, à sa place réelle sur chaque objet. Même dessin que l’accroche,
+   à l’encre. Il arrive avec son objet, il n’a pas à se composer tout seul. */
+.objets .qr-motif { color: var(--ink); }
+.objets .qr-motif g { animation: none; }
+.cv__qr        .qr-motif { width: calc(30 * var(--u)); }
+.insta__qr     .qr-motif { width: calc(22 * var(--u)); }
+.mail__qr      .qr-motif { width: calc(30 * var(--u)); }
+.ordi__sticker .qr-motif { width: calc(26 * var(--u)); }
+
+/* ---------- 1 — le CV ---------- */
+.dessin--cv {
+  width: calc(146 * var(--u));
+  aspect-ratio: 1 / 1.414;
+  background: var(--white);
+  border-radius: calc(3 * var(--u));
+  padding: calc(13 * var(--u)) calc(12 * var(--u));
+  display: flex; flex-direction: column;
+}
+.cv__nom {
+  height: calc(9 * var(--u)); width: 58%;
+  background: rgba(20, 32, 28, .55);
+  border-radius: calc(2 * var(--u));
+}
+.cv__sous {
+  height: calc(4 * var(--u)); width: 38%;
+  margin-top: calc(6 * var(--u));
+  background: rgba(20, 32, 28, .22);
+  border-radius: 999px;
+}
+.cv__texte { margin-top: calc(15 * var(--u)); display: grid; gap: calc(6 * var(--u)); }
+.cv__texte span {
+  height: calc(3 * var(--u)); border-radius: 999px;
+  background: rgba(20, 32, 28, .16);
+}
+.cv__texte span:last-child { width: 72%; }
+.cv__qr { margin-top: auto; align-self: flex-end; }
+
+/* ---------- 2 — la bio ---------- */
+.dessin--insta {
+  position: relative;
+  width: calc(134 * var(--u));
+  aspect-ratio: 9 / 16;
+  background: var(--ink);
+  border-radius: calc(18 * var(--u));
+  padding: calc(6 * var(--u));
+}
+.insta__barre {
+  position: absolute; top: calc(12 * var(--u)); left: 50%; transform: translateX(-50%);
+  width: calc(30 * var(--u)); height: calc(3 * var(--u)); border-radius: 999px;
+  background: rgba(255, 255, 255, .35);
+  z-index: 2;
+}
+.insta__ecran {
+  height: 100%;
+  background: var(--white);
+  border-radius: calc(13 * var(--u));
+  padding: calc(24 * var(--u)) calc(9 * var(--u)) calc(9 * var(--u));
+}
+.insta__tete { display: flex; align-items: center; gap: calc(6 * var(--u)); }
+.insta__avatar {
+  flex: none;
+  width: calc(22 * var(--u)); height: calc(22 * var(--u)); border-radius: 50%;
+  background: rgba(20, 32, 28, .22);
+}
+.insta__bio { flex: 1; display: grid; gap: calc(4 * var(--u)); }
+.insta__bio span {
+  height: calc(3 * var(--u)); border-radius: 999px;
+  background: rgba(20, 32, 28, .16);
+}
+.insta__bio span:last-child { width: 66%; }
+.insta__qr { flex: none; }
+
+/* ---------- 3 — la signature ---------- */
+.dessin--mail {
+  width: calc(214 * var(--u));
+  background: var(--white);
+  border-radius: calc(4 * var(--u));
+  padding: calc(13 * var(--u)) calc(14 * var(--u)) calc(15 * var(--u));
+}
+.mail__filet {
+  display: block;
+  height: calc(2 * var(--u)); width: 34%;
+  margin-bottom: calc(12 * var(--u));
+  background: rgba(20, 32, 28, .25);
+  border-radius: 999px;
+}
+.mail__corps { display: flex; align-items: center; gap: calc(12 * var(--u)); }
+.mail__qr { flex: none; }
+.mail__lignes { flex: 1; display: grid; gap: calc(6 * var(--u)); }
+.mail__lignes span {
+  height: calc(3 * var(--u)); border-radius: 999px;
+  background: rgba(20, 32, 28, .16);
+}
+.mail__lignes span:first-child {
+  height: calc(5 * var(--u)); width: 62%;
+  background: rgba(20, 32, 28, .42);
+}
+.mail__lignes span:last-child { width: 78%; }
+
+/* ---------- 4 — l’ordinateur ---------- */
+.dessin--ordi {
+  position: relative;
+  width: calc(196 * var(--u));
+  aspect-ratio: 4 / 2.9;
+  background: rgba(20, 32, 28, .13);
+  border-radius: calc(13 * var(--u));
   display: flex; align-items: center; justify-content: center;
-  font-size: .78rem; letter-spacing: .12em; text-transform: uppercase;
 }
-.carte-face--recto { background: var(--c); color: var(--white); }
-.carte-face--verso {
-  background: var(--cream); color: var(--ink-3);
-  border: 2px solid rgba(20,32,28,.16);
-  transform: rotateY(180deg);
+/* la charnière : c’est elle qui dit « capot fermé, vu de dessus » */
+.ordi__charniere {
+  position: absolute; top: calc(10 * var(--u)); left: 50%; transform: translateX(-50%);
+  width: 46%; height: calc(2 * var(--u)); border-radius: 999px;
+  background: rgba(20, 32, 28, .18);
 }
-.est-en-attente .carte-face { border: 2px dashed currentColor; }
-.est-en-attente .carte-face--recto { border-color: rgba(255,255,255,.5); }
-.cartes__note { margin-top: .8rem; font-size: .82rem; color: var(--ink-3); }
+/* le motif est collé dessus, un peu de travers : c’est un autocollant */
+.ordi__sticker {
+  background: var(--white);
+  border-radius: calc(5 * var(--u));
+  padding: calc(5 * var(--u));
+  transform: rotate(-7deg);
+  box-shadow: 0 calc(2 * var(--u)) calc(5 * var(--u)) rgba(20, 32, 28, .12);
+}
+
+/* ---------- les cartes imprimées ----------
+   Deux sujets se suivent dans la même section : les objets du quotidien,
+   puis les cartes. L’écart est large pour qu’on les lise comme deux idées
+   distinctes — c’est de l’espace, pas un filet. */
+.impression { margin-top: clamp(6rem, 16vw, 10rem); }
+.impression__titre { font-size: clamp(1.5rem, 6vw, 2.2rem); }
+.impression__sous { margin-top: .7rem; color: var(--ink-2); }
+.impression__liste {
+  margin-top: clamp(1.6rem, 5vw, 2.2rem);
+  display: grid; gap: 1rem;
+}
+/* Les visuels ont un fond gris intégré. Le cadre l’enferme pour qu’il se lise
+   comme faisant partie de l’image, et non comme une bavure sur le crème. */
+.impression__liste li {
+  border: 1px solid rgba(20, 32, 28, .12);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+.impression__liste img { width: 100%; height: auto; }
+
+/* Le prix. Les cartes sont une option, pas l’offre du site : la ligne reste
+   du texte courant, alignée à gauche comme le reste de la section. Aucun
+   filet, aucun encadré — seul le montant prend un peu de graisse. */
+.impression__prix {
+  margin-top: clamp(1.8rem, 5vw, 2.4rem);
+  max-width: 42ch;
+  color: var(--ink-2);
+}
+.impression__prix b { font-weight: 600; color: var(--ink); }
+.impression__action { margin-top: clamp(1.6rem, 5vw, 2.2rem); }
 
 /* ==========================================================================
-   7 — OÙ LE METTRE
+   6 — LES CHOSES CLAIRES
+   Le contraste fait tout le travail : après des titres énormes, un bloc
+   calme. Colonne étroite, texte à taille normale, aucune ligne mise en
+   avant, aucune animation en propre.
    ========================================================================== */
-.usages { padding-block: clamp(3.5rem, 12vw, 7rem); }
-.usages__list { display: flex; flex-wrap: wrap; gap: .6rem; }
-.usages__list li {
-  font-family: Anton, sans-serif; text-transform: uppercase;
-  font-size: clamp(.95rem, 4vw, 1.2rem); letter-spacing: .04em;
-  padding: .5rem 1.05rem;
-  border: 1.5px solid var(--line); border-radius: 999px;
+.choses {
+  padding-block: clamp(3.5rem, 12vw, 7rem);
+  /* Les questions qui suivent sont sur le même vert : ce filet redonne la
+     coupure que l’alternance des fonds assure partout ailleurs. */
+  border-bottom: 1px solid var(--line-soft);
+}
+.choses .wrap { max-width: 42rem; }
+
+/* Les articles. Le chiffre est en typographie de titre, très effacé : il
+   n’est pas là pour se lire, il est là pour donner le rythme et l’air de
+   contrat. Le texte, lui, reste à la taille du reste de la page. */
+.choses__liste { counter-reset: article; margin-top: 1rem; }
+.choses__liste li {
+  counter-increment: article;
+  display: grid;
+  grid-template-columns: auto 1fr;
+  column-gap: clamp(1rem, 3.5vw, 2rem);
+  align-items: center;
+  padding-block: clamp(.85rem, 2.65vw, 1.25rem);
+  color: var(--dim);
+}
+.choses__liste li::before {
+  content: counter(article);
+  font-family: Anton, Inter, sans-serif; font-weight: 400;
+  font-size: clamp(2.8rem, 11vw, 4.4rem);
+  line-height: .8;
+  letter-spacing: .5px;
+  color: rgba(244, 241, 234, .15);       /* le crème, presque effacé */
+  font-variant-numeric: tabular-nums;
+}
+/* La flèche est le même objet que dans l’accroche. Le conteneur ne sert qu’à
+   la centrer sans l’étirer sur toute la largeur. */
+.choses__action {
+  margin-top: clamp(2.2rem, 6vw, 3rem);
+  display: flex; justify-content: center;
 }
 
 /* ==========================================================================
@@ -927,6 +1067,13 @@ code {
   max-width: var(--maxw); margin-inline: auto;
 }
 .site-footer p { font-size: .82rem; font-style: italic; color: var(--dimmer); }
+
+/* ==========================================================================
+   Écrans moyens — les objets tiennent à deux de front
+   ========================================================================== */
+@media (min-width: 520px) {
+  .objets { grid-template-columns: repeat(2, 1fr); align-items: end; }
+}
 
 /* ==========================================================================
    Écrans larges
@@ -989,23 +1136,59 @@ code {
   }
   .voila__sous { font-size: 1.2rem; }
 
-  .etapes__list { grid-template-columns: repeat(3, 1fr); gap: 2rem; }
-
-  /* Le téléphone à droite, le propos à gauche. */
-  .demo__grid {
-    grid-template-columns: 1fr auto;
-    align-items: center;
-    gap: 4rem;
+  /* Les trois moments côte à côte dans la frame, séparés par des filets
+     verticaux : un seul écran, on ne scrolle pas d’un moment à l’autre. */
+  .deroule__frame { grid-template-columns: repeat(3, 1fr); }
+  .dm { padding-inline: clamp(1rem, 2.6vw, 2.2rem); }
+  .dm + .dm {
+    border-top: 0; margin-top: 0; padding-top: 0;
+    border-left: 1px solid var(--line-soft);
   }
-  .demo__mot { font-size: 1.35rem; }
-  .phone { width: 320px; margin-inline: 0; }
 
-  .f-stats { grid-template-columns: repeat(4, 1fr); }
+  /* La cascade de gauche à droite. Elle n’existe qu’ici : au téléphone, les
+     trois moments entrent dans l’écran l’un après l’autre, et c’est le
+     scroll lui-même qui fait la cascade. Dernier mouvement à 1,55 s. */
+  .js .deroule .dm--2 { transition-delay: .22s; }
+  .js .deroule .dm--3 { transition-delay: .44s; }
+  .js .dm--2.is-in .dm-bloc  { animation-delay: calc(var(--d, 0s) + .30s); }
+  .js .dm--3.is-in .qr-motif { animation-delay: 1.05s; }
 
-  .prix__grid { grid-template-columns: 1.15fr 1fr; align-items: start; }
+  .impression__liste { grid-template-columns: repeat(3, 1fr); gap: 1.2rem; }
 
   .q__label { font-size: 3.2rem; }
   .promesse__texte { font-size: 1.45rem; }
+}
+
+/* ==========================================================================
+   Les objets sur une seule ligne
+   Il faut 1000 px pour les tenir de front : en dessous, les quatre dessins
+   dépasseraient la colonne. Ils sortent alors de la mesure du texte et se
+   centrent sur toute la largeur de la section — c’est là qu’ils occupent
+   vraiment l’écran. --u les met à l’échelle du viewport, jusqu’à 1,4× la
+   taille de base.
+   ========================================================================== */
+@media (min-width: 1000px) {
+  .dessin { --u: clamp(1px, .105vw, 1.4px); }
+
+  .objets {
+    /* pleine largeur de section, sans casser la colonne du texte */
+    width: 100vw;
+    margin-inline: calc(50% - 50vw);
+    padding-inline: 1rem;
+
+    display: flex;
+    flex-wrap: nowrap;
+    align-items: flex-end;      /* tous posés sur le même bord bas */
+    justify-content: center;
+    gap: 0;
+  }
+  /* Les marges négatives font le chevauchement, le rang de superposition
+     suit l’ordre de lecture. */
+  .objet { padding-inline: .9rem; }
+  .objet--cv    { z-index: 1; }
+  .objet--insta { z-index: 3; margin-left: -1.4rem; }
+  .objet--mail  { z-index: 2; margin-left: -1.7rem; }
+  .objet--ordi  { z-index: 4; margin-left: -1.7rem; }
 }
 
 /* ==========================================================================
@@ -1015,8 +1198,12 @@ code {
   html { scroll-behavior: auto; }
   .reveal { opacity: 1 !important; transform: none !important; transition: none !important; }
   .scroll-hint__arrow { animation: none; }
-  .f-tl::before { transform: scaleY(1) !important; transition: none; }
-  .carte3d__in { transition: none; }
   .tel__voile { transition: none; }
   :root { transition: none; }
+  /* Le déroulé : les trois moments sont là, à l’état d’arrivée, sans un
+     seul mouvement. Les pastilles cochées le sont déjà. */
+  .js .dm-bloc, .js .deroule .qr-motif { opacity: 1 !important; transform: none !important; }
+  .dm-mot--coche, .dm-bloc, .deroule .qr-motif { animation: none !important; }
+  .cta { transition: none; }
+  .cta:hover { transform: none; }
 }

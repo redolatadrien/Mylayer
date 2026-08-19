@@ -2,11 +2,8 @@
    MyLayer — comportements de la page d’accueil
    --------------------------------------------------------------------------
    1. Apparitions au scroll
-   2. Compteurs qui montent
-   3. Carte du monde qui se remplit pays par pays
-   4. Fiche qui défile dans le téléphone
-   5. Les premières questions : prénom, âge, couleur — et la page se repeint
-   6. Carte de visite qui se retourne
+   2. La fiche qui défile dans le grand téléphone
+   3. Les premières questions : prénom, âge, couleur — et la page se repeint
    Rien n’est jamais masqué durablement : si quoi que ce soit échoue,
    toutAfficher() remet la page entière en état lisible.
    ========================================================================== */
@@ -26,99 +23,7 @@
   } catch (e) { /* vieux navigateur */ }
 
   /* ======================================================================
-     2 — Compteurs
-     ====================================================================== */
-  var DUREE = 1500;
-
-  function monter(portee) {
-    var vals = portee.querySelectorAll('[data-count]');
-    for (var i = 0; i < vals.length; i++) {
-      (function (el) {
-        if (el.dataset.compte === 'fait') return;
-        el.dataset.compte = 'fait';
-
-        var cible = parseInt(el.getAttribute('data-count'), 10);
-        if (isNaN(cible)) return;
-
-        var debut = null;
-
-        function pas(ts) {
-          // On ne remet à zéro qu’au premier rendu : si rAF ne démarre jamais
-          // (onglet en arrière-plan), la vraie valeur reste affichée.
-          if (debut === null) { debut = ts; }
-          var t = Math.min((ts - debut) / DUREE, 1);
-          el.textContent = Math.round(cible * (1 - Math.pow(1 - t, 3)));
-          if (t < 1) requestAnimationFrame(pas);
-          else el.textContent = cible;
-        }
-        requestAnimationFrame(pas);
-      })(vals[i]);
-    }
-  }
-
-  /* ======================================================================
-     3 — Carte du monde
-     Les pays s’allument un par un, dans un ordre volontairement irrégulier
-     pour que ça ressemble à un parcours et pas à un balayage.
-     ====================================================================== */
-  /* 16 pays, et 16 chemins réellement présents dans le SVG : le compteur
-     annonce 16, il faut que 16 s’allument. (Hong Kong est fondu dans la
-     Chine sur cette carte — inutilisable ici.) */
-  var PAYS = ['ma', 'ch', 'th', 'ae', 'fr', 'de', 'pt', 'es',
-              'it', 'nl', 'dk', 'se', 'be', 'ca', 'us', 'vn'];
-
-  function remplirCarte(bloc) {
-    if (bloc.dataset.rempli === 'oui') return;
-    bloc.dataset.rempli = 'oui';
-
-    var svg = bloc.querySelector('svg');
-    if (!svg) return;
-
-    PAYS.forEach(function (code, i) {
-      var el = svg.querySelector('#' + code);
-      if (!el) return;
-      setTimeout(function () { el.classList.add('visited'); }, 140 + i * 110);
-    });
-  }
-
-  /* ======================================================================
-     4 — La fiche défile dans le téléphone
-     Le contenu monte à mesure que le téléphone traverse l’écran : on voit
-     que c’est une vraie page, pas une image.
-     ====================================================================== */
-  function brancherTelephone() {
-    var phone = document.querySelector('[data-phone]');
-    var piste = document.querySelector('[data-phone-scroll]');
-    if (!phone || !piste || reduit) return;
-
-    var ecran = phone.querySelector('.phone__screen');
-    var tick = false;
-
-    function placer() {
-      tick = false;
-      var r = phone.getBoundingClientRect();
-      var course = piste.scrollHeight - ecran.clientHeight;
-      if (course <= 0) return;
-
-      // 0 quand le téléphone entre par le bas, 1 quand il sort par le haut
-      var p = (window.innerHeight - r.top) / (window.innerHeight + r.height);
-      p = Math.max(0, Math.min(1, p));
-      piste.style.transform = 'translateY(' + (-course * p) + 'px)';
-    }
-
-    function auScroll() {
-      if (tick) return;
-      tick = true;
-      requestAnimationFrame(placer);
-    }
-
-    window.addEventListener('scroll', auScroll, { passive: true });
-    window.addEventListener('resize', auScroll);
-    placer();
-  }
-
-  /* ======================================================================
-     4 bis — La fiche d’Adrien, dans le grand téléphone
+     2 — La fiche d’Adrien, dans le grand téléphone
      Le défilement lui-même est purement CSS (overflow-y: auto) : c’est le
      visiteur qui l’actionne, et le navigateur rend la main à la page une
      fois la fiche au bout. On ne s’occupe ici que du dégradé du bas, qui
@@ -150,7 +55,7 @@
   }
 
   /* ======================================================================
-     5 — Les premières questions
+     3 — Les premières questions
      ====================================================================== */
   var CLE = 'mylayer.debut';
 
@@ -280,31 +185,11 @@
   }
 
   /* ======================================================================
-     6 — La carte de visite se retourne (le survol suffit à la souris,
-         le tap est nécessaire au doigt)
-     ====================================================================== */
-  function brancherCarte() {
-    var carte = document.querySelector('.carte3d');
-    if (!carte) return;
-
-    function retourner() { carte.classList.toggle('is-flipped'); }
-
-    carte.addEventListener('click', retourner);
-    carte.addEventListener('keydown', function (e) {
-      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); retourner(); }
-    });
-  }
-
-  /* ======================================================================
-     1 — Apparitions au scroll (et déclencheurs des animations de bloc)
+     1 — Apparitions au scroll
      ====================================================================== */
   function observer() {
     if (reduit || !('IntersectionObserver' in window)) {
       toutAfficher();
-      document.querySelectorAll('[data-map]').forEach(remplirCarte);
-      document.querySelectorAll('[data-count]').forEach(function (el) {
-        el.textContent = el.getAttribute('data-count');
-      });
       return;
     }
 
@@ -317,30 +202,13 @@
     }, { threshold: 0.15, rootMargin: '0px 0px -6% 0px' });
 
     for (var i = 0; i < reveals.length; i++) io.observe(reveals[i]);
-
-    /* déclencheurs propres à certains blocs */
-    var blocs = document.querySelectorAll('[data-map], [data-stats], [data-tl], .f-sub');
-    var io2 = new IntersectionObserver(function (entrees) {
-      entrees.forEach(function (e) {
-        if (!e.isIntersecting) return;
-        var el = e.target;
-        if (el.hasAttribute('data-map')) remplirCarte(el);
-        else if (el.hasAttribute('data-tl')) el.classList.add('is-in');
-        else monter(el);
-        io2.unobserve(el);
-      });
-    }, { threshold: 0.25 });
-
-    for (var j = 0; j < blocs.length; j++) io2.observe(blocs[j]);
   }
 
   /* ---------------------------------------------------------------------- */
   try {
     observer();
-    brancherTelephone();
     brancherFiche();
     brancherDebut();
-    brancherCarte();
   } catch (err) {
     // Un imprévu ne doit jamais laisser la page vide.
     toutAfficher();

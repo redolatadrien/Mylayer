@@ -1,12 +1,16 @@
 /* ==========================================================================
-   MyLayer — le formulaire, partie 1
+   MyLayer, le questionnaire
    --------------------------------------------------------------------------
-   1. Ce que la page d’accueil a déjà donné (prénom, âge, couleur)
+   1. Ce que les trois premières questions ont donné (prénom, âge, couleur)
    2. Les questions construites en JS : les mots, les langues, les pays
-   3. Les gestes : choix, duels, classement
-   4. La navigation d’un écran à l’autre
+   3. Les gestes : choix, duels, classement, champs multiples, fichiers joints
+   4. La navigation d’un écran à l’autre, dans les deux sens
    5. La sauvegarde locale, en continu
    6. L’envoi, et la référence qui rattachera les photos
+
+   Le questionnaire vit maintenant dans la page d’accueil : le prénom, l’âge et
+   la couleur sont posés juste au-dessus, dans le même document. On ne les relit
+   donc plus au chargement, ils n’existent pas encore, mais à l’envoi.
 
    Principe qui traverse tout le fichier : une réponse écrite ne doit jamais
    pouvoir être perdue. Elle est gardée sur le téléphone à chaque frappe, et
@@ -47,7 +51,7 @@
   }
 
   /* ======================================================================
-     1 — Ce que la page d’accueil a déjà donné
+     1. Ce que la page d’accueil a déjà donné
      Le prénom, l’âge et la couleur ne sont jamais redemandés. La couleur
      repeint aussi cette page : le parcours ne doit pas changer d’allure
      entre l’accueil et les questions.
@@ -60,46 +64,35 @@
     '#B5122E': 'Rouge profond',
     '#1F3A5F': 'Bleu nuit',
     '#8A6A12': 'Ocre',
-    '#1A1A1A': 'Encre'
+    '#1A1A1A': 'Encre',
+    '#96206E': 'Rose profond',
+    '#0B5F69': 'Turquoise sombre'
   };
 
-  var debut = lire(CLE_DEBUT);
-
-  function reprendreLAccueil() {
+  /* Les trois premières questions sont juste au-dessus, dans la même page :
+     elles ne sont pas encore répondues au chargement. On va les chercher à
+     l’envoi, au dernier moment, quand elles sont sûres d’être écrites. Le
+     repeignage de la page, lui, appartient à main.js : il se fait en direct,
+     le questionnaire n’a plus à s’en occuper. */
+  function reprendreLeDebut() {
+    var debut = lire(CLE_DEBUT);
     if (debut.prenom) rep.prenom = debut.prenom;
     if (debut.age)    rep.age    = String(debut.age);
-
     if (debut.couleur) {
       var t = String(debut.couleur).split(',');
-      var racine = document.documentElement;
-      racine.style.setProperty('--c', t[0]);
-      racine.style.setProperty('--c-deep', t[1]);
-      racine.style.setProperty('--c-bright', t[2]);
-      var meta = document.querySelector('meta[name="theme-color"]');
-      if (meta) meta.setAttribute('content', t[0]);
-
       var nom = COULEURS[t[0].toUpperCase()] || 'sur mesure';
       rep.couleur = nom + ' (' + t[0] + ')';
     }
-
-    var salut = document.querySelector('[data-salut]');
-    if (salut && rep.prenom) {
-      salut.textContent = 'On reprend où t’en étais, ' + rep.prenom +
-                          '. Ton prénom, ton âge et ta couleur sont déjà gardés.';
-      salut.hidden = false;
-    }
     ecrire();
   }
-  reprendreLAccueil();
 
   /* ======================================================================
-     2 — Les questions construites en JS
+     2. Les questions construites en JS
      ====================================================================== */
 
   /* ---------- les 25 mots ----------
-     Cinq familles, aucun mot faible, aucun jugement de valeur. La liste est
-     écrite une seule fois : les questions 4 et 5 posent exactement la même,
-     et c’est l’écart entre les deux réponses qui est la matière. */
+     Cinq familles, aucun mot faible, aucun jugement de valeur. Trois mots au
+     minimum, et pas de plafond : au-delà de trois, c’est encore du portrait. */
   var MOTS = [
     ['Rapport aux autres',  ['Sociable', 'Discret', 'Attentif', 'Direct', 'Diplomate']],
     ['Rapport à l’action',  ['Rapide', 'Méthodique', 'Débrouillard', 'Persévérant', 'Spontané']],
@@ -138,29 +131,21 @@
 
     function basculerMot(bouton, mot) {
       var i = choisis.indexOf(mot);
-      if (i > -1) {
-        choisis.splice(i, 1);
-      } else {
-        /* Trois, pas quatre : au-delà, le portrait se dilue. Le plus ancien
-           cède sa place plutôt que de bloquer le geste par un refus. */
-        if (choisis.length >= 3) {
-          var perdu = choisis.shift();
-          var tous = hote.querySelectorAll('.choix__opt');
-          for (var k = 0; k < tous.length; k++) {
-            if (tous[k].textContent === perdu) tous[k].setAttribute('aria-pressed', 'false');
-          }
-        }
-        choisis.push(mot);
-      }
+      if (i > -1) choisis.splice(i, 1); else choisis.push(mot);
       bouton.setAttribute('aria-pressed', choisis.indexOf(mot) > -1 ? 'true' : 'false');
       garder(cible, choisis.join(', '));
       majJauge();
     }
 
+    /* En dessous de trois, « Continuer » ne s’ouvre pas. « je passe » reste
+       ouvert : sauter une question est un chemin normal, ici comme ailleurs. */
+    var ecran = hote.closest('[data-ec]');
+    var bouton = ecran ? ecran.querySelector('[data-suivant]') : null;
+
     function majJauge() {
-      if (!jauge) return;
-      jauge.textContent = choisis.length + ' sur 3';
-      jauge.classList.toggle('est-plein', choisis.length === 3);
+      var assez = choisis.length >= 3;
+      if (jauge) jauge.classList.toggle('est-plein', assez);
+      if (bouton) bouton.disabled = !assez;
     }
     majJauge();
   }
@@ -315,8 +300,83 @@
     dessiner(); majPays();
   })();
 
+  /* ---------- les portes de sortie, à plusieurs entrées ----------
+     Une seule ligne obligeait à choisir entre deux mots, deux langues, deux
+     endroits. On ajoute des lignes autant qu’on veut ; elles se rassemblent
+     dans le champ caché qui porte le nom d’origine, séparées par des virgules,
+     comme les listes cochées juste au-dessus. */
+  function construireMulti(hote) {
+    var cible   = hote.getAttribute('data-multi');
+    var gabarit = hote.getAttribute('data-gabarit') || '';
+    var long    = parseInt(hote.getAttribute('data-long'), 10) || 120;
+
+    var etiquette = document.getElementById(hote.getAttribute('aria-labelledby') || '');
+    var nom = etiquette ? etiquette.textContent.trim() : '';
+
+    function lignes() {
+      return [].slice.call(hote.querySelectorAll('.multi__champ'));
+    }
+    function enregistrer() {
+      garder(cible, lignes().map(function (ch) { return ch.value.trim(); })
+                            .filter(Boolean).join(', '));
+    }
+    /* La croix ne s’affiche qu’à partir de la deuxième ligne : sur une ligne
+       seule, elle proposerait de retirer un champ vide. */
+    function majCroix() {
+      var tout = [].slice.call(hote.querySelectorAll('.multi__retirer'));
+      tout.forEach(function (b) { b.hidden = (tout.length < 2); });
+    }
+
+    var ajout = document.createElement('button');
+    ajout.type = 'button';
+    ajout.className = 'multi__ajouter';
+    ajout.textContent = '+ ajouter';
+    ajout.addEventListener('click', function () { ajouterLigne('', true); });
+
+    function ajouterLigne(valeur, prendreLeCurseur) {
+      var ligne = document.createElement('div');
+      ligne.className = 'multi__ligne';
+
+      var champ = document.createElement('input');
+      champ.type = 'text';
+      champ.className = 'sortie__champ multi__champ';
+      champ.placeholder = gabarit;
+      champ.maxLength = long;
+      champ.autocomplete = 'off';
+      champ.value = valeur || '';
+      if (nom) champ.setAttribute('aria-label', nom);
+      champ.addEventListener('input', enregistrer);
+
+      var retirer = document.createElement('button');
+      retirer.type = 'button';
+      retirer.className = 'multi__retirer';
+      retirer.innerHTML = '&times;';
+      retirer.setAttribute('aria-label', 'retirer cette ligne');
+      retirer.addEventListener('click', function () {
+        ligne.parentNode.removeChild(ligne);
+        if (!lignes().length) ajouterLigne('', false);
+        majCroix();
+        enregistrer();
+      });
+
+      ligne.appendChild(champ);
+      ligne.appendChild(retirer);
+      hote.insertBefore(ligne, ajout);
+      majCroix();
+      if (prendreLeCurseur) champ.focus();
+    }
+
+    hote.appendChild(ajout);
+    var gardees = (rep[cible] || '').split(', ').filter(Boolean);
+    if (!gardees.length) gardees = [''];
+    gardees.forEach(function (v) { ajouterLigne(v, false); });
+  }
+
+  var multis = document.querySelectorAll('[data-multi]');
+  for (var mm = 0; mm < multis.length; mm++) construireMulti(multis[mm]);
+
   /* ======================================================================
-     3 — Les gestes
+     3. Les gestes
      ====================================================================== */
 
   /* ---------- un seul choix ---------- */
@@ -341,15 +401,13 @@
     })(uniques[u]);
   }
 
-  /* « oui » ouvre un bloc dans le même écran (les pays), ou débloque des
-     écrans plus loin (le projet). « non » referme. */
+  /* « oui » ouvre un bloc dans le même écran : c’est le cas des pays, sous la
+     question du voyage. « non » le referme. */
   function reagir(groupe, valeur) {
     var ouvre = groupe.getAttribute('data-ouvre');
-    if (ouvre) {
-      var bloc = document.querySelector('[data-bloc="' + ouvre + '"]');
-      if (bloc) bloc.hidden = (valeur !== 'oui');
-    }
-    if (groupe.getAttribute('data-branche')) majEcrans();
+    if (!ouvre) return;
+    var bloc = document.querySelector('[data-bloc="' + ouvre + '"]');
+    if (bloc) bloc.hidden = (valeur !== 'oui');
   }
 
   /* ---------- plusieurs choix ---------- */
@@ -396,15 +454,28 @@
     (function (groupe) {
       var cible = groupe.getAttribute('data-duel');
       var opts = groupe.querySelectorAll('.duel__opt');
+
+      /* La pastille blanche est portée par le groupe, pas par le bouton :
+         c’est ce qui lui permet de glisser d’un côté à l’autre au lieu de
+         s’allumer et s’éteindre. */
+      function basculer(k) {
+        groupe.classList.add('est-choisi');
+        groupe.classList.toggle('est-droite', k === 1);
+      }
+
       for (var i = 0; i < opts.length; i++) {
-        (function (b) {
-          if (rep[cible] === b.textContent) b.setAttribute('aria-pressed', 'true');
+        (function (b, k) {
+          if (rep[cible] === b.textContent) {
+            b.setAttribute('aria-pressed', 'true');
+            basculer(k);
+          }
           b.addEventListener('click', function () {
             for (var j = 0; j < opts.length; j++) opts[j].setAttribute('aria-pressed', 'false');
             b.setAttribute('aria-pressed', 'true');
+            basculer(k);
             garder(cible, b.textContent);
           });
-        })(opts[i]);
+        })(opts[i], i);
       }
     })(duels[d]);
   }
@@ -434,6 +505,10 @@
         num.className = 'rang__num';
         num.textContent = i + 1;
 
+        var poignee = document.createElement('span');
+        poignee.className = 'rang__poignee';
+        poignee.setAttribute('aria-hidden', 'true');
+
         var txt = document.createElement('span');
         txt.textContent = it.getAttribute('data-val');
 
@@ -453,7 +528,7 @@
           liste.insertBefore(tous[i + 1], it); habiller(); enregistrer();
         });
 
-        it.appendChild(num); it.appendChild(txt);
+        it.appendChild(poignee); it.appendChild(num); it.appendChild(txt);
         it.appendChild(haut); it.appendChild(bas);
       });
     }
@@ -522,31 +597,275 @@
     });
   })();
 
+
+  /* ---------- les fichiers joints à une question ----------
+     Deux questions peuvent montrer autre chose qu’un texte : les réalisations,
+     et les endroits qui comptent. Ces fichiers partent avec les réponses, dans
+     le même envoi que le CV.
+
+     La compression n’est pas un confort : une photo de téléphone pèse 2 à 4 Mo,
+     trois suffiraient à épuiser le quota mensuel. Allégées à 300-400 Ko, elles
+     rendent le circuit tenable. C’est le traitement de la page de dépôt, écrit
+     ici pour que cette page ne dépende d’aucune autre. */
+  var JOINT_CIBLE = 380 * 1024;      /* le poids visé par photo, une fois allégée */
+  var JOINT_COTE  = 1600;            /* le plus grand côté, en pixels */
+  var JOINT_MAX   = 8 * 1024 * 1024; /* le plafond par fichier, avant allègement */
+
+  var joints = {};                   /* nom d’emplacement → { blob, nom } */
+
+  /* Le navigateur applique tout seul l’orientation EXIF à une <img> : passer
+     par elle plutôt que par createImageBitmap évite les portraits couchés. */
+  function chargerImage(fichier) {
+    return new Promise(function (resoudre, rejeter) {
+      var url = URL.createObjectURL(fichier);
+      var img = new Image();
+      img.onload  = function () { URL.revokeObjectURL(url); resoudre(img); };
+      img.onerror = function () { URL.revokeObjectURL(url); rejeter(new Error('illisible')); };
+      img.src = url;
+    });
+  }
+
+  function versJpeg(img, largeur, hauteur, q) {
+    return new Promise(function (resoudre) {
+      var toile = document.createElement('canvas');
+      toile.width = largeur; toile.height = hauteur;
+      var ctx = toile.getContext('2d');
+      /* Un fond blanc : un PNG transparent aplati en JPEG sortirait noir. */
+      ctx.fillStyle = '#FFFFFF';
+      ctx.fillRect(0, 0, largeur, hauteur);
+      ctx.drawImage(img, 0, 0, largeur, hauteur);
+      toile.toBlob(resoudre, 'image/jpeg', q);
+    });
+  }
+
+  function estImage(fichier) {
+    return /^image\//.test(fichier.type) ||
+           /\.(jpe?g|png|gif|webp|heic|heif)$/i.test(fichier.name);
+  }
+
+  /* On descend la qualité par paliers, puis la taille si ça ne suffit pas. */
+  function alleger(fichier) {
+    if (!estImage(fichier)) {
+      return Promise.resolve({ blob: fichier, nom: fichier.name });
+    }
+
+    return chargerImage(fichier).then(function (img) {
+      var ratio = Math.min(1, JOINT_COTE / Math.max(img.naturalWidth, img.naturalHeight));
+      var l = Math.round(img.naturalWidth * ratio);
+      var h = Math.round(img.naturalHeight * ratio);
+
+      var qualites = [0.82, 0.72, 0.62, 0.52, 0.44];
+      var i = 0;
+
+      function essai(largeur, hauteur) {
+        return versJpeg(img, largeur, hauteur, qualites[i]).then(function (blob) {
+          if (!blob) throw new Error('illisible');
+          if (blob.size <= JOINT_CIBLE) return blob;
+          i++;
+          if (i < qualites.length) return essai(largeur, hauteur);
+          /* Toutes les qualités épuisées : on réduit encore la taille, une
+             seule fois. Au-delà, la photo ne vaudrait plus rien. */
+          if (largeur > 1200) {
+            i = 1;
+            return essai(Math.round(largeur * 0.75), Math.round(hauteur * 0.75));
+          }
+          return blob;
+        });
+      }
+
+      return essai(l, h).then(function (blob) {
+        return { blob: blob, nom: fichier.name.replace(/\.[^.]+$/, '') + '.jpg' };
+      });
+    }).catch(function () {
+      /* Le cas connu : les iPhone photographient en HEIC, que les navigateurs
+         de bureau ne savent pas ouvrir. Sur l’iPhone lui-même, Safari le
+         décode et on ne passe jamais ici. */
+      var heic = /\.(heic|heif)$/i.test(fichier.name);
+      throw new Error(heic
+        ? 'Cette photo est en HEIC, un format que ce navigateur ne sait pas ouvrir. Envoie-la depuis ton téléphone.'
+        : 'Je n’arrive pas à ouvrir ce fichier. Essaie une autre photo.');
+    });
+  }
+
+  function joliPoids(octets) {
+    return octets < 1024 * 1024
+      ? Math.round(octets / 1024) + ' Ko'
+      : (octets / 1048576).toFixed(1).replace('.', ',') + ' Mo';
+  }
+
+  function dessinerVignette(vignette, res, slot) {
+    vignette.textContent = '';
+
+    if (/^image\//.test(res.blob.type)) {
+      var img = document.createElement('img');
+      img.src = URL.createObjectURL(res.blob);
+      img.alt = '';
+      img.addEventListener('load', function () { URL.revokeObjectURL(img.src); });
+      vignette.appendChild(img);
+    } else {
+      var doc = document.createElement('span');
+      doc.className = 'vignette__doc';
+      doc.textContent = res.nom;
+      vignette.appendChild(doc);
+    }
+
+    var poids = document.createElement('span');
+    poids.className = 'vignette__poids';
+    poids.textContent = joliPoids(res.blob.size);
+    vignette.appendChild(poids);
+
+    var retirer = document.createElement('button');
+    retirer.type = 'button';
+    retirer.className = 'vignette__retirer';
+    retirer.innerHTML = '&times;';
+    retirer.setAttribute('aria-label', 'retirer ' + res.nom);
+    retirer.addEventListener('click', function (e) {
+      e.preventDefault();
+      delete joints[slot];
+      vignette.parentNode.removeChild(vignette);
+    });
+    vignette.appendChild(retirer);
+  }
+
+  function brancherJoint(zone) {
+    var slots  = zone.getAttribute('data-slots').split(',');
+    var max    = parseInt(zone.getAttribute('data-max'), 10) || 1;
+    var entree = zone.querySelector('[data-choix]');
+    var hote   = zone.parentNode.querySelector('[data-vignettes]');
+    var note   = zone.querySelector('[data-depot-note]');
+    var texteOrigine = note ? note.textContent : '';
+
+    function libres() {
+      return slots.filter(function (s) { return !joints[s]; });
+    }
+
+    entree.addEventListener('change', function () {
+      var fichiers = [].slice.call(entree.files || []);
+      entree.value = '';                    /* pour pouvoir reprendre le même */
+      if (!fichiers.length) return;
+
+      var place = libres();
+      if (!place.length) {
+        if (note) note.textContent = 'C’est complet (' + max + ' au maximum). Retires-en un d’abord.';
+        return;
+      }
+      if (note) note.textContent = texteOrigine;
+
+      /* Le plafond se dit avec le poids du fichier refusé : « c’est trop
+         lourd » sans chiffre n’apprend rien à personne. */
+      var refuses = [];
+      var retenus = fichiers.slice(0, place.length).filter(function (f) {
+        if (f.size <= JOINT_MAX) return true;
+        refuses.push(f.name + ' fait ' + joliPoids(f.size));
+        return false;
+      });
+
+      if (refuses.length && note) {
+        note.textContent = refuses.join(', ') + ' : c’est trop lourd. 8 Mo au plus par fichier.';
+      } else if (fichiers.length > place.length && note) {
+        note.textContent = 'J’en ai pris ' + place.length + ' : c’est le maximum ici.';
+      }
+
+      retenus.forEach(function (fichier, k) {
+        var slot = place[k];
+        joints[slot] = { blob: null, nom: fichier.name };   /* on réserve la place */
+
+        var vignette = document.createElement('div');
+        vignette.className = 'vignette est-en-cours';
+        hote.appendChild(vignette);
+
+        alleger(fichier).then(function (res) {
+          joints[slot] = res;
+          vignette.classList.remove('est-en-cours');
+          dessinerVignette(vignette, res, slot);
+        }).catch(function (err) {
+          delete joints[slot];
+          vignette.parentNode.removeChild(vignette);
+          if (note) note.textContent = err.message;
+        });
+      });
+    });
+  }
+
+  var zonesJointes = form.querySelectorAll('[data-joint] [data-zone]');
+  for (var zj = 0; zj < zonesJointes.length; zj++) brancherJoint(zonesJointes[zj]);
+
   /* ======================================================================
-     4 — La navigation
+     4. La navigation
      ====================================================================== */
   var ecrans = [].slice.call(form.querySelectorAll('[data-ec]'));
   var final = document.querySelector('[data-ec-final]');
   var jauge = document.querySelector('[data-jauge]');
+  var bloc  = form.closest('.fm') || form;
   var actif = 0;
 
-  /* Un écran de branche n’existe que si la branche est ouverte. */
-  function visible(ec) {
-    var branche = ec.getAttribute('data-branche-de');
-    if (!branche) return true;
-    return rep.a_projet === 'oui';
+  /* Le questionnaire n’occupe plus une page à lui seul : changer d’écran ne
+     remonte donc pas en haut du document, mais en haut de la section. */
+  function remonter() {
+    var y = bloc.getBoundingClientRect().top +
+            (window.pageYOffset || document.documentElement.scrollTop || 0);
+    try { window.scrollTo({ top: y, behavior: 'instant' }); }
+    catch (e) { window.scrollTo(0, y); }
   }
 
+  /* ---------- les annonces de section ----------
+     Un écran très court ouvre chaque section : son nom, rien d’autre. Il
+     donne les paliers du parcours, on ne franchit plus une trentaine de
+     questions, on en franchit six. Il est posé ici plutôt qu’écrit dans le
+     HTML pour que le nom d’une section n’existe qu’à un seul endroit. */
+  (function poserAnnonces() {
+    var courante = null;
+    var premiere = true;
+    ecrans.forEach(function (ec) {
+      var sec = ec.getAttribute('data-section');
+      if (!sec || sec === courante) return;
+      courante = sec;
+      /* Pas d’annonce sur la première section : on y arrive en descendant la
+         page, on ne franchit rien. Elle s’effacerait toute seule avant même
+         qu’on ait fini de scroller. */
+      if (premiere) { premiere = false; return; }
+
+      var annonce = document.createElement('section');
+      annonce.className = 'ec ec--annonce';
+      annonce.setAttribute('data-ec', '');
+      annonce.setAttribute('data-hors-compte', '');
+      annonce.setAttribute('data-annonce', sec);
+      annonce.setAttribute('data-section', sec);
+
+      var nom = document.createElement('p');
+      nom.className = 'ec__annonce';
+      nom.textContent = sec;
+      annonce.appendChild(nom);
+
+      ec.parentNode.insertBefore(annonce, ec);
+    });
+    ecrans = [].slice.call(form.querySelectorAll('[data-ec]'));
+  })();
+
+  /* La position se compte à l’intérieur de la section, jamais sur le total :
+     « 2 sur 4 » se franchit, « 2 / 29 » annonce un marathon. Les écrans
+     branchés entrent et sortent du compte selon les réponses, d’où le
+     recalcul complet à chaque passage. */
   function majEcrans() {
-    var vus = ecrans.filter(visible);
-    var numero = 0;
+    var vus = ecrans;
+
+    var total = {};
+    vus.forEach(function (ec) {
+      var sec = ec.getAttribute('data-section');
+      if (!sec || ec.hasAttribute('data-hors-compte')) return;
+      total[sec] = (total[sec] || 0) + 1;
+    });
+
+    var rang = {};
     vus.forEach(function (ec) {
       var compteur = ec.querySelector('[data-compteur]');
-      if (ec.hasAttribute('data-hors-compte')) return;
-      numero++;
-      if (compteur) compteur.textContent = numero + ' / ' +
-        vus.filter(function (x) { return !x.hasAttribute('data-hors-compte'); }).length;
+      if (!compteur) return;
+      var sec = ec.getAttribute('data-section');
+      if (!sec || ec.hasAttribute('data-hors-compte')) { compteur.textContent = ''; return; }
+      rang[sec] = (rang[sec] || 0) + 1;
+      compteur.textContent = sec + ' · ' + rang[sec] + ' sur ' + total[sec];
     });
+
     if (jauge) {
       var place = vus.indexOf(ecrans[actif]);
       if (place > -1 && vus.length > 1) {
@@ -555,14 +874,43 @@
     }
   }
 
-  function montrer(i) {
+  /* L’annonce de section n’a pas de bouton : elle s’efface d’elle-même.
+     Une touche n’importe où la passe tout de suite, pour qui va plus vite. */
+  var minuterie = null;
+  function couperMinuterie() {
+    if (minuterie) { clearTimeout(minuterie); minuterie = null; }
+  }
+
+  /* L’historique du navigateur suit le parcours : « précédent » ramène à la
+     question d’avant plutôt que de quitter la page. Les annonces de section
+     n’y entrent pas, elles s’effacent d’elles-mêmes, y revenir ferait
+     rebondir en avant aussitôt. */
+  var historique = !!(window.history && window.history.pushState);
+  if (historique) {
+    try { history.replaceState({ mlEc: 0 }, ''); }
+    catch (e) { historique = false; }
+  }
+
+  function montrer(i, depuisLHistorique) {
+    couperMinuterie();
     ecrans[actif].classList.remove('est-actif');
     actif = i;
     ecrans[actif].classList.add('est-actif');
     majEcrans();
-    window.scrollTo(0, 0);
+    remonter();
 
-    /* Le premier champ écrit prend le curseur — mais jamais au doigt : le
+    var annonce = ecrans[actif].hasAttribute('data-annonce');
+    if (historique && !depuisLHistorique && !annonce) {
+      try { history.pushState({ mlEc: i }, ''); } catch (e) { /* rien de grave */ }
+    }
+    majRetour();
+
+    if (annonce) {
+      minuterie = setTimeout(function () { minuterie = null; suivant(); }, 1150);
+      return;
+    }
+
+    /* Le premier champ écrit prend le curseur, mais jamais au doigt : le
        clavier qui surgit masquerait la question qu’on vient d’afficher. */
     if (window.matchMedia('(min-width: 720px)').matches) {
       var premier = ecrans[actif].querySelector('textarea, input[type="text"], input[type="email"], input[type="tel"]');
@@ -571,9 +919,52 @@
   }
 
   function suivant() {
-    for (var i = actif + 1; i < ecrans.length; i++) {
-      if (visible(ecrans[i])) { montrer(i); return; }
+    if (actif + 1 < ecrans.length) montrer(actif + 1);
+  }
+
+  /* On ne revient jamais sur une annonce : elle repartirait en avant. Avant la
+     première question, il n’y a rien où revenir. */
+  function precedent() {
+    for (var i = actif - 1; i >= 0; i--) {
+      if (!ecrans[i].hasAttribute('data-annonce')) return i;
     }
+    return -1;
+  }
+
+  function retourner() {
+    if (historique && history.state && history.state.mlEc === actif) {
+      history.back();
+      return;
+    }
+    var j = precedent();
+    if (j > -1) montrer(j);
+  }
+
+  window.addEventListener('popstate', function (e) {
+    var i = e.state && typeof e.state.mlEc === 'number' ? e.state.mlEc : -1;
+    if (i < 0 || i >= ecrans.length || i === actif) return;
+    montrer(i, true);
+  });
+
+  /* Le retour est posé ici plutôt que répété trente fois dans le HTML : il est
+     le même partout, et il ne peut pas manquer sur un écran. */
+  (function poserRetours() {
+    ecrans.forEach(function (ec) {
+      var nav = ec.querySelector('.ec__nav, .mot__nav');
+      if (!nav) return;
+      var b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'ec__retour';
+      b.setAttribute('data-retour', '');
+      b.innerHTML = '&larr; retour';
+      nav.appendChild(b);
+    });
+  })();
+
+  function majRetour() {
+    var rien = precedent() < 0;
+    var tous = form.querySelectorAll('[data-retour]');
+    for (var i = 0; i < tous.length; i++) tous[i].hidden = rien;
   }
 
   /* Les quatre champs obligatoires sont les seuls à barrer le passage.
@@ -593,17 +984,20 @@
       var mail = ec.querySelector('input[type="email"]');
       var v = mail ? mail.value.trim() : '';
       if (/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v)) { if (erreur) erreur.textContent = ''; return true; }
-      if (erreur) erreur.textContent = 'Sans mail, je ne peux pas te livrer ta fiche.';
+      if (erreur) erreur.textContent = 'Sans mail, je ne peux pas te livrer ta page.';
       return false;
     }
     return true;
   }
 
   form.addEventListener('click', function (e) {
-    var b = e.target.closest('[data-suivant], [data-passe], [data-envoyer]');
+    if (e.target.closest('[data-annonce]')) { e.preventDefault(); suivant(); return; }
+
+    var b = e.target.closest('[data-retour], [data-suivant], [data-passe], [data-envoyer]');
     if (!b) return;
     e.preventDefault();
 
+    if (b.hasAttribute('data-retour')) { retourner(); return; }
     if (b.hasAttribute('data-envoyer')) { envoyer(); return; }
     if (b.hasAttribute('data-suivant') && !valide(ecrans[actif])) return;
     suivant();
@@ -622,9 +1016,10 @@
   });
 
   majEcrans();
+  majRetour();
 
   /* ======================================================================
-     5 — L’envoi
+     5. L’envoi
      ====================================================================== */
   var motEnvoi = document.querySelector('[data-envoi]');
 
@@ -633,9 +1028,9 @@
      unique. Ni O ni 0, ni I ni 1 : on la recopie parfois à la main. */
   function fabriquerReference() {
     if (rep.reference) return rep.reference;
-    var base = (rep.prenom || 'fiche')
+    var base = (rep.prenom || 'page')
       .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
-      .toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '') || 'fiche';
+      .toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '') || 'page';
     var alpha = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
     var suite = '';
     for (var i = 0; i < 4; i++) suite += alpha.charAt(Math.floor(Math.random() * alpha.length));
@@ -654,6 +1049,22 @@
       }
     }
 
+    /* Un fichier encore en cours d’allègement partirait vide. */
+    var enCours = Object.keys(joints).filter(function (s) { return !joints[s].blob; }).length;
+    if (enCours > 0) {
+      if (motEnvoi) {
+        motEnvoi.hidden = false;
+        motEnvoi.className = 'envoi';
+        motEnvoi.textContent = 'J’allège encore ' + enCours +
+          (enCours > 1 ? ' fichiers' : ' fichier') + ', deux secondes.';
+      }
+      return;
+    }
+
+    /* Le prénom, l’âge et la couleur sont relus maintenant : ils viennent des
+       trois questions posées plus haut dans la même page. */
+    reprendreLeDebut();
+
     var reference = fabriquerReference();
 
     /* Les champs cachés reçoivent ce que les gestes ont produit. */
@@ -661,7 +1072,7 @@
     for (var h = 0; h < caches.length; h++) {
       var nom = caches[h].getAttribute('data-champ');
       /* Une valeur déclarée dans le HTML est une réponse par défaut, pas du
-         vide : « l’afficher sur ma fiche » vaut « non » tant qu’on n’y a pas
+         vide : « l’afficher sur ma page » vaut « non » tant qu’on n’y a pas
          touché. On ne l’écrase que si la personne a répondu. */
       caches[h].value = (nom === 'reference') ? reference
         : (rep[nom] !== undefined ? rep[nom] : caches[h].value);
@@ -674,7 +1085,19 @@
       motEnvoi.textContent = 'J’envoie…';
     }
 
-    fetch(location.pathname, { method: 'POST', body: new FormData(form) })
+    /* Les emplacements déclarés dans le HTML servent à la détection par
+       Netlify au déploiement ; le corps envoyé, lui, reçoit ici les versions
+       allégées à la place des fichiers d’origine. */
+    var corps = new FormData(form);
+    var places = form.querySelectorAll('[data-emplacements] input[name]');
+    for (var e = 0; e < places.length; e++) corps.delete(places[e].getAttribute('name'));
+    Object.keys(joints).forEach(function (slot) {
+      if (joints[slot] && joints[slot].blob) {
+        corps.append(slot, joints[slot].blob, joints[slot].nom);
+      }
+    });
+
+    fetch(location.pathname, { method: 'POST', body: corps })
       .then(function (r) {
         if (!r.ok) throw new Error(r.status);
         rep.envoye = true;
@@ -685,7 +1108,7 @@
         if (!motEnvoi) return;
         motEnvoi.className = 'envoi envoi--rate';
         motEnvoi.textContent = 'L’envoi n’est pas passé. Tes réponses sont toujours ' +
-          'là, sur ton téléphone — réessaie, rien n’est perdu.';
+          'là, sur ton téléphone, réessaie, rien n’est perdu.';
       });
   }
 
@@ -700,9 +1123,9 @@
     if (code) code.textContent = reference;
 
     var lien = final.querySelector('[data-lien-fichiers]');
-    if (lien) lien.href = 'fichiers/?ref=' + encodeURIComponent(reference);
+    if (lien) lien.href = 'formulaire/fichiers/?ref=' + encodeURIComponent(reference);
 
-    window.scrollTo(0, 0);
+    remonter();
   }
 
   /* Dernier filet : ce qui est en attente d’écriture part sur le disque

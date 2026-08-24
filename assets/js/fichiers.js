@@ -1,5 +1,5 @@
 /* ==========================================================================
-   MyLayer — le dépôt de fichiers, partie 2
+   MyLayer, le dépôt de fichiers, partie 2
    --------------------------------------------------------------------------
    1. La référence, qui rattache ces photos aux réponses déjà envoyées
    2. Les cases conditionnelles, tirées de ce qui a été répondu
@@ -29,10 +29,10 @@
   var rep = lire(CLE);
 
   /* ======================================================================
-     1 — La référence
+     1. La référence
      Elle vient du lien envoyé par mail, ou du téléphone si c’est le même
-     appareil. Si elle manque — page ouverte ailleurs, lien recopié de
-     travers — on la demande plutôt que d’envoyer des photos orphelines.
+     appareil. Si elle manque, page ouverte ailleurs, lien recopié de
+     travers, on la demande plutôt que d’envoyer des photos orphelines.
      ====================================================================== */
   var champRef    = form.querySelector('[data-ref]');
   var champPrenom = form.querySelector('[data-prenom]');
@@ -64,7 +64,7 @@
   }
 
   /* ======================================================================
-     2 — Les cases conditionnelles
+     2. Les cases conditionnelles
      Elles reprennent ce qui a été répondu : « une photo de ça ? » n’a de
      sens que si l’on sait de quoi. Sur un autre appareil, le stockage est
      vide et la page s’en tient aux trois cases fixes.
@@ -158,7 +158,7 @@
   })();
 
   /* ======================================================================
-     3 — La compression
+     3. La compression
      ====================================================================== */
 
   /* Le navigateur applique tout seul l’orientation EXIF à une <img> : passer
@@ -348,7 +348,7 @@
   for (var z = 0; z < zones.length; z++) brancherZone(zones[z]);
 
   /* ======================================================================
-     4 — L’envoi
+     4. L’envoi
      Les emplacements déclarés dans le HTML servent à la détection par
      Netlify au déploiement ; le corps envoyé, lui, est construit ici avec
      les versions allégées.
@@ -374,7 +374,7 @@
       confirmeVide = true;
       motEnvoi.hidden = false;
       motEnvoi.className = 'envoi';
-      motEnvoi.textContent = 'T’as rien déposé. Si c’est voulu, appuie encore une fois — on fera sans.';
+      motEnvoi.textContent = 'T’as rien déposé. Si c’est voulu, appuie encore une fois, on fera sans.';
       return;
     }
 
@@ -410,7 +410,7 @@
         bouton.disabled = false;
         motEnvoi.className = 'envoi envoi--rate';
         motEnvoi.textContent = 'L’envoi n’est pas passé. Tes photos sont toujours ' +
-          'sélectionnées ici — réessaie. Tes réponses, elles, sont déjà arrivées.';
+          'sélectionnées ici, réessaie. Tes réponses, elles, sont déjà arrivées.';
       });
   });
 })();

@@ -1,9 +1,10 @@
 /* ==========================================================================
-   MyLayer — le formulaire
+   MyLayer, le formulaire
    --------------------------------------------------------------------------
-   Une question par écran, plein cadre. La page d’accueil pose déjà le décor
-   (couleur pleine, Anton, traits blancs) : cette feuille ne fait qu’ajouter
-   les objets propres au questionnaire. style.css est chargée avant.
+   Une question par écran, plein cadre. Le questionnaire vit dans la page
+   d’accueil, qui pose déjà le décor (couleur pleine, Anton, traits blancs) :
+   cette feuille ne fait qu’ajouter les objets propres aux questions et à la
+   page de dépôt. style.css est chargée avant.
 
    Règle de construction : sans JavaScript, tous les écrans s’affichent à la
    suite et le formulaire reste envoyable. C’est la classe « js » qui les
@@ -19,10 +20,21 @@
   padding-block: clamp(4.5rem, 12vw, 6rem) clamp(2rem, 8vw, 3rem);
 }
 
-/* La jauge. Elle ne dit pas « il en reste 28 » — elle avance, c’est tout.
+/* La chaîne qui fait descendre la hauteur de la fenêtre jusqu’à l’écran.
+   Sans ces deux lignes, .fm fait bien 100dvh mais .ec ne reçoit jamais cette
+   hauteur : le <form> qui les sépare n’est pas un conteneur flex, le contenu
+   se tasse en haut et les deux tiers du bas restent vides. Chaque maillon
+   doit grandir pour que le suivant ait quelque chose à centrer. */
+.fm > .wrap { flex: 1; display: flex; flex-direction: column; justify-content: center; }
+.fm form    { flex: 1; display: flex; flex-direction: column; justify-content: center; }
+
+/* La jauge. Elle ne dit pas « il en reste 28 », elle avance, c’est tout.
    Un compte à rebours chiffré décourage au tiers du parcours. */
+/* Elle est collée en haut de la section, pas de la fenêtre : au-dessus, la
+   page d’accueil n’a rien à mesurer. */
 .fm__barre {
-  position: fixed; inset: 0 0 auto 0; z-index: 20;
+  position: sticky; top: 0; z-index: 20;
+  width: 100%;
   height: 3px; background: rgba(255,255,255,.16);
 }
 .fm__jauge {
@@ -44,6 +56,9 @@
    L’écran
    Chaque question occupe la hauteur disponible et se centre : le regard
    tombe au même endroit d’un écran à l’autre, seul le contenu change.
+   Le bloc entier, question, réponses, boutons, est centré d’un seul
+   tenant. Quand le contenu dépasse la fenêtre, .fm grandit avec lui et le
+   centrage n’a plus rien à répartir : rien n’est jamais coupé en haut.
    ========================================================================== */
 .ec {
   flex: 1;
@@ -57,7 +72,24 @@
   to   { opacity: 1; transform: none; }
 }
 
-/* Le compteur. Discret : il situe sans mettre la pression. */
+/* ==========================================================================
+   L’annonce de section
+   Le nom de la section, en typographie de titre, et rien d’autre. Elle
+   s’efface d’elle-même au bout d’un instant : c’est pour ça qu’elle n’a pas
+   de bouton. Elle donne les paliers du parcours, six sections franchies
+   plutôt qu’une trentaine de questions alignées.
+   ========================================================================== */
+.ec--annonce { cursor: pointer; }
+.ec__annonce {
+  font-family: Anton, Inter, sans-serif; font-weight: 400;
+  text-transform: uppercase; letter-spacing: .04em; line-height: 1;
+  font-size: clamp(2.4rem, 12vw, 4.4rem);
+  max-width: 14ch;
+}
+
+/* Le surtitre de section, sur chaque question. Petites capitales espacées,
+   comme les surtitres du reste du site. « QUI TU ES · 2 SUR 4 » se franchit ;
+   « 2 / 29 » annonce un marathon avant d’avoir commencé. */
 .ec__compteur {
   font-size: .75rem; letter-spacing: .18em; text-transform: uppercase;
   color: var(--dimmer);
@@ -84,7 +116,7 @@
 /* ==========================================================================
    Les champs écrits
    La hauteur dit ce qu’on attend. Un champ de deux lignes produit des
-   réponses de deux lignes — c’est le réglage le plus important de la page.
+   réponses de deux lignes, c’est le réglage le plus important de la page.
    ========================================================================== */
 .ec__champ {
   width: 100%;
@@ -152,7 +184,7 @@
 .choix__jauge.est-plein { color: var(--white); font-weight: 600; }
 
 /* Les familles de mots. Le titre de famille sert de repère visuel, il n’est
-   pas cliquable et ne veut rien dire pour la fiche. */
+   pas cliquable et ne veut rien dire pour la page. */
 .famille { margin-top: 1.3rem; }
 .famille__nom {
   font-size: .68rem; letter-spacing: .16em; text-transform: uppercase;
@@ -179,35 +211,120 @@
 .sortie__champ::placeholder { color: rgba(255,255,255,.3); }
 .sortie__champ:focus { outline: none; border-bottom-color: var(--white); }
 
+/* Plusieurs entrées plutôt qu’une : une seule ligne obligeait à choisir entre
+   deux mots, deux langues, deux endroits. La croix n’apparaît qu’à partir de
+   la deuxième ligne, sinon elle proposerait de retirer un champ vide. */
+.multi { display: grid; gap: .7rem; }
+.multi__ligne {
+  display: grid; grid-template-columns: 1fr auto;
+  align-items: center; gap: .7rem;
+}
+.multi__retirer {
+  width: 44px; height: 44px; border-radius: 50%;
+  background: transparent; border: 2px solid var(--line-soft);
+  color: var(--dimmer); font-size: 1.1rem; line-height: 1;
+  cursor: pointer;
+  transition: border-color .18s, color .18s;
+}
+.multi__retirer:hover { border-color: var(--white); color: var(--white); }
+.multi__retirer[hidden] { display: none; }
+.multi__ajouter {
+  justify-self: start;
+  background: transparent; border: 2px solid var(--line-soft);
+  border-radius: 999px;
+  padding: .5rem 1.2rem; min-height: 44px;
+  color: var(--dimmer); font-size: .92rem;
+  cursor: pointer;
+  transition: border-color .18s, color .18s;
+}
+.multi__ajouter:hover { border-color: var(--white); color: var(--white); }
+
+/* ==========================================================================
+   Le pacte
+   Ce n’est pas une question : il n’a ni surtitre de section, ni « je passe ».
+   Le filet et le retrait le posent visiblement à part.
+   ========================================================================== */
+.ec--pacte .mot {
+  border-left: 2px solid var(--line-soft);
+  padding-left: clamp(1.1rem, 5vw, 1.8rem);
+  max-width: 40ch;
+}
+.ec--pacte .mot__titre { font-size: clamp(1.9rem, 8vw, 2.8rem); }
+
 /* ==========================================================================
    Les duels
    Huit paires, un geste par paire. Le rythme est ce qui compte : l’écran
    ne bouge pas, on descend la liste au pouce.
    ========================================================================== */
-.duels { margin-top: clamp(1.4rem, 5vw, 2rem); display: grid; gap: .55rem; }
-.duel { display: grid; grid-template-columns: 1fr 1fr; gap: .5rem; }
-.duel__opt {
-  background: transparent;
+.duels { margin-top: clamp(1.4rem, 5vw, 2rem); display: grid; gap: .6rem; }
+
+/* Chaque paire est un seul interrupteur, pas deux pastilles côte à côte : la
+   pastille blanche glisse d’un bord à l’autre. C’est le moment le plus
+   rapide du formulaire, huit gestes d’affilée, et il doit se voir comme
+   tel plutôt que ressembler aux écrans de coche. */
+.duel {
+  position: relative;
+  display: grid; grid-template-columns: 1fr 1fr;
   border: 2px solid var(--line-soft);
   border-radius: 999px;
-  padding: .65rem .8rem;
-  min-height: 46px;
+  isolation: isolate;
+}
+.duel::before {
+  content: '';
+  position: absolute; z-index: -1;
+  top: 3px; bottom: 3px; left: 3px;
+  width: calc(50% - 3px);
+  border-radius: 999px;
+  background: var(--white);
+  opacity: 0;
+  transition: transform .28s var(--ease), opacity .2s;
+}
+.duel.est-choisi::before { opacity: 1; }
+.duel.est-droite::before { transform: translateX(100%); }
+
+.duel__opt {
+  background: transparent; border: 0;
+  border-radius: 999px;
+  padding: .75rem .8rem;
+  min-height: 52px;
   cursor: pointer;
-  transition: background .18s, border-color .18s;
+  color: var(--dim);
+  transition: color .22s;
 }
-.duel__opt[aria-pressed="true"] {
-  background: var(--white); color: var(--c-deep);
-  border-color: var(--white); font-weight: 600;
-}
+.duel__opt[aria-pressed="true"] { color: var(--c-deep); font-weight: 600; }
 
 /* ==========================================================================
    Le curseur structuré / spontané
    ========================================================================== */
-.curseur { margin-top: clamp(1.6rem, 5vw, 2.2rem); }
-.curseur__bornes {
-  display: flex; justify-content: space-between;
-  font-size: .82rem; letter-spacing: .1em; text-transform: uppercase;
-  color: var(--dimmer); margin-bottom: .7rem;
+/* Étroit, les deux extrêmes se tasseraient de part et d’autre : ils passent
+   alors au-dessus et en dessous, et le curseur garde toute la largeur. */
+.curseur {
+  margin-top: clamp(2.2rem, 8vw, 3.4rem);
+  display: grid;
+  justify-items: center;
+  align-items: center;
+  gap: 1.1rem;
+}
+.curseur__borne {
+  font-family: Anton, Inter, sans-serif; font-weight: 400;
+  font-size: clamp(1.05rem, 4vw, 1.5rem);
+  text-transform: uppercase; letter-spacing: .04em;
+  line-height: 1;
+  color: var(--dim);
+}
+/* La piste reste assez large pour qu’un pouce en fasse le tour, et assez
+   épaisse pour se voir sous une poignée de 42 px. */
+.curseur__piste { width: 100%; max-width: 34rem; }
+.curseur .q__range { height: 6px; }
+.curseur .q__range::-webkit-slider-thumb { width: 42px; height: 42px; }
+.curseur .q__range::-moz-range-thumb { width: 42px; height: 42px; }
+
+/* Dès qu’il y a la place, les deux mots encadrent le curseur, à sa hauteur. */
+@media (min-width: 600px) {
+  .curseur {
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    gap: 1.4rem;
+  }
 }
 
 /* ==========================================================================
@@ -217,16 +334,32 @@
    ========================================================================== */
 .rang { margin-top: clamp(1.4rem, 5vw, 2rem); display: grid; gap: .5rem; }
 .rang__item {
-  display: grid; grid-template-columns: auto 1fr auto auto;
+  display: grid; grid-template-columns: auto auto 1fr auto auto;
   align-items: center; gap: .8rem;
   background: rgba(255,255,255,.07);
   border: 2px solid var(--line-soft);
   border-radius: var(--radius);
   padding: .8rem 1rem;
   cursor: grab;
+  transition: border-color .18s, background .18s, opacity .18s;
 }
-.rang__item.est-pris { opacity: .4; }
+.rang__item:active { cursor: grabbing; }
+
+/* La ligne qu’on déplace s’efface et se cerne de blanc : sans ce retour, on
+   ne sait pas ce qu’on tient. */
+.rang__item.est-pris {
+  opacity: .35;
+  border-color: var(--white);
+  background: rgba(255,255,255,.14);
+}
 .rang__item.est-cible { border-color: var(--white); }
+
+/* La poignée. Sans elle, rien ne dit que la ligne se saisit. */
+.rang__poignee {
+  width: 12px; height: 18px;
+  background-image: radial-gradient(circle, var(--dimmer) 1.4px, transparent 1.5px);
+  background-size: 6px 6px;
+}
 .rang__num {
   font-family: Anton, Inter, sans-serif; font-size: 1.5rem; line-height: 1;
   color: rgba(255,255,255,.42);
@@ -318,6 +451,11 @@
 .depot__note { margin-top: .45rem; font-size: .85rem; color: var(--dimmer); }
 .depot.est-rempli { border-style: solid; border-color: var(--white); background: rgba(255,255,255,.09); }
 
+/* Le fichier joint à une question. Il vient après le texte, jamais à sa
+   place : on peut écrire, montrer, ou les deux. */
+.joint { margin-top: 1.6rem; padding-top: 1.2rem; border-top: 1px solid var(--line-soft); }
+.joint .depot { margin-top: 0; }
+
 /* ==========================================================================
    La navigation
    « Continuer » est plein, « je passe » est un simple mot : la hiérarchie
@@ -336,6 +474,19 @@
 }
 .ec__passe:hover { color: var(--white); }
 
+/* Le retour. Aussi discret que « je passe », et posé au même endroit : une
+   faute de frappe ne doit plus obliger à tout recommencer. Il pousse à droite,
+   pour que les deux gestes qui avancent restent ensemble. */
+.ec__retour {
+  background: transparent; border: 0; cursor: pointer;
+  color: var(--dimmer); font-size: .92rem;
+  padding: .6rem 0; min-height: 44px;
+  margin-left: auto;
+  transition: color .2s;
+}
+.ec__retour:hover { color: var(--white); }
+.ec__retour[hidden] { display: none; }
+
 /* Le message d’erreur d’un champ obligatoire. */
 .ec__erreur {
   margin-top: .9rem; font-size: .9rem; font-weight: 600;
@@ -344,7 +495,7 @@
 .ec__erreur:empty { display: none; }
 
 /* ==========================================================================
-   Les écrans de texte — le seuil, le pacte, la validation
+   Les écrans de texte, le seuil, le pacte, la validation
    ========================================================================== */
 .mot { max-width: 34ch; }
 .mot__titre {
@@ -356,7 +507,10 @@
 .mot__texte + .mot__texte { margin-top: 1rem; }
 .mot__fort { font-weight: 700; color: var(--white); font-size: 1.2rem; }
 .mot__aparte { font-style: italic; color: var(--dimmer); font-size: 1rem; }
-.mot__nav { margin-top: clamp(2rem, 7vw, 3rem); }
+.mot__nav {
+  margin-top: clamp(2rem, 7vw, 3rem);
+  display: flex; align-items: center; gap: 1.4rem; flex-wrap: wrap;
+}
 
 /* La référence. Elle s’affiche à la validation et se retrouve dans le mail :
    c’est elle qui rattache les photos aux réponses. */
@@ -385,7 +539,7 @@
    ========================================================================== */
 @media (min-width: 720px) {
   .ec__champ { font-size: 1.12rem; }
-  .duel { grid-template-columns: 1fr 1fr; max-width: 30rem; }
+  .duel { max-width: 30rem; }
 }
 
 /* ==========================================================================
@@ -395,13 +549,15 @@
   .js .ec.est-actif { animation: none; }
   .fm__jauge { transition: none; }
   .choix__opt, .duel__opt, .pays__opt { transition: none; }
+  .duel::before { transition: none; }
+  .rang__item { transition: none; }
 }
 
 /* ==========================================================================
    La page de dépôt
    --------------------------------------------------------------------------
    Ici, pas d’écrans successifs : tout tient sur une page qu’on descend. Le
-   dépôt de fichiers est une corvée, pas un parcours — mieux vaut la voir en
+   dépôt de fichiers est une corvée, pas un parcours, mieux vaut la voir en
    entier et savoir quand elle s’arrête.
    ========================================================================== */
 .cases { margin-top: clamp(2.4rem, 8vw, 3.4rem); display: grid; gap: clamp(2rem, 7vw, 3rem); }

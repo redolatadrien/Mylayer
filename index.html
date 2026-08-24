@@ -3,18 +3,19 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>MyLayer — ta page perso, ton QR code</title>
-<meta name="description" content="Ton CV dit ce que t’as fait. Ta fiche dit qui t’es. Une page perso, un QR code. Dix minutes de questions, et c’est à toi.">
+<title>MyLayer, ta page perso, ton QR code</title>
+<meta name="description" content="Ton CV dit ce que t’as fait. Ta page dit qui t’es. Une page perso, un QR code. Dix minutes de questions, et c’est à toi.">
 <meta name="theme-color" content="#0F5C46">
 <meta property="og:type" content="website">
-<meta property="og:title" content="MyLayer — ta page perso, ton QR code">
-<meta property="og:description" content="Ton CV dit ce que t’as fait. Ta fiche dit qui t’es.">
+<meta property="og:title" content="MyLayer, ta page perso, ton QR code">
+<meta property="og:description" content="Ton CV dit ce que t’as fait. Ta page dit qui t’es.">
 <meta property="og:locale" content="fr_CH">
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="assets/css/style.css">
+<link rel="stylesheet" href="assets/css/formulaire.css">
 
 <!-- Sans JS, rien n’est masqué : les animations sont un bonus, pas une condition. -->
 <script>document.documentElement.classList.add('js');</script>
@@ -25,7 +26,7 @@
 
 <!-- ======================= EN-TÊTE =======================
      Les deux cellules se calent sur les deux colonnes de l’accroche :
-     le logo coiffe le titre, « reprendre » coiffe le QR. -->
+     le logo coiffe le titre, « commencer » coiffe le QR. -->
 <header class="site-header">
   <a class="logo" href="#" aria-label="MyLayer, accueil">
     <svg class="logo-mark" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
@@ -35,29 +36,29 @@
     </svg>
     <span class="logo-word">MyLayer</span>
   </a>
-  <!-- Pour ceux qui reviennent finir. Discret, jamais un appel à l’action. -->
-  <a class="reprendre" href="formulaire/">reprendre</a>
+  <!-- Le seul appel à l’action de l’en-tête : direct vers le début du questionnaire. -->
+  <a class="commencer" href="#debut">Commencer</a>
 </header>
 
 <main id="contenu">
 
   <!-- ==================================================================
-       1 — ACCROCHE
+       1. ACCROCHE
        Deux colonnes franches séparées d’un filet : l’argument à gauche,
        la preuve à droite. Plus de moitié d’écran vide.
        ================================================================== -->
   <section class="hero">
     <div class="hero__grid">
 
-      <!-- Le CV est en creux, la fiche est pleine. L’image dit l’argument. -->
+      <!-- Le CV est en creux, la page est pleine. L’image dit l’argument. -->
       <div class="hero__mot">
         <h1 class="hero__title reveal">
           <em>Ton CV dit<br>ce que t’as fait.</em><br>
-          Ta fiche dit<br>qui t’es.
+          Ta page dit<br>qui t’es.
         </h1>
         <p class="hero__sub reveal">
           Ton parcours, tes voyages, ce que tu sais faire.
-          Derrière un QR que tu mets où tu veux.
+          Derrière un QR code que tu mets où tu veux.
         </p>
       </div>
 
@@ -66,7 +67,7 @@
            téléphone avec lui-même. C’est un dessin composé à la main, qui
            emprunte au QR ses trois yeux et sa trame pour dire d’un coup
            d’œil de quoi ce produit parle. Décoratif, donc inerte : le vrai
-           chemin vers une fiche, c’est le grand téléphone plus bas. -->
+           chemin vers une page, c’est le grand téléphone plus bas. -->
       <div class="hero__droite">
         <figure class="hero__qr">
           <svg class="qr-motif" viewBox="0 0 21 21" xmlns="http://www.w3.org/2000/svg"
@@ -101,8 +102,8 @@
   </section>
 
   <!-- ==================================================================
-       2 — CE QUE C’EST  (on montre l’objet avant d’expliquer quoi que ce
-           soit : un grand téléphone, la vraie fiche dedans, qui défile
+       2. CE QUE C’EST  (on montre l’objet avant d’expliquer quoi que ce
+           soit : un grand téléphone, la vraie page dedans, qui défile
            sous le doigt du visiteur)
        ================================================================== -->
   <section class="band band--light" id="exemples">
@@ -117,15 +118,15 @@
         </p>
       </div>
 
-      <!-- La fiche d’Adrien, reproduite en HTML — pas d’iframe, pas d’image :
+      <!-- La page d’Adrien, reproduite en HTML, pas d’iframe, pas d’image :
            c’est du vrai texte et de vraies photos, et ça défile tout seul
            dans le cadre, sans toucher au scroll de la page. -->
       <div class="voila__tel reveal">
         <div class="tel">
           <div class="tel__ecran">
-            <div class="tel__page fa" data-fiche tabindex="0" role="region"
-                 aria-label="La fiche d’Adrien : fais défiler pour la lire">
-          <!-- La bascule FR/EN de la vraie fiche : elle reste en place
+            <div class="tel__page fa" data-page tabindex="0" role="region"
+                 aria-label="La page d’Adrien : fais défiler pour la lire">
+          <!-- La bascule FR/EN de la vraie page : elle reste en place
                pendant qu'on défile, exactement comme sur le vrai site. -->
           <div class="fa-lang" aria-hidden="true"><b>FR</b><i>/</i><span>EN</span></div>
 
@@ -155,7 +156,7 @@
             <h3 class="fa-titre">Mon parcours</h3>
             <ol class="fa-parcours">
               <li class="fa-etape">
-                <b class="fa-etape__titre">Agence web — Co-fondateur</b>
+                <b class="fa-etape__titre">Agence web, co-fondateur</b>
                 <span class="fa-etape__lieu">ClickSansBug</span>
                 <span class="fa-etape__desc">Sites web pour PME romandes et alémaniques. Com, ventes et administration.</span>
               </li>
@@ -191,7 +192,7 @@
               </li>
               <li class="fa-etape">
                 <b class="fa-etape__titre">Stagiaire communication</b>
-                <span class="fa-etape__lieu">Nestlé — Nescafé / Starbucks</span>
+                <span class="fa-etape__lieu">Nestlé, Nescafé / Starbucks</span>
                 <span class="fa-etape__desc">Affiches, supports visuels, idéation de packaging.</span>
               </li>
               <li class="fa-etape">
@@ -205,7 +206,7 @@
                 <span class="fa-etape__desc">Conseil client et vente en boutique.</span>
               </li>
               <li class="fa-etape">
-                <b class="fa-etape__titre">Coach football — équipe féminine</b>
+                <b class="fa-etape__titre">Coach football, équipe féminine</b>
                 <span class="fa-etape__lieu">Pully · 3 saisons</span>
                 <span class="fa-etape__desc">Entraînement et encadrement d’une équipe sur 3 ans.</span>
               </li>
@@ -678,7 +679,7 @@
           <div class="fa-bloc fa-fin">
             <h3 class="fa-titre fa-titre--fin">On se parle ?</h3>
             <p class="fa-sous">Au plaisir d’échanger.</p>
-            <!-- Rendus tels qu'ils apparaissent sur la fiche, mais inertes :
+            <!-- Rendus tels qu'ils apparaissent sur la page, mais inertes :
                  on montre la page, on n'emmène pas le visiteur ailleurs. -->
             <div class="fa-liens">
               <span class="fa-lien">LinkedIn</span>
@@ -700,10 +701,10 @@
   </section>
 
   <!-- ==================================================================
-       3 — COMMENT ÇA SE PASSE
+       3. COMMENT ÇA SE PASSE
        On ne raconte plus le déroulé, on le montre. Trois moments dans un
-       même panneau : les mots se cochent, la fiche se compose, le motif
-       arrive. Le texte ne fait que nommer ce qu’on vient de voir — c’est
+       même panneau : les mots se cochent, la page se compose, le motif
+       arrive. Le texte ne fait que nommer ce qu’on vient de voir, c’est
        l’animation qui explique.
        ================================================================== -->
   <section class="band deroule">
@@ -715,7 +716,7 @@
            voient pas. Le visiteur lit l’ordre dans la disposition. -->
       <ol class="deroule__frame">
 
-        <!-- 1 — les mots se cochent tout seuls : on choisit, on ne rédige pas -->
+        <!-- 1. les mots se cochent tout seuls : on choisit, on ne rédige pas -->
         <li class="dm dm--1 reveal">
           <div class="dm__vue" aria-hidden="true">
             <ul class="dm-mots">
@@ -730,10 +731,10 @@
           <p class="dm__note">Dix minutes, pas un roman.</p>
         </li>
 
-        <!-- 2 — la fiche se compose sous les yeux du visiteur -->
+        <!-- 2. la page se compose sous les yeux du visiteur -->
         <li class="dm dm--2 reveal">
           <div class="dm__vue" aria-hidden="true">
-            <div class="dm-fiche">
+            <div class="dm-page">
               <span class="dm-bloc dm-bloc--titre" style="--d:.30s"></span>
               <span class="dm-bloc dm-bloc--image" style="--d:.40s"></span>
               <span class="dm-bloc dm-bloc--ligne" style="--d:.50s"></span>
@@ -745,7 +746,7 @@
           <p class="dm__note">À la main.</p>
         </li>
 
-        <!-- 3 — le motif de l’accroche revient, en petit : c’est ce qu’on reçoit -->
+        <!-- 3. le motif de l’accroche revient, en petit : c’est ce qu’on reçoit -->
         <li class="dm dm--3 reveal">
           <div class="dm__vue" aria-hidden="true">
             <svg class="qr-motif" viewBox="0 0 21 21" xmlns="http://www.w3.org/2000/svg"
@@ -775,7 +776,7 @@
   </section>
 
   <!-- ==================================================================
-       4 — TU RACONTES. JE CONÇOIS.   (un écran à lui tout seul)
+       4. TU RACONTES. JE CONÇOIS.   (un écran à lui tout seul)
        ================================================================== -->
   <section class="promesse">
     <div class="wrap">
@@ -783,15 +784,16 @@
       <p class="promesse__texte reveal">
         Tu n’as rien à choisir, rien à mettre en page, rien à écrire proprement.
         Tu réponds honnêtement, je m’occupe du reste. Le résultat, c’est ton
-        histoire — pas un formulaire rempli.
+        histoire, pas un formulaire rempli.
       </p>
+      <p class="promesse__action reveal"><a class="cta cta--clair" href="#debut">Commencer</a></p>
     </div>
   </section>
 
   <!-- ==================================================================
-       5 — OÙ TU LE METS
-       En mots, personne ne se projette. On dessine donc les objets — tout
-       en HTML et CSS, aucune image — avec le motif à sa place réelle sur
+       5. OÙ TU LE METS
+       En mots, personne ne se projette. On dessine donc les objets, tout
+       en HTML et CSS, aucune image, avec le motif à sa place réelle sur
        chacun. Ils sont posés comme sur une table : tailles différentes,
        inclinaisons différentes, un léger chevauchement.
        Les cartes imprimées ferment le propos : c’est la version la plus
@@ -809,7 +811,7 @@
            formes. C’est le libellé, sous chaque objet, qui informe. -->
       <ul class="objets">
 
-        <!-- 1 — le CV : feuille portrait, bandeau du nom, le motif en bas à droite -->
+        <!-- 1. le CV : feuille portrait, bandeau du nom, le motif en bas à droite -->
         <li class="objet objet--cv reveal">
           <div class="dessin dessin--cv" aria-hidden="true">
             <span class="cv__nom"></span>
@@ -836,7 +838,7 @@
           <p class="objet__label">Sur ton CV</p>
         </li>
 
-        <!-- 2 — la bio : téléphone simplifié, avatar rond, deux lignes, le motif à côté -->
+        <!-- 2. la bio : téléphone simplifié, avatar rond, deux lignes, le motif à côté -->
         <li class="objet objet--insta reveal">
           <div class="dessin dessin--insta" aria-hidden="true">
             <span class="insta__barre"></span>
@@ -866,7 +868,7 @@
           <p class="objet__label">Dans ta bio</p>
         </li>
 
-        <!-- 3 — la signature : filet de séparation, le motif à gauche, trois lignes -->
+        <!-- 3. la signature : filet de séparation, le motif à gauche, trois lignes -->
         <li class="objet objet--mail reveal">
           <div class="dessin dessin--mail" aria-hidden="true">
             <span class="mail__filet"></span>
@@ -893,7 +895,7 @@
           <p class="objet__label">En signature</p>
         </li>
 
-        <!-- 4 — l’ordinateur : capot fermé vu de dessus, le motif collé dessus -->
+        <!-- 4. l’ordinateur : capot fermé vu de dessus, le motif collé dessus -->
         <li class="objet objet--ordi reveal">
           <div class="dessin dessin--ordi" aria-hidden="true">
             <span class="ordi__charniere"></span>
@@ -924,7 +926,7 @@
       <div class="impression">
         <h3 class="impression__titre reveal">Ou sur de vraies cartes.</h3>
         <p class="impression__sous reveal">
-          Tu veux des cartes&nbsp;? Je les dessine aux couleurs de ta fiche, avec
+          Tu veux des cartes&nbsp;? Je les dessine aux couleurs de ta page, avec
           ton QR au dos. 50 cartes imprimées, livrées chez toi.
         </p>
         <ul class="impression__liste">
@@ -959,7 +961,7 @@
   </section>
 
   <!-- ==================================================================
-       6 — LES CHOSES CLAIRES
+       6. LES CHOSES CLAIRES
        Le dernier doute qu’on lève avant de commencer. Six articles
        numérotés, comme un contrat : les chiffres portent tout le caractère,
        le texte reste calme. Pas de titre, pas d’icône, aucune ligne mise
@@ -975,6 +977,7 @@
         <li class="reveal">Tes photos et tes réponses ne servent qu’à faire ta page. Elles ne vont nulle part ailleurs.</li>
         <li class="reveal">Ta page reste en ligne, et ton QR ne change jamais.</li>
         <li class="reveal">Tu changes d’avis&nbsp;? Un message, et ta page disparaît.</li>
+        <li class="reveal">Ton adresse contient ton prénom, et elle ne change plus.</li>
       </ol>
 
       <!-- Les questions sont juste en dessous : un bouton n’aurait pas de
@@ -992,26 +995,26 @@
   </section>
 
   <!-- ==================================================================
-       5 — LES PREMIÈRES QUESTIONS
+       5. LES PREMIÈRES QUESTIONS
            Pas de bouton : le formulaire commence ici, dans la page.
        ================================================================== -->
   <section class="debut" id="debut">
     <div class="wrap">
       <p class="surtitre reveal">On commence</p>
 
-      <!-- Q1 — prénom -->
+      <!-- Q1. prénom -->
       <div class="q reveal" data-q="1">
         <label class="q__label" for="q-prenom">Ton prénom</label>
         <input class="q__input" id="q-prenom" type="text" name="prenom"
                autocomplete="given-name" placeholder="Léa" maxlength="40"
                enterkeyhint="next">
-        <p class="q__aide">Il donnera l’adresse de ta fiche.</p>
+        <p class="q__aide">Il donnera l’adresse de ta page.</p>
         <p class="q__adresse" data-adresse hidden>
           mylayer.netlify.app/<b data-slug></b>
         </p>
       </div>
 
-      <!-- Q2 — âge -->
+      <!-- Q2. âge -->
       <div class="q reveal" data-q="2">
         <label class="q__label" for="q-age">Ton âge</label>
         <div class="q__curseur">
@@ -1021,7 +1024,7 @@
         </div>
       </div>
 
-      <!-- Q3 — la couleur : le moment où la page change -->
+      <!-- Q3. la couleur : le moment où la page change -->
       <div class="q reveal" data-q="3">
         <span class="q__label" id="q-couleur-l">Ta couleur</span>
         <div class="palette" role="radiogroup" aria-labelledby="q-couleur-l" data-palette>
@@ -1041,53 +1044,640 @@
                   data-col="#8A6A12,#634B0A,#A8821D" aria-label="Ocre"></button>
           <button type="button" class="pastille" role="radio" aria-checked="false"
                   data-col="#1A1A1A,#000000,#333333" aria-label="Encre"></button>
+          <button type="button" class="pastille" role="radio" aria-checked="false"
+                  data-col="#96206E,#74184F,#B32D85" aria-label="Rose profond"></button>
+          <button type="button" class="pastille" role="radio" aria-checked="false"
+                  data-col="#0B5F69,#06444B,#14727E" aria-label="Turquoise sombre"></button>
         </div>
-        <p class="q__aide">Elle portera toute ta fiche.</p>
-      </div>
-
-      <!-- Confirmation : n’apparaît qu’une fois la couleur choisie -->
-      <div class="bascule" data-bascule hidden>
-        <p class="bascule__texte">
-          <span data-bonjour></span>
-          Il reste dix minutes de questions, et ta fiche est à moi de fabriquer.
-        </p>
-        <a class="bascule__lien" href="formulaire/">Continuer &rarr;</a>
-        <p class="bascule__note">Tes réponses sont déjà gardées sur ton téléphone.</p>
+        <p class="q__aide">Elle portera toute ta page.</p>
       </div>
     </div>
   </section>
 
   <!-- ==================================================================
-       8 — LES PETITES LIGNES
+       7. LE QUESTIONNAIRE
+       Il enchaîne la question de la couleur : même page, même scroll, aucun
+       chargement. Une question par écran, et la précédente reste accessible.
+       Le dépôt des photos, lui, reste une page à part : si un envoi de
+       fichiers échoue, il ne doit jamais emporter les réponses écrites.
        ================================================================== -->
-  <section class="band band--light legal">
+  <section class="fm">
+    <div class="fm__barre" aria-hidden="true"><div class="fm__jauge" data-jauge></div></div>
     <div class="wrap">
-      <p class="surtitre reveal">Les petites lignes</p>
-      <div class="legal__texte reveal">
-        <p>
-          Ton adresse contient ton prénom&nbsp;: <code>mylayer.netlify.app/lea</code>.
-          Elle est définitive.
+
+      <noscript>
+        <p class="mot__texte"><b>Ce formulaire a besoin de JavaScript</b> pour t’afficher les
+        questions une par une et garder tes réponses au fur et à mesure. Active-le, ou
+        écris-moi et on fait ça autrement.</p>
+      </noscript>
+
+    <form id="formulaire" name="mylayer-reponses" method="POST"
+          data-netlify="true" netlify-honeypot="piege" enctype="multipart/form-data">
+
+      <input type="hidden" name="form-name" value="mylayer-reponses">
+      <p hidden><label>À ne pas remplir : <input name="piege"></label></p>
+
+      <!-- La référence rattache les photos aux réponses. Elle est fabriquée
+           à l’envoi, à partir du prénom et de quatre caractères tirés au sort. -->
+      <input type="hidden" name="reference" data-champ="reference">
+
+      <!-- Relus depuis la page d’accueil (clé « mylayer.debut ») : on ne
+           redemande jamais ce qui a déjà été donné. -->
+      <input type="hidden" name="prenom"  data-champ="prenom">
+      <input type="hidden" name="age"     data-champ="age">
+      <input type="hidden" name="couleur" data-champ="couleur">
+
+      <!-- ================================================================
+           1. L’ENTRÉE
+           Le prénom et la couleur sont déjà pris sur la page d’accueil.
+           Reste l’usage, qui n’apparaîtra pas sur la page : il oriente
+           la rédaction, rien d’autre.
+           ================================================================ -->
+      <section class="ec est-actif" data-ec data-section="Qui tu es">
+        <p class="ec__compteur" data-compteur></p>
+        <span class="ec__q" id="l-objectif">Ta page, tu la vois plutôt pour…</span>
+        <div class="choix" role="radiogroup" aria-labelledby="l-objectif"
+             data-unique data-cible="objectif">
+          <button type="button" class="choix__opt" role="radio" aria-checked="false">décrocher un job</button>
+          <button type="button" class="choix__opt" role="radio" aria-checked="false">montrer mon projet</button>
+          <button type="button" class="choix__opt" role="radio" aria-checked="false">me présenter en général</button>
+          <button type="button" class="choix__opt" role="radio" aria-checked="false">je sais pas encore</button>
+        </div>
+        <input type="hidden" name="objectif" data-champ="objectif">
+        <div class="ec__nav">
+          <button type="button" class="cta" data-suivant>Continuer</button>
+          <button type="button" class="ec__passe" data-passe>je passe</button>
+        </div>
+      </section>
+
+      <!-- ================================================================
+           2. LES MOTS
+           Les vingt-cinq mots sont écrits une seule fois, dans le JS.
+           ================================================================ -->
+      <section class="ec" data-ec data-section="Qui tu es">
+        <p class="ec__compteur" data-compteur></p>
+        <span class="ec__q">Choisis 3 mots minimum qui te ressemblent</span>
+        <div data-mots="mots_moi"></div>
+        <p class="choix__jauge" data-jauge-mots="mots_moi">3 minimum</p>
+        <div class="sortie">
+          <p class="sortie__label" id="l-mots-moi-autre">Un autre mot ?</p>
+          <div class="multi" data-multi="mots_moi_autre" data-gabarit="le tien"
+               data-long="60" aria-labelledby="l-mots-moi-autre"></div>
+          <input type="hidden" name="mots_moi_autre" data-champ="mots_moi_autre">
+        </div>
+        <input type="hidden" name="mots_moi" data-champ="mots_moi">
+        <div class="ec__nav">
+          <button type="button" class="cta" data-suivant>Continuer</button>
+          <button type="button" class="ec__passe" data-passe>je passe</button>
+        </div>
+      </section>
+
+      <!-- ================================================================
+           3. LE CV, obligatoire
+           Placé après les taps, jamais avant : demander un fichier à
+           quelqu’un qui vient d’arriver casse l’élan. Il conditionne la
+           question suivante, d’où sa place juste avant le parcours.
+           ================================================================ -->
+      <section class="ec" data-ec data-section="Qui tu es" data-obligatoire="cv">
+        <p class="ec__compteur" data-compteur></p>
+        <span class="ec__q">Ton CV</span>
+        <p class="ec__relance">Il donne les dates et les noms. Ça m’évite de te les demander.</p>
+        <label class="depot" data-depot>
+          <input type="file" name="cv" data-champ-fichier="cv"
+                 accept=".pdf,.doc,.docx,.pages,.odt,image/*">
+          <span class="depot__titre" data-depot-titre>Choisir mon CV</span>
+          <span class="depot__note" data-depot-note>PDF, Word, ou même une photo de ton CV. 8 Mo au plus.</span>
+        </label>
+        <p class="ec__erreur" data-erreur></p>
+        <div class="ec__nav">
+          <button type="button" class="cta" data-suivant>Continuer</button>
+        </div>
+      </section>
+
+      <!-- ================================================================
+           LE PACTE
+           Placé juste avant la première question écrite. La dernière ligne
+           change l’état d’esprit de tout ce qui suit : savoir qu’on pourra
+           illustrer plus tard fait raconter plus librement.
+           ================================================================ -->
+      <section class="ec ec--pacte" data-ec data-section="Ton histoire" data-hors-compte data-pacte>
+        <div class="mot">
+          <h2 class="mot__titre">Deux choses avant de continuer.</h2>
+          <p class="mot__texte">
+            Tout ce que tu écris n’apparaîtra pas tel quel sur ta page. Je trie,
+            je choisis, je réécris. Mais plus tu m’en donnes, meilleure elle sera.
+          </p>
+          <p class="mot__texte mot__fort">Raconte. C’est moi qui fais le tri.</p>
+          <p class="mot__texte mot__aparte">
+            Et si t’as la flemme d’écrire : appuie sur le micro de ton clavier et
+            parle. C’est plus rapide, et c’est souvent bien meilleur.
+          </p>
+          <p class="mot__texte mot__aparte">
+            Si tu veux montrer des choses, photos, documents, ce que tu fais,
+            il y a un endroit pour ça à la fin.
+          </p>
+          <p class="mot__nav"><button type="button" class="cta" data-suivant>J’ai compris</button></p>
+        </div>
+      </section>
+
+      <!-- ================================================================
+           4. TON HISTOIRE, le cœur
+           Champs de fond : sept à huit lignes visibles. Un champ court ici
+           produirait des réponses courtes, et il n’y aurait rien à écrire.
+           ================================================================ -->
+      <section class="ec" data-ec data-section="Ton histoire">
+        <p class="ec__compteur" data-compteur></p>
+        <label class="ec__q" for="c-parcours">Le CV donne les dates et les noms. Toi, raconte-moi ce qu’il y a derrière.</label>
+        <p class="ec__relance">Ce que t’as vraiment fait, ce que t’as appris, ce qui t’a marqué. Dans le désordre, comme ça vient.</p>
+        <textarea class="ec__champ ec__champ--fond" id="c-parcours" name="parcours"
+                  data-champ="parcours" rows="8"></textarea>
+        <p class="ec__dictee"><svg viewBox="0 0 14 20" fill="none" aria-hidden="true"><rect x="4" y="1" width="6" height="10" rx="3" stroke="currentColor" stroke-width="1.6"/><path d="M1.5 8.5a5.5 5.5 0 0 0 11 0M7 14v4.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg> tu peux dicter au lieu d’écrire</p>
+        <div class="ec__nav">
+          <button type="button" class="cta" data-suivant>Continuer</button>
+          <button type="button" class="ec__passe" data-passe>je passe</button>
+        </div>
+      </section>
+
+      <section class="ec" data-ec data-section="Ton histoire">
+        <p class="ec__compteur" data-compteur></p>
+        <label class="ec__q" for="c-arrive">Comment t’en es arrivé là ?</label>
+        <textarea class="ec__champ ec__champ--fond" id="c-arrive" name="comment_arrive"
+                  data-champ="comment_arrive" rows="8"></textarea>
+        <p class="ec__dictee"><svg viewBox="0 0 14 20" fill="none" aria-hidden="true"><rect x="4" y="1" width="6" height="10" rx="3" stroke="currentColor" stroke-width="1.6"/><path d="M1.5 8.5a5.5 5.5 0 0 0 11 0M7 14v4.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg> tu peux dicter au lieu d’écrire</p>
+        <div class="ec__nav">
+          <button type="button" class="cta" data-suivant>Continuer</button>
+          <button type="button" class="ec__passe" data-passe>je passe</button>
+        </div>
+      </section>
+
+      <section class="ec" data-ec data-section="Ton histoire">
+        <p class="ec__compteur" data-compteur></p>
+        <label class="ec__q" for="c-fierte">Ce dont tu es le plus fier. Et pourquoi ça compte pour toi.</label>
+        <p class="ec__relance">Pro ou perso, on s’en page.</p>
+        <textarea class="ec__champ ec__champ--fond" id="c-fierte" name="fierte"
+                  data-champ="fierte" rows="8"></textarea>
+        <p class="ec__dictee"><svg viewBox="0 0 14 20" fill="none" aria-hidden="true"><rect x="4" y="1" width="6" height="10" rx="3" stroke="currentColor" stroke-width="1.6"/><path d="M1.5 8.5a5.5 5.5 0 0 0 11 0M7 14v4.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg> tu peux dicter au lieu d’écrire</p>
+        <div class="ec__nav">
+          <button type="button" class="cta" data-suivant>Continuer</button>
+          <button type="button" class="ec__passe" data-passe>je passe</button>
+        </div>
+      </section>
+
+      <section class="ec" data-ec data-section="Ton histoire">
+        <p class="ec__compteur" data-compteur></p>
+        <label class="ec__q" for="c-imprevu">Une fois où ça s’est pas passé comme prévu, tu t’y es pris comment ?</label>
+        <textarea class="ec__champ ec__champ--fond" id="c-imprevu" name="imprevu"
+                  data-champ="imprevu" rows="8"></textarea>
+        <p class="ec__dictee"><svg viewBox="0 0 14 20" fill="none" aria-hidden="true"><rect x="4" y="1" width="6" height="10" rx="3" stroke="currentColor" stroke-width="1.6"/><path d="M1.5 8.5a5.5 5.5 0 0 0 11 0M7 14v4.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg> tu peux dicter au lieu d’écrire</p>
+        <div class="ec__nav">
+          <button type="button" class="cta" data-suivant>Continuer</button>
+          <button type="button" class="ec__passe" data-passe>je passe</button>
+        </div>
+      </section>
+
+      <section class="ec" data-ec data-section="Ton histoire">
+        <p class="ec__compteur" data-compteur></p>
+        <label class="ec__q" for="c-truc-bien">Il y a un truc que tu fais bien ?</label>
+        <p class="ec__relance">Même un truc bête. Surtout un truc bête.</p>
+        <textarea class="ec__champ ec__champ--fond" id="c-truc-bien" name="truc_bien"
+                  data-champ="truc_bien" rows="8"></textarea>
+        <p class="ec__dictee"><svg viewBox="0 0 14 20" fill="none" aria-hidden="true"><rect x="4" y="1" width="6" height="10" rx="3" stroke="currentColor" stroke-width="1.6"/><path d="M1.5 8.5a5.5 5.5 0 0 0 11 0M7 14v4.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg> tu peux dicter au lieu d’écrire</p>
+        <div class="ec__nav">
+          <button type="button" class="cta" data-suivant>Continuer</button>
+          <button type="button" class="ec__passe" data-passe>je passe</button>
+        </div>
+      </section>
+
+      <section class="ec" data-ec data-section="Ton histoire">
+        <p class="ec__compteur" data-compteur></p>
+        <label class="ec__q" for="c-apprendre">Un truc que t’aimerais apprendre.</label>
+        <textarea class="ec__champ ec__champ--moyen" id="c-apprendre" name="apprendre"
+                  data-champ="apprendre" rows="3"></textarea>
+        <p class="ec__dictee"><svg viewBox="0 0 14 20" fill="none" aria-hidden="true"><rect x="4" y="1" width="6" height="10" rx="3" stroke="currentColor" stroke-width="1.6"/><path d="M1.5 8.5a5.5 5.5 0 0 0 11 0M7 14v4.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg> tu peux dicter au lieu d’écrire</p>
+        <div class="ec__nav">
+          <button type="button" class="cta" data-suivant>Continuer</button>
+          <button type="button" class="ec__passe" data-passe>je passe</button>
+        </div>
+      </section>
+
+      <!-- ================================================================
+           5. CE QUE LE CV NE DIT PAS, rythme rapide
+           ================================================================ -->
+      <section class="ec" data-ec data-section="Ce que le CV ne dit pas">
+        <p class="ec__compteur" data-compteur></p>
+        <span class="ec__q">Plutôt ceci ou cela</span>
+        <div class="duels">
+          <div class="duel" data-duel="duel_matin_soir" role="group" aria-label="matin ou soir">
+            <button type="button" class="duel__opt" aria-pressed="false">matin</button>
+            <button type="button" class="duel__opt" aria-pressed="false">soir</button>
+          </div>
+          <div class="duel" data-duel="duel_plan_impro" role="group" aria-label="plan ou impro">
+            <button type="button" class="duel__opt" aria-pressed="false">plan</button>
+            <button type="button" class="duel__opt" aria-pressed="false">impro</button>
+          </div>
+          <div class="duel" data-duel="duel_equipe_solo" role="group" aria-label="équipe ou solo">
+            <button type="button" class="duel__opt" aria-pressed="false">équipe</button>
+            <button type="button" class="duel__opt" aria-pressed="false">solo</button>
+          </div>
+          <div class="duel" data-duel="duel_ville_nature" role="group" aria-label="ville ou nature">
+            <button type="button" class="duel__opt" aria-pressed="false">ville</button>
+            <button type="button" class="duel__opt" aria-pressed="false">nature</button>
+          </div>
+          <div class="duel" data-duel="duel_parler_ecouter" role="group" aria-label="parler ou écouter">
+            <button type="button" class="duel__opt" aria-pressed="false">parler</button>
+            <button type="button" class="duel__opt" aria-pressed="false">écouter</button>
+          </div>
+          <div class="duel" data-duel="duel_vitesse_precision" role="group" aria-label="vitesse ou précision">
+            <button type="button" class="duel__opt" aria-pressed="false">vitesse</button>
+            <button type="button" class="duel__opt" aria-pressed="false">précision</button>
+          </div>
+          <div class="duel" data-duel="duel_routine_nouveaute" role="group" aria-label="routine ou nouveauté">
+            <button type="button" class="duel__opt" aria-pressed="false">routine</button>
+            <button type="button" class="duel__opt" aria-pressed="false">nouveauté</button>
+          </div>
+          <div class="duel" data-duel="duel_dedans_dehors" role="group" aria-label="dedans ou dehors">
+            <button type="button" class="duel__opt" aria-pressed="false">dedans</button>
+            <button type="button" class="duel__opt" aria-pressed="false">dehors</button>
+          </div>
+        </div>
+        <input type="hidden" name="duel_matin_soir"        data-champ="duel_matin_soir">
+        <input type="hidden" name="duel_plan_impro"        data-champ="duel_plan_impro">
+        <input type="hidden" name="duel_equipe_solo"       data-champ="duel_equipe_solo">
+        <input type="hidden" name="duel_ville_nature"      data-champ="duel_ville_nature">
+        <input type="hidden" name="duel_parler_ecouter"    data-champ="duel_parler_ecouter">
+        <input type="hidden" name="duel_vitesse_precision" data-champ="duel_vitesse_precision">
+        <input type="hidden" name="duel_routine_nouveaute" data-champ="duel_routine_nouveaute">
+        <input type="hidden" name="duel_dedans_dehors"     data-champ="duel_dedans_dehors">
+        <div class="ec__nav">
+          <button type="button" class="cta" data-suivant>Continuer</button>
+          <button type="button" class="ec__passe" data-passe>je passe</button>
+        </div>
+      </section>
+
+      <!-- Les deux extrêmes encadrent le curseur, à la même hauteur que lui.
+           Trop à l’étroit, ils passent au-dessus et en dessous : c’est la
+           feuille de style qui en décide, pas un second balisage. -->
+      <section class="ec" data-ec data-section="Ce que le CV ne dit pas">
+        <p class="ec__compteur" data-compteur></p>
+        <label class="ec__q" for="c-curseur">Tu te mets où ?</label>
+        <div class="curseur">
+          <span class="curseur__borne">structuré</span>
+          <input class="q__range curseur__piste" id="c-curseur" type="range"
+                 min="0" max="100" step="1" value="50"
+                 name="structure_spontane" data-champ="structure_spontane">
+          <span class="curseur__borne">spontané</span>
+        </div>
+        <div class="ec__nav">
+          <button type="button" class="cta" data-suivant>Continuer</button>
+          <button type="button" class="ec__passe" data-passe>je passe</button>
+        </div>
+      </section>
+
+      <section class="ec" data-ec data-section="Ce que le CV ne dit pas">
+        <p class="ec__compteur" data-compteur></p>
+        <span class="ec__q">Range du plus au moins important pour toi</span>
+        <ol class="rang" data-rang data-cible="priorites">
+          <li class="rang__item" draggable="true" data-val="l’ambiance"></li>
+          <li class="rang__item" draggable="true" data-val="apprendre"></li>
+          <li class="rang__item" draggable="true" data-val="l’autonomie"></li>
+          <li class="rang__item" draggable="true" data-val="la reconnaissance"></li>
+          <li class="rang__item" draggable="true" data-val="la stabilité"></li>
+        </ol>
+        <input type="hidden" name="priorites" data-champ="priorites">
+        <div class="ec__nav">
+          <button type="button" class="cta" data-suivant>Continuer</button>
+          <button type="button" class="ec__passe" data-passe>je passe</button>
+        </div>
+      </section>
+
+      <section class="ec" data-ec data-section="Ce que le CV ne dit pas">
+        <p class="ec__compteur" data-compteur></p>
+        <label class="ec__q" for="c-invisible">Un truc qu’on ne devine pas en te regardant.</label>
+        <textarea class="ec__champ ec__champ--moyen" id="c-invisible" name="truc_invisible"
+                  data-champ="truc_invisible" rows="3"></textarea>
+        <p class="ec__dictee"><svg viewBox="0 0 14 20" fill="none" aria-hidden="true"><rect x="4" y="1" width="6" height="10" rx="3" stroke="currentColor" stroke-width="1.6"/><path d="M1.5 8.5a5.5 5.5 0 0 0 11 0M7 14v4.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg> tu peux dicter au lieu d’écrire</p>
+        <div class="ec__nav">
+          <button type="button" class="cta" data-suivant>Continuer</button>
+          <button type="button" class="ec__passe" data-passe>je passe</button>
+        </div>
+      </section>
+
+      <section class="ec" data-ec data-section="Ce que le CV ne dit pas">
+        <p class="ec__compteur" data-compteur></p>
+        <label class="ec__q" for="c-temps-libre">Ce que tu fais de ton temps libre, et ce que ça t’apporte.</label>
+        <p class="ec__relance">Le sport, la musique, les jeux, rien du tout. Tout compte.</p>
+        <textarea class="ec__champ ec__champ--fond" id="c-temps-libre" name="temps_libre"
+                  data-champ="temps_libre" rows="7"></textarea>
+        <p class="ec__dictee"><svg viewBox="0 0 14 20" fill="none" aria-hidden="true"><rect x="4" y="1" width="6" height="10" rx="3" stroke="currentColor" stroke-width="1.6"/><path d="M1.5 8.5a5.5 5.5 0 0 0 11 0M7 14v4.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg> tu peux dicter au lieu d’écrire</p>
+        <div class="ec__nav">
+          <button type="button" class="cta" data-suivant>Continuer</button>
+          <button type="button" class="ec__passe" data-passe>je passe</button>
+        </div>
+      </section>
+
+      <!-- ================================================================
+           6. CE QUI PROUVE
+           ================================================================ -->
+      <section class="ec" data-ec data-section="Ce qui compte">
+        <p class="ec__compteur" data-compteur></p>
+        <label class="ec__q" for="c-chiffres">T’as des chiffres qui parlent pour toi ?</label>
+        <p class="ec__relance">Des exemples : pays visités · clients · couverts servis · élèves · km parcourus · années de pratique · projets livrés · personnes encadrées · heures de bénévolat · trucs fabriqués</p>
+        <textarea class="ec__champ ec__champ--fond" id="c-chiffres" name="chiffres"
+                  data-champ="chiffres" rows="7"></textarea>
+        <p class="ec__dictee"><svg viewBox="0 0 14 20" fill="none" aria-hidden="true"><rect x="4" y="1" width="6" height="10" rx="3" stroke="currentColor" stroke-width="1.6"/><path d="M1.5 8.5a5.5 5.5 0 0 0 11 0M7 14v4.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg> tu peux dicter au lieu d’écrire</p>
+        <div class="ec__nav">
+          <button type="button" class="cta" data-suivant>Continuer</button>
+          <button type="button" class="ec__passe" data-passe>je passe</button>
+        </div>
+      </section>
+
+      <section class="ec" data-ec data-section="Ce qui compte">
+        <p class="ec__compteur" data-compteur></p>
+        <label class="ec__q" for="c-vu">Si on demandait à quelqu’un qui te connaît bien de te décrire, il dirait quoi ?</label>
+        <textarea class="ec__champ ec__champ--fond" id="c-vu" name="vu_par_les_autres"
+                  data-champ="vu_par_les_autres" rows="7"></textarea>
+        <p class="ec__dictee"><svg viewBox="0 0 14 20" fill="none" aria-hidden="true"><rect x="4" y="1" width="6" height="10" rx="3" stroke="currentColor" stroke-width="1.6"/><path d="M1.5 8.5a5.5 5.5 0 0 0 11 0M7 14v4.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg> tu peux dicter au lieu d’écrire</p>
+        <div class="ec__nav">
+          <button type="button" class="cta" data-suivant>Continuer</button>
+          <button type="button" class="ec__passe" data-passe>je passe</button>
+        </div>
+      </section>
+
+      <section class="ec" data-ec data-section="Ce qui compte">
+        <p class="ec__compteur" data-compteur></p>
+        <span class="ec__q">Les langues que tu parles</span>
+        <div class="langues" data-langues></div>
+        <div class="sortie">
+          <p class="sortie__label" id="l-langue-autre">Une autre langue ?</p>
+          <div class="multi" data-multi="langues_autre"
+               data-gabarit="laquelle, et à quel niveau" data-long="120"
+               aria-labelledby="l-langue-autre"></div>
+          <input type="hidden" name="langues_autre" data-champ="langues_autre">
+        </div>
+        <input type="hidden" name="langues" data-champ="langues">
+        <div class="ec__nav">
+          <button type="button" class="cta" data-suivant>Continuer</button>
+          <button type="button" class="ec__passe" data-passe>je passe</button>
+        </div>
+      </section>
+
+      <section class="ec" data-ec data-section="Ce qui compte">
+        <p class="ec__compteur" data-compteur></p>
+        <label class="ec__q" for="c-realisations">Des réalisations à montrer ?</label>
+        <p class="ec__relance">Un site, une chaîne, un portfolio, un compte où tu postes ce que tu fais. Un lien par ligne.</p>
+        <textarea class="ec__champ ec__champ--moyen" id="c-realisations" name="realisations"
+                  data-champ="realisations" rows="4"
+                  placeholder="https://…" spellcheck="false"></textarea>
+        <p class="ec__dictee"><svg viewBox="0 0 14 20" fill="none" aria-hidden="true"><rect x="4" y="1" width="6" height="10" rx="3" stroke="currentColor" stroke-width="1.6"/><path d="M1.5 8.5a5.5 5.5 0 0 0 11 0M7 14v4.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg> tu peux dicter au lieu d’écrire</p>
+        <div class="joint" data-joint>
+          <label class="depot" data-zone data-slots="realisations_fichier_1,realisations_fichier_2,realisations_fichier_3" data-max="3">
+            <input type="file" accept="image/*,.pdf" multiple data-choix>
+            <span class="depot__titre">Choisir des fichiers</span>
+            <span class="depot__note" data-depot-note>Photos ou PDF, jusqu’à trois. 8 Mo au plus par fichier, allégés sur ton téléphone avant de partir.</span>
+          </label>
+          <div class="vignettes" data-vignettes></div>
+        </div>
+        <div class="ec__nav">
+          <button type="button" class="cta" data-suivant>Continuer</button>
+          <button type="button" class="ec__passe" data-passe>je passe</button>
+        </div>
+      </section>
+
+      <!-- ================================================================
+           7. CE QUI COMPTE
+           La première question produit le bloc visuel de la page, pour
+           tout le monde. Le voyage n’est plus la porte d’entrée : il est
+           devenu un bonus, juste après.
+           ================================================================ -->
+      <section class="ec" data-ec data-section="Ce qui compte">
+        <p class="ec__compteur" data-compteur></p>
+        <label class="ec__q" for="c-lieux">Il y a des endroits ou des trucs qui comptent pour toi ? Montre-les.</label>
+        <p class="ec__relance">Un pays où t’es allé, l’atelier où tu bricoles, la salle où tu t’entraînes, ce que tu fabriques. Ce que tu veux.</p>
+        <textarea class="ec__champ ec__champ--fond" id="c-lieux" name="lieux_qui_comptent"
+                  data-champ="lieux_qui_comptent" rows="7"></textarea>
+        <p class="ec__dictee"><svg viewBox="0 0 14 20" fill="none" aria-hidden="true"><rect x="4" y="1" width="6" height="10" rx="3" stroke="currentColor" stroke-width="1.6"/><path d="M1.5 8.5a5.5 5.5 0 0 0 11 0M7 14v4.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg> tu peux dicter au lieu d’écrire</p>
+        <div class="joint" data-joint>
+          <label class="depot" data-zone data-slots="lieux_fichier_1,lieux_fichier_2,lieux_fichier_3" data-max="3">
+            <input type="file" accept="image/*" multiple data-choix>
+            <span class="depot__titre">Choisir des fichiers</span>
+            <span class="depot__note" data-depot-note>Jusqu’à trois photos. 8 Mo au plus par fichier, allégées sur ton téléphone avant de partir.</span>
+          </label>
+          <div class="vignettes" data-vignettes></div>
+        </div>
+        <div class="ec__nav">
+          <button type="button" class="cta" data-suivant>Continuer</button>
+          <button type="button" class="ec__passe" data-passe>je passe</button>
+        </div>
+      </section>
+
+      <section class="ec" data-ec data-section="Ce qui compte">
+        <p class="ec__compteur" data-compteur></p>
+        <span class="ec__q" id="l-voyage">Tu as voyagé ?</span>
+        <div class="choix" role="radiogroup" aria-labelledby="l-voyage"
+             data-unique data-cible="a_voyage" data-ouvre="pays">
+          <button type="button" class="choix__opt" role="radio" aria-checked="false">oui</button>
+          <button type="button" class="choix__opt" role="radio" aria-checked="false">non</button>
+        </div>
+        <input type="hidden" name="a_voyage" data-champ="a_voyage">
+
+        <div class="pays" data-bloc="pays" hidden>
+          <label class="sortie__label" for="c-pays-cherche">Quels pays ? Tape les premières lettres.</label>
+          <input class="pays__cherche" id="c-pays-cherche" type="search"
+                 placeholder="Thaïlande, Canada…" autocomplete="off" spellcheck="false">
+          <div class="pays__choisis" data-pays-choisis></div>
+          <div class="pays__liste" data-pays-liste></div>
+          <div class="sortie">
+            <p class="sortie__label" id="l-pays-autre">Un endroit qui n’est pas dans la liste ?</p>
+            <div class="multi" data-multi="pays_autre" data-gabarit="dis-le ici"
+                 data-long="120" aria-labelledby="l-pays-autre"></div>
+            <input type="hidden" name="pays_autre" data-champ="pays_autre">
+          </div>
+        </div>
+        <input type="hidden" name="pays" data-champ="pays">
+
+        <div class="ec__nav">
+          <button type="button" class="cta" data-suivant>Continuer</button>
+          <button type="button" class="ec__passe" data-passe>je passe</button>
+        </div>
+      </section>
+
+      <!-- ================================================================
+           8. OÙ TU VAS
+           ================================================================ -->
+      <section class="ec" data-ec data-section="Où tu vas">
+        <p class="ec__compteur" data-compteur></p>
+        <span class="ec__q" id="l-envir">Dans quel genre d’environnement tu donnes le meilleur ?</span>
+        <div class="choix" role="group" aria-labelledby="l-envir" data-multiple data-cible="environnement">
+          <button type="button" class="choix__opt" aria-pressed="false">en équipe serrée</button>
+          <button type="button" class="choix__opt" aria-pressed="false">en autonomie</button>
+          <button type="button" class="choix__opt" aria-pressed="false">sous pression</button>
+          <button type="button" class="choix__opt" aria-pressed="false">dans le concret</button>
+          <button type="button" class="choix__opt" aria-pressed="false">dans la nouveauté</button>
+          <button type="button" class="choix__opt" aria-pressed="false">au contact des gens</button>
+        </div>
+        <input type="hidden" name="environnement" data-champ="environnement">
+        <div class="ec__nav">
+          <button type="button" class="cta" data-suivant>Continuer</button>
+          <button type="button" class="ec__passe" data-passe>je passe</button>
+        </div>
+      </section>
+
+      <!-- ================================================================
+           9. COMMENT ON TE JOINT
+           L’âge n’est pas ici : il est déjà donné sur la page d’accueil et
+           relu depuis le stockage local. On ne le redemande pas.
+           ================================================================ -->
+      <section class="ec" data-ec data-section="On te joint" data-obligatoire="mail">
+        <p class="ec__compteur" data-compteur></p>
+        <label class="ec__q" for="c-mail">Ton mail</label>
+        <p class="ec__relance">C’est là que j’envoie ta page, et le lien pour déposer tes photos.</p>
+        <input class="q__input" id="c-mail" type="email" name="mail" data-champ="mail"
+               autocomplete="email" inputmode="email" placeholder="toi@exemple.ch"
+               spellcheck="false" enterkeyhint="next">
+        <p class="ec__erreur" data-erreur></p>
+        <div class="ec__nav">
+          <button type="button" class="cta" data-suivant>Continuer</button>
+        </div>
+      </section>
+
+      <section class="ec" data-ec data-section="On te joint">
+        <p class="ec__compteur" data-compteur></p>
+        <label class="ec__q" for="c-tel">Ton téléphone</label>
+        <input class="q__input" id="c-tel" type="tel" name="telephone" data-champ="telephone"
+               autocomplete="tel" inputmode="tel" placeholder="+41 79 000 00 00">
+        <div class="choix" role="group" aria-label="afficher le numéro sur la page"
+             data-bascule data-cible="telephone_affiche">
+          <button type="button" class="choix__opt" aria-pressed="false">l’afficher sur ma page</button>
+        </div>
+        <p class="ec__relance">Décoché, il reste entre toi et moi.</p>
+        <input type="hidden" name="telephone_affiche" data-champ="telephone_affiche" value="non">
+        <div class="ec__nav">
+          <button type="button" class="cta" data-suivant>Continuer</button>
+          <button type="button" class="ec__passe" data-passe>je passe</button>
+        </div>
+      </section>
+
+      <section class="ec" data-ec data-section="On te joint">
+        <p class="ec__compteur" data-compteur></p>
+        <span class="ec__q">Tes réseaux</span>
+        <p class="ec__relance">Juste l’arobase, pas l’adresse complète. Je reconstruis les liens.</p>
+        <div class="langues">
+          <div class="langue">
+            <label class="sortie__label" for="c-insta" style="margin:0">Instagram</label>
+            <input class="sortie__champ" id="c-insta" type="text" name="instagram"
+                   data-champ="instagram" placeholder="@toi" autocomplete="off"
+                   spellcheck="false" maxlength="60" style="max-width:14rem">
+          </div>
+          <div class="langue">
+            <label class="sortie__label" for="c-linkedin" style="margin:0">LinkedIn</label>
+            <input class="sortie__champ" id="c-linkedin" type="text" name="linkedin"
+                   data-champ="linkedin" placeholder="@toi" autocomplete="off"
+                   spellcheck="false" maxlength="60" style="max-width:14rem">
+          </div>
+          <div class="langue">
+            <label class="sortie__label" for="c-tiktok" style="margin:0">TikTok</label>
+            <input class="sortie__champ" id="c-tiktok" type="text" name="tiktok"
+                   data-champ="tiktok" placeholder="@toi" autocomplete="off"
+                   spellcheck="false" maxlength="60" style="max-width:14rem">
+          </div>
+          <div class="langue">
+            <label class="sortie__label" for="c-reseau-autre" style="margin:0">Autre</label>
+            <input class="sortie__champ" id="c-reseau-autre" type="text" name="reseau_autre"
+                   data-champ="reseau_autre" placeholder="lequel, et ton @" autocomplete="off"
+                   spellcheck="false" maxlength="90" style="max-width:14rem">
+          </div>
+        </div>
+        <div class="ec__nav">
+          <button type="button" class="cta" data-suivant>Continuer</button>
+          <button type="button" class="ec__passe" data-passe>je passe</button>
+        </div>
+      </section>
+
+      <section class="ec" data-ec data-section="On te joint">
+        <p class="ec__compteur" data-compteur></p>
+        <span class="ec__q" id="l-contact">Un bouton « ajouter à mes contacts » sur ta page ?</span>
+        <div class="choix" role="radiogroup" aria-labelledby="l-contact"
+             data-unique data-cible="bouton_contact">
+          <button type="button" class="choix__opt" role="radio" aria-checked="false">oui</button>
+          <button type="button" class="choix__opt" role="radio" aria-checked="false">non</button>
+        </div>
+        <input type="hidden" name="bouton_contact" data-champ="bouton_contact">
+        <div class="ec__nav">
+          <button type="button" class="cta" data-suivant>Continuer</button>
+          <button type="button" class="ec__passe" data-passe>je passe</button>
+        </div>
+      </section>
+
+      <section class="ec" data-ec data-section="On te joint">
+        <p class="ec__compteur" data-compteur></p>
+        <span class="ec__q" id="l-anglais">Tu veux aussi une version anglaise ?</span>
+        <div class="choix" role="radiogroup" aria-labelledby="l-anglais"
+             data-unique data-cible="version_anglaise">
+          <button type="button" class="choix__opt" role="radio" aria-checked="false">oui</button>
+          <button type="button" class="choix__opt" role="radio" aria-checked="false">non</button>
+        </div>
+        <input type="hidden" name="version_anglaise" data-champ="version_anglaise">
+        <div class="ec__nav">
+          <button type="button" class="cta" data-envoyer>Envoyer mes réponses</button>
+          <button type="button" class="ec__passe" data-passe data-envoyer>je passe et j’envoie</button>
+        </div>
+        <p class="envoi" data-envoi hidden></p>
+      </section>
+
+
+      <!-- Les emplacements des fichiers joints aux questions. Netlify lit ce
+           HTML au déploiement pour savoir quels champs existent : ils sont
+           donc écrits ici, en dur, même s’ils sont remplis à l’envoi avec les
+           versions allégées. Les zones plus haut ne sont que l’interface. -->
+      <div hidden data-emplacements>
+        <input type="file" name="realisations_fichier_1">
+        <input type="file" name="realisations_fichier_2">
+        <input type="file" name="realisations_fichier_3">
+        <input type="file" name="lieux_fichier_1">
+        <input type="file" name="lieux_fichier_2">
+        <input type="file" name="lieux_fichier_3">
+      </div>
+    </form>
+
+    <!-- ==================================================================
+         L’ÉCRAN DE VALIDATION
+         Hors du formulaire : il ne s’affiche qu’une fois l’envoi accepté.
+         C’est le moment précis où plus rien ne peut être perdu.
+         ================================================================== -->
+    <section class="ec" data-ec-final hidden>
+      <div class="mot">
+        <h2 class="mot__titre">C’est reçu. J’ai tout.</h2>
+        <p class="mot__texte">
+          Il me manque juste tes photos. C’est la deuxième partie, et elle prend
+          deux minutes.
         </p>
-        <p>
-          Ta page est publique — n’importe qui avec le lien peut la voir. Ton numéro
-          n’y apparaît que si tu le demandes. Tu veux qu’elle disparaisse&nbsp;? Tu me
-          le dis, je la supprime.
+        <p class="ref">
+          <span class="ref__label">Ta référence</span>
+          <b class="ref__code" data-ref-code></b>
         </p>
-        <p>Paiement par Twint à la livraison.</p>
-        <p>
-          Ton QR est définitif&nbsp;: il ne changera jamais, même si tu mets ta fiche
-          à jour plus tard.
+        <p class="mot__texte mot__aparte">
+          Garde-la. Elle est déjà dans le lien ci-dessous, et je te la renvoie par mail.
+        </p>
+        <p class="mot__nav">
+          <a class="cta" href="formulaire/fichiers/" data-lien-fichiers>Continuer maintenant</a>
+        </p>
+        <p class="mot__texte mot__aparte">
+          ou plus tard, avec le lien que je t’envoie par mail.
         </p>
       </div>
+    </section>
+
     </div>
   </section>
 
 </main>
 
 <footer class="site-footer">
-  <p>Fait à la main, une fiche à la fois.</p>
+  <p>Fait à la main, une page à la fois.</p>
 </footer>
 
 <script src="assets/js/main.js" defer></script>
+<script src="assets/js/pays.js" defer></script>
+<script src="assets/js/formulaire.js" defer></script>
 </body>
 </html>

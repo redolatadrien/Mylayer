@@ -1,9 +1,9 @@
 /* ==========================================================================
-   MyLayer — comportements de la page d’accueil
+   MyLayer, comportements de la page d’accueil
    --------------------------------------------------------------------------
    1. Apparitions au scroll
-   2. La fiche qui défile dans le grand téléphone
-   3. Les premières questions : prénom, âge, couleur — et la page se repeint
+   2. La page qui défile dans le grand téléphone
+   3. Les premières questions : prénom, âge, couleur, et la page se repeint
    Rien n’est jamais masqué durablement : si quoi que ce soit échoue,
    toutAfficher() remet la page entière en état lisible.
    ========================================================================== */
@@ -23,39 +23,39 @@
   } catch (e) { /* vieux navigateur */ }
 
   /* ======================================================================
-     2 — La fiche d’Adrien, dans le grand téléphone
+     2. La page d’Adrien, dans le grand téléphone
      Le défilement lui-même est purement CSS (overflow-y: auto) : c’est le
      visiteur qui l’actionne, et le navigateur rend la main à la page une
-     fois la fiche au bout. On ne s’occupe ici que du dégradé du bas, qui
-     s’efface quand il n’y a plus rien à lire — sans JS, il reste affiché,
+     fois la page au bout. On ne s’occupe ici que du dégradé du bas, qui
+     s’efface quand il n’y a plus rien à lire, sans JS, il reste affiché,
      ce qui n’enlève rien.
      ====================================================================== */
-  function brancherFiche() {
-    var fiche = document.querySelector('[data-fiche]');
-    if (!fiche) return;
+  function brancherPage() {
+    var page = document.querySelector('[data-page]');
+    if (!page) return;
 
     var tick = false;
 
     function jauger() {
       tick = false;
-      var reste = fiche.scrollHeight - fiche.scrollTop - fiche.clientHeight;
-      fiche.classList.toggle('est-au-bout', reste < 12);
+      var reste = page.scrollHeight - page.scrollTop - page.clientHeight;
+      page.classList.toggle('est-au-bout', reste < 12);
     }
 
-    fiche.addEventListener('scroll', function () {
+    page.addEventListener('scroll', function () {
       if (tick) return;
       tick = true;
       requestAnimationFrame(jauger);
     }, { passive: true });
 
     window.addEventListener('resize', jauger);
-    // Les photos arrivent en différé : chacune rallonge la fiche.
+    // Les photos arrivent en différé : chacune rallonge la page.
     window.addEventListener('load', jauger);
     jauger();
   }
 
   /* ======================================================================
-     3 — Les premières questions
+     3. Les premières questions
      ====================================================================== */
   var CLE = 'mylayer.debut';
 
@@ -98,7 +98,6 @@
         adresse.hidden = true;
       }
       memoriser('prenom', prenom.value.trim());
-      majBascule();
     }
 
     if (prenom) {
@@ -148,7 +147,6 @@
           var trio = b.getAttribute('data-col');
           appliquer(trio);
           memoriser('couleur', trio);
-          majBascule();
         });
       })(pastilles[i]);
     }
@@ -162,30 +160,10 @@
       }
     }
 
-    /* --- la bascule : elle n’apparaît qu’une fois les trois choses faites --- */
-    var bascule = document.querySelector('[data-bascule]');
-    var bonjour = document.querySelector('[data-bonjour]');
-
-    function majBascule() {
-      if (!bascule) return;
-      var d = relire();
-      var pret = d.prenom && d.prenom.length > 0 && d.couleur;
-
-      if (pret && bascule.hidden) {
-        bascule.hidden = false;
-        bascule.classList.add('reveal', 'is-in');
-      }
-      if (bonjour && d.prenom) {
-        bonjour.innerHTML = '<b>Voilà, ' + d.prenom.replace(/</g, '&lt;') +
-                            '.</b> Ta fiche a déjà une couleur et une adresse. ';
-      }
-    }
-
-    majBascule();
   }
 
   /* ======================================================================
-     1 — Apparitions au scroll
+     1. Apparitions au scroll
      ====================================================================== */
   function observer() {
     if (reduit || !('IntersectionObserver' in window)) {
@@ -207,7 +185,7 @@
   /* ---------------------------------------------------------------------- */
   try {
     observer();
-    brancherFiche();
+    brancherPage();
     brancherDebut();
   } catch (err) {
     // Un imprévu ne doit jamais laisser la page vide.

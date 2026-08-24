@@ -1,9 +1,9 @@
 /* ==========================================================================
-   MyLayer — feuille de style
+   MyLayer, feuille de style
    Même famille que profiladrienredolat.netlify.app : couleur pleine, Anton
    géant en capitales, traits blancs, apparitions au scroll.
    Le vert sapin remplace le cobalt pour ne pas confondre la marque et son
-   créateur — même intensité, autre bout de la roue.
+   créateur, même intensité, autre bout de la roue.
    Mobile-first.
    ========================================================================== */
 
@@ -125,7 +125,7 @@ code {
 /* ==========================================================================
    L’appel à commencer
    Une seule occurrence : à la fin de l’offre des cartes, loin du formulaire.
-   Plus bas, les questions sont juste sous « Les choses claires » — là, c’est
+   Plus bas, les questions sont juste sous « Les choses claires », là, c’est
    la flèche de l’accroche qui invite à descendre, pas un bouton.
    Il reprend la forme des pastilles de la page : plein, très arrondi.
    ========================================================================== */
@@ -140,6 +140,15 @@ code {
   transition: transform .2s var(--ease), opacity .2s;
 }
 .cta:hover { transform: translateY(-2px); opacity: .92; }
+
+/* Sur les fonds en couleur pleine, le contraste s’inverse : le crème passe du
+   texte au fond. Même traitement que « commencer » dans l’en-tête. */
+.cta--clair { background: var(--cream); color: var(--c-deep); }
+
+/* Bloqué tant que la réponse n’y est pas. Il reste lisible : on doit voir ce
+   qui s’ouvrira, pas deviner un bouton absent. */
+.cta:disabled { opacity: .45; cursor: default; }
+.cta:disabled:hover { transform: none; opacity: .45; }
 
 /* ==========================================================================
    Apparitions au scroll  (même courbe que la page de référence)
@@ -156,7 +165,7 @@ code {
    En-tête
    ========================================================================== */
 /* L’en-tête partage la largeur ET le découpage en colonnes de l’accroche :
-   le logo coiffe le titre, « reprendre » coiffe le QR. Les deux blocs lisent
+   le logo coiffe le titre, « commencer » coiffe le QR. Les deux blocs lisent
    les mêmes variables, ils ne peuvent donc pas se désaligner. */
 .site-header {
   position: absolute;
@@ -170,17 +179,19 @@ code {
 .logo-mark { width: 20px; height: 20px; fill: var(--white); flex: none; }
 .logo-word { font-size: 1.35rem; letter-spacing: .06em; }
 
-.reprendre {
-  font-size: .82rem;
-  color: var(--dimmer);
-  border-bottom: 1px solid var(--line-soft);
-  padding-bottom: 2px;
-  transition: color .2s, border-color .2s;
+.commencer {
+  display: inline-flex; align-items: center; justify-content: center;
+  padding: .55rem 1.5rem;
+  border-radius: 999px;
+  font-family: Anton, sans-serif; text-transform: uppercase;
+  font-size: .82rem; letter-spacing: .05em;
+  background: var(--cream); color: var(--c-deep);
+  transition: transform .2s var(--ease), opacity .2s;
 }
-.reprendre:hover { color: var(--white); border-color: var(--line); }
+.commencer:hover { transform: translateY(-2px); opacity: .92; }
 
 /* ==========================================================================
-   1 — ACCROCHE
+   1. ACCROCHE
    ========================================================================== */
 .hero {
   min-height: 100svh;
@@ -207,7 +218,7 @@ code {
   font-size: clamp(2.5rem, 12.8vw, 6.2rem);
   line-height: .92;
 }
-/* Le CV : lettres creuses. La fiche, juste en dessous, est pleine. */
+/* Le CV : lettres creuses. La page, juste en dessous, est pleine. */
 .hero__title em {
   font-style: normal;
   color: transparent;
@@ -218,7 +229,7 @@ code {
   .hero__title em { color: rgba(255, 255, 255, .42); }
 }
 /* Le deuxième et dernier niveau de lecture. Il suit le titre de près : un
-   écart, pas un trou. Surtout pas de margin-top: auto ici — c’est ce qui
+   écart, pas un trou. Surtout pas de margin-top: auto ici, c’est ce qui
    creusait la colonne en deux blocs séparés par du vide. */
 .hero__sub {
   margin-top: 1.1rem;
@@ -240,7 +251,7 @@ code {
 /* ==========================================================================
    Le motif QR
    Ce n’est pas un code : c’est la marque du produit. Il est en crème à même
-   le vert, sans pastille ni ombre — il appartient à la page, il n’est pas
+   le vert, sans pastille ni ombre, il appartient à la page, il n’est pas
    posé dessus.
    Les modules voisins sont fusionnés en traits à bouts ronds, les isolés
    sont des points ; les yeux sont des anneaux arrondis à pastille ronde.
@@ -299,9 +310,9 @@ code {
 .band--light + .band--light { border-top: 1px solid rgba(20, 32, 28, .12); }
 
 /* ==========================================================================
-   2 — CE QUE C’EST
-   Un seul écran : un grand téléphone, la vraie fiche dedans. Le fond crème
-   de la bande fait ressortir la fiche colorée — c’est ce contraste qui fait
+   2. CE QUE C’EST
+   Un seul écran : un grand téléphone, la vraie page dedans. Le fond crème
+   de la bande fait ressortir la page colorée, c’est ce contraste qui fait
    exister l’objet.
    ========================================================================== */
 .voila { display: grid; gap: clamp(2rem, 7vw, 2.8rem); }
@@ -321,7 +332,9 @@ code {
   width: min(320px, 75vw);
   padding: 11px;                    /* l’épaisseur de bord, bien visible */
   border-radius: 46px;
-  background: linear-gradient(155deg, #33413B 0%, #14201C 42%, #0A100E 100%);
+  /* La même encre que les autres éléments foncés de la page : ce cadre était
+     le seul noir du site, et ça se voyait. */
+  background: var(--ink);
   box-shadow: 0 34px 72px rgba(20, 32, 28, .30),
               0 4px 12px rgba(20, 32, 28, .18),
               inset 0 1px 0 rgba(255, 255, 255, .20);
@@ -331,21 +344,22 @@ code {
   aspect-ratio: 9 / 19;
   border-radius: 36px;
   overflow: hidden;
-  background: #3B4DD4;              /* la couleur de la fiche d’Adrien */
+  background: #3B4DD4;              /* la couleur de la page d’Adrien */
 }
-/* la barre du haut */
+/* La barre d’accueil. Sur un iPhone elle est en bas de l’écran : en haut,
+   le détail sonnait faux. Même retrait qu’avant, de l’autre côté. */
 .tel__ecran::before {
   content: "";
-  position: absolute; top: 9px; left: 50%; transform: translateX(-50%);
+  position: absolute; bottom: 9px; left: 50%; transform: translateX(-50%);
   width: 84px; height: 5px; border-radius: 99px;
   background: rgba(255, 255, 255, .38);
   z-index: 4; pointer-events: none;
 }
 
 /* ---------- le défilement ----------
-   Il appartient au visiteur : molette ou doigt sur le téléphone, et la fiche
-   défile. Surtout PAS d’overscroll-behavior: contain — c’est lui qui
-   piégerait le curseur. Par défaut, une fois la fiche au bout, le navigateur
+   Il appartient au visiteur : molette ou doigt sur le téléphone, et la page
+   défile. Surtout PAS d’overscroll-behavior: contain, c’est lui qui
+   piégerait le curseur. Par défaut, une fois la page au bout, le navigateur
    rend la main à la page, ce qui est exactement ce qu’on veut. */
 .tel__page {
   position: absolute; inset: 0;
@@ -374,7 +388,7 @@ code {
 .tel__page.est-au-bout ~ .tel__voile { opacity: 0; }
 
 /* ==========================================================================
-   LA FICHE D’ADRIEN, dans le téléphone
+   LA PAGE D’ADRIEN, dans le téléphone
    Contenu repris de profiladrienredolat.netlify.app. Tout est en pixels :
    à l’intérieur d’un cadre de 300 px, le vw n’a aucun sens.
    Aucune classe « reveal » ici : ce qui est dans le téléphone est visible
@@ -406,8 +420,8 @@ code {
 .fa-lang i { color: rgba(255, 255, 255, .45); }
 .fa-lang span { color: rgba(255, 255, 255, .55); }
 
-/* ---------- haut de fiche ----------
-   La fiche s’ouvre directement sur le nom. L’écart reprend celui qui sépare
+/* ---------- haut de page ----------
+   La page s’ouvre directement sur le nom. L’écart reprend celui qui sépare
    les blocs plus bas, pour que le nom se pose au lieu de coller à la bascule
    FR/EN épinglée juste au-dessus. */
 .fa-hero { margin-top: 34px; }
@@ -487,7 +501,7 @@ code {
   stroke-width: .4;
 }
 /* les 16 pays : certains sont des <path>, d’autres des <g> de plusieurs
-   tracés (le Canada, l’Espagne, le Danemark…) — les deux cas sont couverts. */
+   tracés (le Canada, l’Espagne, le Danemark…), les deux cas sont couverts. */
 .fa-carte svg .visited,
 .fa-carte svg .visited path { fill: #fff; stroke: #fff; }
 
@@ -536,7 +550,7 @@ code {
 .fa-fin .fa-sous { margin-bottom: 16px; }
 .fa-liens { display: grid; grid-template-columns: repeat(2, 1fr); gap: 7px; }
 /* Reproduits à l’identique mais inertes : on montre à quoi ressemble la
-   fiche, on n’envoie pas le visiteur ailleurs au milieu de la page. */
+   page, on n’envoie pas le visiteur ailleurs au milieu de la page. */
 .fa-lien {
   padding: 9px 6px;
   border: 1.5px solid rgba(255, 255, 255, .85); border-radius: 11px;
@@ -551,7 +565,7 @@ code {
 .fa-merci { margin-top: 20px; font-size: 9.5px; color: rgba(255, 255, 255, .60); }
 
 /* ==========================================================================
-   3 — COMMENT ÇA SE PASSE
+   3. COMMENT ÇA SE PASSE
    Trois moments dans un même panneau. Le texte nomme, l’animation explique.
    --------------------------------------------------------------------------
    Règle de construction, la même que pour « reveal » : l’état écrit dans la
@@ -559,7 +573,7 @@ code {
    départ, et l’animation qui le comble. Sans JavaScript, sans observateur,
    ou en mouvement réduit, le panneau est simplement là, fini.
    ========================================================================== */
-/* Le terracotta est celui de la page — la pastille du formulaire porte déjà
+/* Le terracotta est celui de la page, la pastille du formulaire porte déjà
    ce trio. La section est la seule couleur chaude du parcours : elle sépare
    les deux bandes claires qui l’encadraient. */
 .deroule {
@@ -642,12 +656,12 @@ code {
          color: var(--terracotta); transform: none; }
 }
 
-/* ---------- moment 2 : la fiche se compose ----------
+/* ---------- moment 2 : la page se compose ----------
    La silhouette est au vert de marque : sur le terracotta de la section, sa
    propre couleur la rendrait invisible. Dedans, des formes PLEINES en crème :
    une barre de titre, une image, des lignes. Jamais un cadre vide, jamais un
-   pointillé — rien qui puisse se lire comme du contenu manquant. */
-.dm-fiche {
+   pointillé, rien qui puisse se lire comme du contenu manquant. */
+.dm-page {
   width: 94px; height: 146px;
   padding: 11px;
   border-radius: 15px;
@@ -691,7 +705,7 @@ code {
 @keyframes dm-fondu { from { opacity: 0; } to { opacity: 1; } }
 
 /* ==========================================================================
-   4 — TU RACONTES. JE CONÇOIS.
+   4. TU RACONTES. JE CONÇOIS.
    ========================================================================== */
 .promesse {
   min-height: 88svh;
@@ -699,6 +713,9 @@ code {
   padding-block: clamp(4rem, 14vw, 8rem);
 }
 .promesse__titre { font-size: clamp(2.9rem, 14vw, 6rem); }
+/* L’appel à l’action de la section. Fond crème sur la couleur pleine : le
+   contraste s’inverse, comme pour « commencer » dans l’en-tête. */
+.promesse__action { margin-top: clamp(1.8rem, 5vw, 2.4rem); }
 .promesse__texte {
   margin-top: 1.6rem;
   font-size: clamp(1.1rem, 4.4vw, 1.35rem);
@@ -708,9 +725,13 @@ code {
 }
 
 /* ==========================================================================
-   5 — LES PREMIÈRES QUESTIONS
+   5. LES PREMIÈRES QUESTIONS
    ========================================================================== */
-.debut { padding-block: clamp(3.5rem, 12vw, 7rem); }
+/* Le questionnaire enchaîne dans la même page : la couleur choisie et la
+   première question ne sont plus séparées que par ce qu’il faut pour lire la
+   coupure, jamais par deux marges de section empilées. */
+.debut { padding-block: clamp(3.5rem, 12vw, 7rem) 0; }
+.debut + .fm { padding-top: clamp(1.5rem, 5vw, 2.5rem); }
 
 .q { margin-bottom: 3.2rem; }
 .q__label {
@@ -776,29 +797,12 @@ code {
   transform: scale(1.12);
 }
 
-.bascule {
-  border-top: 2px solid var(--line-soft);
-  padding-top: 1.8rem;
-  margin-top: .5rem;
-}
-.bascule__texte { font-size: 1.15rem; max-width: 32ch; }
-.bascule__texte b { font-weight: 700; }
-.bascule__lien {
-  display: inline-block; margin-top: 1.2rem;
-  font-family: Anton, sans-serif; text-transform: uppercase;
-  font-size: 1.5rem; letter-spacing: .04em;
-  border-bottom: 3px solid var(--white);
-  padding-bottom: .15rem;
-  transition: opacity .2s;
-}
-.bascule__lien:hover { opacity: .75; }
-.bascule__note { margin-top: 1rem; font-size: .82rem; color: var(--dimmer); }
 
 /* ==========================================================================
-   5 — OÙ TU LE METS
+   5. OÙ TU LE METS
    Quatre objets dessinés : aucune image, aucun texte lisible, uniquement des
-   barres et des formes pleines. Ils sont posés comme sur une table — tailles
-   et inclinaisons différentes, léger chevauchement — et chacun porte le motif
+   barres et des formes pleines. Ils sont posés comme sur une table, tailles
+   et inclinaisons différentes, léger chevauchement, et chacun porte le motif
    là où il se trouverait vraiment.
    Tout est en pixels : ce sont des objets de taille fixe, pas de la mise en
    page. Le vw n’a aucun sens à l’intérieur d’un dessin de 130 px.
@@ -836,7 +840,7 @@ code {
    marquée pour les décoller du crème.
    --------------------------------------------------------------------------
    Toutes les cotes d’un dessin sont des multiples de --u, son unité. Changer
-   --u agrandit l’objet entier — bordures, écarts, motif — sans toucher à ses
+   --u agrandit l’objet entier, bordures, écarts, motif, sans toucher à ses
    proportions. C’est le seul réglage de taille de cette section. */
 .dessin {
   --u: 1px;
@@ -862,7 +866,7 @@ code {
 .mail__qr      .qr-motif { width: calc(30 * var(--u)); }
 .ordi__sticker .qr-motif { width: calc(26 * var(--u)); }
 
-/* ---------- 1 — le CV ---------- */
+/* ---------- 1. le CV ---------- */
 .dessin--cv {
   width: calc(146 * var(--u));
   aspect-ratio: 1 / 1.414;
@@ -890,7 +894,7 @@ code {
 .cv__texte span:last-child { width: 72%; }
 .cv__qr { margin-top: auto; align-self: flex-end; }
 
-/* ---------- 2 — la bio ---------- */
+/* ---------- 2. la bio ---------- */
 .dessin--insta {
   position: relative;
   width: calc(134 * var(--u));
@@ -925,7 +929,7 @@ code {
 .insta__bio span:last-child { width: 66%; }
 .insta__qr { flex: none; }
 
-/* ---------- 3 — la signature ---------- */
+/* ---------- 3. la signature ---------- */
 .dessin--mail {
   width: calc(214 * var(--u));
   background: var(--white);
@@ -952,7 +956,7 @@ code {
 }
 .mail__lignes span:last-child { width: 78%; }
 
-/* ---------- 4 — l’ordinateur ---------- */
+/* ---------- 4. l’ordinateur ---------- */
 .dessin--ordi {
   position: relative;
   width: calc(196 * var(--u));
@@ -979,7 +983,7 @@ code {
 /* ---------- les cartes imprimées ----------
    Deux sujets se suivent dans la même section : les objets du quotidien,
    puis les cartes. L’écart est large pour qu’on les lise comme deux idées
-   distinctes — c’est de l’espace, pas un filet. */
+   distinctes, c’est de l’espace, pas un filet. */
 .impression { margin-top: clamp(6rem, 16vw, 10rem); }
 .impression__titre { font-size: clamp(1.5rem, 6vw, 2.2rem); }
 .impression__sous { margin-top: .7rem; color: var(--ink-2); }
@@ -998,7 +1002,7 @@ code {
 
 /* Le prix. Les cartes sont une option, pas l’offre du site : la ligne reste
    du texte courant, alignée à gauche comme le reste de la section. Aucun
-   filet, aucun encadré — seul le montant prend un peu de graisse. */
+   filet, aucun encadré, seul le montant prend un peu de graisse. */
 .impression__prix {
   margin-top: clamp(1.8rem, 5vw, 2.4rem);
   max-width: 42ch;
@@ -1008,7 +1012,7 @@ code {
 .impression__action { margin-top: clamp(1.6rem, 5vw, 2.2rem); }
 
 /* ==========================================================================
-   6 — LES CHOSES CLAIRES
+   6. LES CHOSES CLAIRES
    Le contraste fait tout le travail : après des titres énormes, un bloc
    calme. Colonne étroite, texte à taille normale, aucune ligne mise en
    avant, aucune animation en propre.
@@ -1051,15 +1055,6 @@ code {
 }
 
 /* ==========================================================================
-   8 — LES PETITES LIGNES
-   ========================================================================== */
-.legal__texte { display: grid; gap: 1rem; max-width: 44ch; color: var(--ink-2); font-size: .95rem; }
-.legal code {
-  background: rgba(20,32,28,.07);
-  border-radius: 5px; padding: 1px 6px;
-}
-
-/* ==========================================================================
    Pied de page
    ========================================================================== */
 .site-footer {
@@ -1069,7 +1064,7 @@ code {
 .site-footer p { font-size: .82rem; font-style: italic; color: var(--dimmer); }
 
 /* ==========================================================================
-   Écrans moyens — les objets tiennent à deux de front
+   Écrans moyens, les objets tiennent à deux de front
    ========================================================================== */
 @media (min-width: 520px) {
   .objets { grid-template-columns: repeat(2, 1fr); align-items: end; }
@@ -1090,8 +1085,8 @@ code {
 
   .hero { padding: 6.2rem var(--pad) 2.6rem; }
 
-  /* Les deux colonnes franches. La droite est fixe — elle n’a qu’un motif de
-     260 px à tenir — et le titre prend tout le reste. Pas de gap : l’écart
+  /* Les deux colonnes franches. La droite est fixe, elle n’a qu’un motif de
+     260 px à tenir, et le titre prend tout le reste. Pas de gap : l’écart
      est porté par le padding de chaque colonne, pour que le filet tombe
      pile entre les deux. */
   .hero__grid {
@@ -1163,7 +1158,7 @@ code {
    Les objets sur une seule ligne
    Il faut 1000 px pour les tenir de front : en dessous, les quatre dessins
    dépasseraient la colonne. Ils sortent alors de la mesure du texte et se
-   centrent sur toute la largeur de la section — c’est là qu’ils occupent
+   centrent sur toute la largeur de la section, c’est là qu’ils occupent
    vraiment l’écran. --u les met à l’échelle du viewport, jusqu’à 1,4× la
    taille de base.
    ========================================================================== */

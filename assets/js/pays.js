@@ -1,11 +1,11 @@
 /* ==========================================================================
-   MyLayer — la liste des pays
+   MyLayer, la liste des pays
    --------------------------------------------------------------------------
    Codes ISO 3166-1 alpha-2, noms en français, classés par nom.
    Les codes sont stockés avec les noms : c’est ce qui permettra plus tard
    d’allumer une carte du monde sans re-deviner les intitulés.
    Aux États souverains s’ajoutent les territoires où l’on va vraiment en
-   voyage — quelqu’un qui a vu la Polynésie ne coche pas « France ».
+   voyage, quelqu’un qui a vu la Polynésie ne coche pas « France ».
    Format compact « CODE:Nom », découpé au chargement : une liste de 200
    objets écrite à la main pèserait cinq fois plus.
    ========================================================================== */

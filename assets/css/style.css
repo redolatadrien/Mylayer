@@ -797,6 +797,81 @@ code {
   transform: scale(1.12);
 }
 
+/* Les cinq polices. Le nom d’une fonte ne dit rien : c’est le prénom du
+   client qui est écrit partout. La vitrine le porte à la taille qu’il aura
+   vraiment en haut de sa page, les tuiles servent à comparer et à choisir.
+   Fond clair obligatoire : la couleur choisie est déjà celle de la page,
+   elle ne peut pas s’écrire dessus. */
+.vitrine {
+  display: flex; align-items: center; justify-content: center;
+  min-height: 8.5rem;
+  padding: 1.6rem 1.2rem;
+  margin-bottom: .9rem;
+  background: var(--cream);
+  border-radius: var(--radius);
+  text-align: center;
+}
+.vitrine__nom { --t: clamp(2.6rem, 11vw, 5.5rem); }
+
+.typos { display: grid; grid-template-columns: 1fr; gap: .7rem; }
+
+.typo {
+  display: flex; align-items: center; justify-content: center;
+  min-height: 4.6rem;
+  padding: .9rem 1rem;
+  background: var(--cream);
+  border: 2px solid transparent;
+  border-radius: var(--radius);
+  cursor: pointer;
+  transition: border-color .2s, box-shadow .2s var(--ease), transform .2s var(--ease);
+}
+.typo:hover { transform: translateY(-2px); }
+/* Le choix actif : bordure pleine à l’intérieur, où le fond est clair, et
+   anneau blanc à l’extérieur, où la page est colorée. Le repère tient donc
+   des deux côtés du bord, quelle que soit la couleur choisie. */
+.typo[aria-checked="true"] {
+  border-color: var(--c);
+  box-shadow: 0 0 0 3px var(--white);
+}
+.typo__nom { --t: clamp(1.7rem, 5.5vw, 2.5rem); }
+
+.vitrine__nom, .typo__nom {
+  display: block;
+  color: var(--c);
+  overflow-wrap: anywhere;
+}
+
+/* Les six réglages de chaque police, ceux du gabarit : famille, graisse,
+   échelle, interligne, espacement, casse. L’aperçu rend donc exactement ce
+   que la page finale rendra. Une taille qui va à Anton est trop grosse en
+   Climate Crisis et trop petite en Smokum ; l’échelle ramène les cinq
+   prénoms à la même présence, sans quoi le choix se ferait sur une
+   impression de taille et non sur le caractère de la lettre.
+   Climate Crisis et Indie Flower restent en casse normale : la manuscrite
+   n’a pas de sens en capitales, et Climate Crisis y ferait deux fois la
+   largeur d’Anton. */
+.p-anton   { font-family: Anton, Inter, sans-serif; font-weight: 400;
+             font-size: calc(var(--t) * 1);    line-height: .95;
+             letter-spacing: .5px;  text-transform: uppercase; }
+.p-climate { font-family: "Climate Crisis", Inter, sans-serif; font-weight: 400;
+             font-size: calc(var(--t) * .78);  line-height: 1.02;
+             letter-spacing: -1px;  text-transform: none; }
+.p-kavoon  { font-family: Kavoon, Inter, sans-serif; font-weight: 400;
+             font-size: calc(var(--t) * .88);  line-height: 1.05;
+             letter-spacing: 0;     text-transform: uppercase; }
+.p-smokum  { font-family: Smokum, Inter, serif; font-weight: 400;
+             font-size: calc(var(--t) * 1.18); line-height: 1;
+             letter-spacing: 1px;   text-transform: uppercase; }
+.p-indie   { font-family: "Indie Flower", Inter, cursive; font-weight: 400;
+             font-size: calc(var(--t) * 1.22); line-height: 1.15;
+             letter-spacing: .5px;  text-transform: none; }
+
+/* Dès qu’il y a la place, deux colonnes ; la cinquième prend la ligne du bas
+   pour elle, plutôt que de laisser un trou. */
+@media (min-width: 560px) {
+  .typos { grid-template-columns: 1fr 1fr; gap: .8rem; }
+  .typos > .typo:last-child { grid-column: 1 / -1; }
+}
 
 /* ==========================================================================
    5. OÙ TU LE METS
@@ -1201,4 +1276,6 @@ code {
   .dm-mot--coche, .dm-bloc, .deroule .qr-motif { animation: none !important; }
   .cta { transition: none; }
   .cta:hover { transform: none; }
+  .typo { transition: none; }
+  .typo:hover { transform: none; }
 }

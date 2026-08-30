@@ -1,7 +1,7 @@
 /* ==========================================================================
    MyLayer, le questionnaire
    --------------------------------------------------------------------------
-   1. Ce que les trois premières questions ont donné (prénom, âge, couleur)
+   1. Ce que les premières questions ont donné (prénom, âge, couleur, police)
    2. Les questions construites en JS : les mots, les langues, les pays
    3. Les gestes : choix, duels, classement, champs multiples, fichiers joints
    4. La navigation d’un écran à l’autre, dans les deux sens
@@ -78,6 +78,9 @@
     var debut = lire(CLE_DEBUT);
     if (debut.prenom) rep.prenom = debut.prenom;
     if (debut.age)    rep.age    = String(debut.age);
+    /* La police part sous son nom exact : il sera recopié tel quel dans le
+       gabarit. Rien de choisi, et c’est le champ caché qui garde sa valeur. */
+    if (debut.police) rep.police = debut.police;
     if (debut.couleur) {
       var t = String(debut.couleur).split(',');
       var nom = COULEURS[t[0].toUpperCase()] || 'sur mesure';

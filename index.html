@@ -1051,6 +1051,44 @@
         </div>
         <p class="q__aide">Elle portera toute ta page.</p>
       </div>
+
+      <!-- Q4. la police : le second choix qui se voit tout de suite.
+           La vitrine porte le prénom à la taille qu'il aura vraiment sur la
+           page : c'est là que le choix se juge. Les cinq tuiles en dessous
+           restent visibles ensemble, et la vitrine bascule au clic.
+           Deux polices sont en casse normale : Indie Flower parce qu'elle
+           est manuscrite, Climate Crisis parce qu'en capitales elle fait
+           deux fois la largeur d'Anton. -->
+      <div class="q reveal" data-q="4" data-polices>
+        <span class="q__label" id="q-police-l">Ta police</span>
+        <!-- Elle redit ce que la tuile cochée montre déjà : rien à annoncer. -->
+        <div class="vitrine" aria-hidden="true">
+          <span class="vitrine__nom p-anton" data-grand>TON NOM</span>
+        </div>
+        <div class="typos" role="radiogroup" aria-labelledby="q-police-l">
+          <button type="button" class="typo" role="radio" aria-checked="false"
+                  data-police="Anton" aria-label="Anton">
+            <span class="typo__nom p-anton" data-apercu>TON NOM</span>
+          </button>
+          <button type="button" class="typo" role="radio" aria-checked="false"
+                  data-police="Climate Crisis" aria-label="Climate Crisis">
+            <span class="typo__nom p-climate" data-apercu>TON NOM</span>
+          </button>
+          <button type="button" class="typo" role="radio" aria-checked="false"
+                  data-police="Kavoon" aria-label="Kavoon">
+            <span class="typo__nom p-kavoon" data-apercu>TON NOM</span>
+          </button>
+          <button type="button" class="typo" role="radio" aria-checked="false"
+                  data-police="Smokum" aria-label="Smokum">
+            <span class="typo__nom p-smokum" data-apercu>TON NOM</span>
+          </button>
+          <button type="button" class="typo" role="radio" aria-checked="false"
+                  data-police="Indie Flower" aria-label="Indie Flower">
+            <span class="typo__nom p-indie" data-apercu>TON NOM</span>
+          </button>
+        </div>
+        <p class="q__aide">Celle des grands titres de ta page.</p>
+      </div>
     </div>
   </section>
 
@@ -1086,6 +1124,7 @@
       <input type="hidden" name="prenom"  data-champ="prenom">
       <input type="hidden" name="age"     data-champ="age">
       <input type="hidden" name="couleur" data-champ="couleur">
+      <input type="hidden" name="police"  data-champ="police" value="Anton">
 
       <!-- ================================================================
            1. L’ENTRÉE

@@ -20,8 +20,20 @@
 (function () {
   'use strict';
 
-  var CLE_DEBUT = 'mylayer.debut';       /* écrite par la page d’accueil */
-  var CLE       = 'mylayer.formulaire';
+  var CLE_DEBUT    = 'mylayer.debut';       /* écrite par la page d’accueil */
+  var CLE          = 'mylayer.formulaire';
+  /* Le drapeau du parcours. Tant qu’il est là, l’accueil ne touche à rien
+     de ce qui est gardé sur l’appareil ; sans lui, il fait table rase à
+     chaque chargement. Il est posé au premier écran validé, retiré après
+     un envoi réussi. */
+  var CLE_PARCOURS = 'mylayer.parcours';
+
+  function marquerLeParcours() {
+    try { localStorage.setItem(CLE_PARCOURS, '1'); } catch (e) { /* tant pis */ }
+  }
+  function oublierLeParcours() {
+    try { localStorage.removeItem(CLE_PARCOURS); } catch (e) { /* tant pis */ }
+  }
 
   var form = document.getElementById('formulaire');
   if (!form) return;
@@ -76,7 +88,10 @@
      le questionnaire n’a plus à s’en occuper. */
   function reprendreLeDebut() {
     var debut = lire(CLE_DEBUT);
-    if (debut.prenom) rep.prenom = debut.prenom;
+    /* Recopiés sans condition : un champ vidé doit vider la réponse, sinon
+       un prénom effacé continuerait de partir avec l’envoi. */
+    rep.prenom = debut.prenom || '';
+    rep.nom    = debut.nom    || '';
     if (debut.age)    rep.age    = String(debut.age);
     /* La police part sous son nom exact : il sera recopié tel quel dans le
        gabarit. Rien de choisi, et c’est le champ caché qui garde sa valeur. */
@@ -922,6 +937,9 @@
   }
 
   function suivant() {
+    /* Valider un écran, c’est être entré dans le parcours : à partir d’ici,
+       l’accueil ne doit plus rien effacer, même après un onglet fermé. */
+    marquerLeParcours();
     if (actif + 1 < ecrans.length) montrer(actif + 1);
   }
 
@@ -964,6 +982,28 @@
     });
   })();
 
+  /* Une fois dans les questions, rien ne ramenait au site : le visiteur était
+     dans un tunnel. Ce lien remonte en haut de la même page, il ne recharge
+     rien et ne quitte rien : aucune réponse ne peut être perdue, et redescendre
+     ramène sur la question qu’on venait de quitter. Les annonces de section
+     n’en portent pas, elles s’effacent avant qu’on ait pu viser. */
+  (function poserLiensSite() {
+    ecrans.forEach(function (ec) {
+      if (ec.hasAttribute('data-annonce')) return;
+      var b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'ec__site';
+      b.setAttribute('data-site', '');
+      b.textContent = 'le site';
+      ec.insertBefore(b, ec.firstChild);
+    });
+  })();
+
+  function versLeSite() {
+    try { window.scrollTo({ top: 0, behavior: 'smooth' }); }
+    catch (e) { window.scrollTo(0, 0); }
+  }
+
   function majRetour() {
     var rien = precedent() < 0;
     var tous = form.querySelectorAll('[data-retour]');
@@ -996,10 +1036,11 @@
   form.addEventListener('click', function (e) {
     if (e.target.closest('[data-annonce]')) { e.preventDefault(); suivant(); return; }
 
-    var b = e.target.closest('[data-retour], [data-suivant], [data-passe], [data-envoyer]');
+    var b = e.target.closest('[data-site], [data-retour], [data-suivant], [data-passe], [data-envoyer]');
     if (!b) return;
     e.preventDefault();
 
+    if (b.hasAttribute('data-site'))   { versLeSite(); return; }
     if (b.hasAttribute('data-retour')) { retourner(); return; }
     if (b.hasAttribute('data-envoyer')) { envoyer(); return; }
     if (b.hasAttribute('data-suivant') && !valide(ecrans[actif])) return;
@@ -1029,14 +1070,22 @@
   /* La référence rattache les photos aux réponses. Prénom en clair pour
      qu’elle se lise, quatre caractères tirés au sort pour qu’elle soit
      unique. Ni O ni 0, ni I ni 1 : on la recopie parfois à la main. */
+  var ALPHA = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+
   function fabriquerReference() {
-    if (rep.reference) return rep.reference;
-    var base = (rep.prenom || 'page')
+    /* La base est refaite à chaque envoi, à partir du prénom qui vient
+       d’être saisi : une référence gardée d’une visite précédente portait
+       le prénom de quelqu’un d’autre. Seuls les quatre caractères sont
+       repris s’ils existent déjà, ils n’appartiennent à personne. */
+    var base = (rep.prenom || '')
       .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
       .toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '') || 'page';
-    var alpha = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+
     var suite = '';
-    for (var i = 0; i < 4; i++) suite += alpha.charAt(Math.floor(Math.random() * alpha.length));
+    var ancienne = /-([A-Z0-9]{4})$/.exec(rep.reference || '');
+    if (ancienne) suite = ancienne[1];
+    else for (var i = 0; i < 4; i++) suite += ALPHA.charAt(Math.floor(Math.random() * ALPHA.length));
+
     rep.reference = base + '-' + suite;
     ecrire();
     return rep.reference;
@@ -1105,6 +1154,10 @@
         if (!r.ok) throw new Error(r.status);
         rep.envoye = true;
         ecrire();
+        /* Le parcours est fini : la prochaine arrivée sur l’accueil repart
+           d’une page vierge. Les photos, elles, se rattachent par la
+           référence, qui voyage dans le lien et dans le mail. */
+        oublierLeParcours();
         reussi(reference);
       })
       .catch(function () {

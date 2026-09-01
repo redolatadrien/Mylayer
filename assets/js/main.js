@@ -1,15 +1,45 @@
 /* ==========================================================================
    MyLayer, comportements de la page d’accueil
    --------------------------------------------------------------------------
+   0. Le parcours en cours, ou la table rase
    1. Apparitions au scroll
    2. La page qui défile dans le grand téléphone
-   3. Les premières questions : prénom, âge, couleur, police, et la page se repeint
+   3. Les premières questions : prénom, nom, âge, couleur, police, et la page se repeint
    Rien n’est jamais masqué durablement : si quoi que ce soit échoue,
    toutAfficher() remet la page entière en état lisible.
    ========================================================================== */
 
 (function () {
   'use strict';
+
+  /* ======================================================================
+     0. Le parcours en cours, ou la table rase
+     Un drapeau est écrit quand la personne valide le premier écran du
+     questionnaire, et lui seul protège ce qui est gardé sur l’appareil.
+     Sans drapeau, arriver sur l’accueil efface tout : le prénom de la
+     personne d’avant ne doit pas accueillir la suivante, et la page repart
+     au vert de marque. Avec le drapeau, on ne touche à rien, même si
+     l’onglet a été fermé entre-temps : c’est quelqu’un qui reprend.
+     Le questionnaire l’efface après un envoi réussi.
+     ====================================================================== */
+  var CLE          = 'mylayer.debut';
+  var CLE_FORM     = 'mylayer.formulaire';
+  var CLE_PARCOURS = 'mylayer.parcours';
+
+  function parcoursEnCours() {
+    try { return !!localStorage.getItem(CLE_PARCOURS); }
+    catch (e) { return false; }
+  }
+
+  function faireTableRase() {
+    try {
+      localStorage.removeItem(CLE);
+      localStorage.removeItem(CLE_FORM);
+      localStorage.removeItem(CLE_PARCOURS);
+    } catch (e) { /* navigation privée : il n’y avait rien à effacer */ }
+  }
+
+  if (!parcoursEnCours()) faireTableRase();
 
   var reveals = document.querySelectorAll('.reveal');
 
@@ -57,8 +87,6 @@
   /* ======================================================================
      3. Les premières questions
      ====================================================================== */
-  var CLE = 'mylayer.debut';
-
   function memoriser(champ, valeur) {
     try {
       var d = JSON.parse(localStorage.getItem(CLE) || '{}');
@@ -72,39 +100,70 @@
     catch (e) { return {}; }
   }
 
-  /* Le prénom devient l’adresse : accents retirés, tout en minuscules. */
+  /* Le prénom et le nom deviennent l’adresse : accents retirés, tout en
+     minuscules, espaces et apostrophes changés en tiret, le reste écarté.
+     Un tiret entre les deux, et pas un point : certaines messageries
+     coupent les adresses au point, et le tiret se dicte plus facilement. */
   function enSlug(txt) {
     return txt
       .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
       .toLowerCase()
-      .replace(/[^a-z0-9]+/g, '-')
+      .replace(/[\s'\u2019]+/g, '-')
+      .replace(/[^a-z0-9-]+/g, '')
+      .replace(/-+/g, '-')
       .replace(/^-+|-+$/g, '');
+  }
+
+  function enAdresse(prenom, nom) {
+    return [enSlug(prenom), enSlug(nom)].filter(Boolean).join('-');
   }
 
   function brancherDebut() {
     var enregistre = relire();
 
-    /* --- prénom --- */
+    /* --- la sortie de secours ---
+       Elle n’a de sens que si un parcours est gardé sur l’appareil : sinon
+       elle proposerait d’effacer du vide. */
+    var reprise = document.querySelector('[data-reprise]');
+    var recommencer = document.querySelector('[data-recommencer]');
+    if (reprise && recommencer && parcoursEnCours()) {
+      reprise.hidden = false;
+      recommencer.addEventListener('click', function () {
+        faireTableRase();
+        location.reload();
+      });
+    }
+
+    /* --- prénom et nom de famille --- */
     var prenom  = document.getElementById('q-prenom');
+    var nom     = document.getElementById('q-nom');
     var adresse = document.querySelector('[data-adresse]');
     var slug    = document.querySelector('[data-slug]');
 
-    function majPrenom() {
-      var s = enSlug(prenom.value.trim());
-      if (s) {
-        slug.textContent = s;
-        adresse.hidden = false;
-      } else {
-        adresse.hidden = true;
+    function majAdresse() {
+      var s = enAdresse(prenom ? prenom.value.trim() : '',
+                        nom    ? nom.value.trim()    : '');
+      if (adresse && slug) {
+        if (s) { slug.textContent = s; adresse.hidden = false; }
+        else   { adresse.hidden = true; }
       }
-      memoriser('prenom', prenom.value.trim());
     }
 
     if (prenom) {
       if (enregistre.prenom) prenom.value = enregistre.prenom;
-      prenom.addEventListener('input', majPrenom);
-      if (prenom.value) majPrenom();
+      prenom.addEventListener('input', function () {
+        memoriser('prenom', prenom.value.trim());
+        majAdresse();
+      });
     }
+    if (nom) {
+      if (enregistre.nom) nom.value = enregistre.nom;
+      nom.addEventListener('input', function () {
+        memoriser('nom', nom.value.trim());
+        majAdresse();
+      });
+    }
+    majAdresse();
 
     /* --- âge --- */
     var age = document.getElementById('q-age');

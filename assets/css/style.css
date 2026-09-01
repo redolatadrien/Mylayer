@@ -330,13 +330,16 @@ code {
 
 .tel {
   width: min(320px, 75vw);
-  padding: 11px;                    /* l’épaisseur de bord, bien visible */
-  border-radius: 46px;
-  /* La même encre que les autres éléments foncés de la page : ce cadre était
-     le seul noir du site, et ça se voyait. */
+  /* Le bord se voit sans peser : à onze pixels, l’anneau d’encre et l’ombre
+     faisaient bloc et le cadre paraissait plus noir que le reste du site,
+     alors qu’il porte déjà la même encre. Huit pixels et une ombre plus
+     claire suffisent à poser l’objet. Le rayon suit : 36 à l’écran, plus
+     l’épaisseur du bord. */
+  padding: 8px;
+  border-radius: 44px;
   background: var(--ink);
-  box-shadow: 0 34px 72px rgba(20, 32, 28, .30),
-              0 4px 12px rgba(20, 32, 28, .18),
+  box-shadow: 0 26px 56px rgba(20, 32, 28, .20),
+              0 3px 10px rgba(20, 32, 28, .12),
               inset 0 1px 0 rgba(255, 255, 255, .20);
 }
 .tel__ecran {
@@ -732,6 +735,21 @@ code {
    coupure, jamais par deux marges de section empilées. */
 .debut { padding-block: clamp(3.5rem, 12vw, 7rem) 0; }
 .debut + .fm { padding-top: clamp(1.5rem, 5vw, 2.5rem); }
+
+/* La sortie de secours, au-dessus des questions. Elle n’apparaît que si un
+   parcours est gardé sur l’appareil : discrète, soulignée, jamais en
+   concurrence avec les questions qui suivent. */
+.debut__reprise { margin-bottom: 2.4rem; }
+.debut__reprise[hidden] { display: none; }
+.debut__recommencer {
+  background: transparent; border: 0; cursor: pointer;
+  font: inherit; font-size: .85rem;
+  color: var(--dimmer);
+  text-decoration: underline; text-underline-offset: 4px;
+  padding: .5rem 0; min-height: 44px;
+  transition: color .2s;
+}
+.debut__recommencer:hover { color: var(--white); }
 
 .q { margin-bottom: 3.2rem; }
 .q__label {

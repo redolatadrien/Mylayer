@@ -26,7 +26,7 @@
 
 <!-- ======================= EN-TÊTE =======================
      Les deux cellules se calent sur les deux colonnes de l’accroche :
-     le logo coiffe le titre, « commencer » coiffe le QR. -->
+     le logo coiffe le titre, « commencer » coiffe le QR code. -->
 <header class="site-header">
   <a class="logo" href="#" aria-label="MyLayer, accueil">
     <svg class="logo-mark" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
@@ -65,7 +65,7 @@
       <!-- Le motif. Ce n’est pas un QR code et ça n’a jamais eu à en être
            un : personne ne scanne un écran avec un écran, ni son propre
            téléphone avec lui-même. C’est un dessin composé à la main, qui
-           emprunte au QR ses trois yeux et sa trame pour dire d’un coup
+           emprunte au QR code ses trois yeux et sa trame pour dire d’un coup
            d’œil de quoi ce produit parle. Décoratif, donc inerte : le vrai
            chemin vers une page, c’est le grand téléphone plus bas. -->
       <div class="hero__droite">
@@ -90,7 +90,7 @@
         </figure>
 
         <a class="scroll-hint reveal" href="#exemples" aria-label="Descendre">
-          <span class="scroll-hint__label">Regarde</span>
+          <span class="scroll-hint__label">Voir un exemple</span>
           <svg class="scroll-hint__arrow" viewBox="0 0 24 38" fill="none" aria-hidden="true">
             <path d="M12 2v30M4 25l8 9 8-9" stroke="currentColor" stroke-width="2.5"
                   stroke-linecap="round" stroke-linejoin="round"/>
@@ -120,7 +120,16 @@
 
       <!-- La page d’Adrien, reproduite en HTML, pas d’iframe, pas d’image :
            c’est du vrai texte et de vraies photos, et ça défile tout seul
-           dans le cadre, sans toucher au scroll de la page. -->
+           dans le cadre, sans toucher au scroll de la page.
+
+           L’ordre des blocs n’est pas celui de la vraie page : elle s’ouvrait
+           ici sur le nom puis trois paragraphes, et le visiteur découvrait le
+           produit par un mur de prose. Les barres de langues et les pastilles
+           de compétences se comprennent sans lire une ligne : elles montent
+           donc juste après le nom, les chiffres derrière elles pour qu’on en
+           aperçoive le début et qu’on ait envie de faire défiler. Le texte
+           vient ensuite. Contenu, noms et formulations : rien n’a bougé, ce
+           sont les blocs qui ont changé de place. -->
       <div class="voila__tel reveal">
         <div class="tel">
           <div class="tel__ecran">
@@ -138,6 +147,49 @@
           </div>
 
           <div class="fa-bloc">
+            <h3 class="fa-titre">Langues</h3>
+            <ul class="fa-langues">
+              <li class="fa-langue">
+                <span class="fa-langue__tete"><b>Français</b><i>Natif</i></span>
+                <span class="fa-jauge"><span class="fa-jauge__cran est-on"></span><span class="fa-jauge__cran est-on"></span><span class="fa-jauge__cran est-on"></span><span class="fa-jauge__cran est-on"></span></span>
+              </li>
+              <li class="fa-langue">
+                <span class="fa-langue__tete"><b>Anglais</b><i>C1</i></span>
+                <span class="fa-jauge"><span class="fa-jauge__cran est-on"></span><span class="fa-jauge__cran est-on"></span><span class="fa-jauge__cran est-on"></span><span class="fa-jauge__cran"></span></span>
+              </li>
+              <li class="fa-langue">
+                <span class="fa-langue__tete"><b>Allemand</b><i>A2</i></span>
+                <span class="fa-jauge"><span class="fa-jauge__cran est-on"></span><span class="fa-jauge__cran"></span><span class="fa-jauge__cran"></span><span class="fa-jauge__cran"></span></span>
+              </li>
+              <li class="fa-langue">
+                <span class="fa-langue__tete"><b>Espagnol</b><i>A1</i></span>
+                <span class="fa-jauge"><span class="fa-jauge__cran est-on"></span><span class="fa-jauge__cran"></span><span class="fa-jauge__cran"></span><span class="fa-jauge__cran"></span></span>
+              </li>
+            </ul>
+          </div>
+
+          <div class="fa-bloc">
+            <h3 class="fa-titre">Compétences</h3>
+            <p class="fa-surtitre">Digital &amp; création</p>
+            <ul class="fa-puces">
+              <li>Next.js / React</li><li>DaVinci Resolve</li>
+              <li>CapCut</li><li>Adobe Lightroom</li>
+            </ul>
+            <p class="fa-surtitre">Bureautique</p>
+            <ul class="fa-puces"><li>Suite Microsoft Office</li></ul>
+          </div>
+
+          <div class="fa-bloc">
+            <h3 class="fa-titre">En quelques chiffres</h3>
+            <ul class="fa-chiffres">
+              <li><b>16</b><span>pays</span></li>
+              <li><b>4</b><span>langues</span></li>
+              <li><b>400</b><span>personnes en banquet</span></li>
+              <li><b>4</b><span>voyages en solo</span></li>
+            </ul>
+          </div>
+
+          <div class="fa-bloc">
             <p class="fa-texte">J’ai 22 ans, suisse et français, et depuis tout
               petit je bouge, je teste, je me lance.</p>
             <p class="fa-texte">Ayant eu la chance d’avoir de belles opportunités,
@@ -150,67 +202,6 @@
             <ul class="fa-mots">
               <li>Polyvalent</li><li>International</li><li>Entreprenant</li>
             </ul>
-          </div>
-
-          <div class="fa-bloc">
-            <h3 class="fa-titre">Mon parcours</h3>
-            <ol class="fa-parcours">
-              <li class="fa-etape">
-                <b class="fa-etape__titre">Agence web, co-fondateur</b>
-                <span class="fa-etape__lieu">ClickSansBug</span>
-                <span class="fa-etape__desc">Sites web pour PME romandes et alémaniques. Com, ventes et administration.</span>
-              </li>
-              <li class="fa-etape">
-                <b class="fa-etape__titre">Maître d’hôtel / Gérant banquet</b>
-                <span class="fa-etape__lieu">Château Bromont, Québec</span>
-                <span class="fa-etape__desc">~200 couverts/jour, banquets jusqu’à 400 personnes, équipe de 6 à 8 serveurs.</span>
-                <div class="fa-etape__photos">
-                  <figure class="fa-vig"><img src="assets/images/03_bromont_mont.jpg" alt="Bromont" width="440" height="440" loading="lazy" decoding="async"></figure>
-                  <figure class="fa-vig"><img src="assets/images/06_montreal_skyline.jpg" alt="Montréal" width="440" height="440" loading="lazy" decoding="async"></figure>
-                  <figure class="fa-vig"><img src="assets/images/04_canada_riviere.jpg" alt="Québec" width="440" height="440" loading="lazy" decoding="async"></figure>
-                </div>
-              </li>
-              <li class="fa-etape">
-                <b class="fa-etape__titre">Management hôtelier</b>
-                <span class="fa-etape__lieu">Un an de formation</span>
-                <span class="fa-etape__desc">6 mois de pratique (cuisine, service, restaurant étoilé Michelin, réception) + 6 mois de cours.</span>
-              </li>
-              <li class="fa-etape">
-                <b class="fa-etape__titre">Agent logistique</b>
-                <span class="fa-etape__lieu">FS Trading, Bussigny</span>
-                <span class="fa-etape__desc">Préparation de commandes, gestion des stocks (sec, réfrigéré, surgelé).</span>
-              </li>
-              <li class="fa-etape">
-                <b class="fa-etape__titre">Agent de sécurité</b>
-                <span class="fa-etape__lieu">Protectas, Lausanne · 9 mois</span>
-                <span class="fa-etape__desc">Surveillance de bâtiments et de centres d’accueil.</span>
-              </li>
-              <li class="fa-etape">
-                <b class="fa-etape__titre">Commis de cuisine</b>
-                <span class="fa-etape__lieu">Parker, Etoy</span>
-                <span class="fa-etape__desc">Travail en cuisine, service rapide et rigueur.</span>
-              </li>
-              <li class="fa-etape">
-                <b class="fa-etape__titre">Stagiaire communication</b>
-                <span class="fa-etape__lieu">Nestlé, Nescafé / Starbucks</span>
-                <span class="fa-etape__desc">Affiches, supports visuels, idéation de packaging.</span>
-              </li>
-              <li class="fa-etape">
-                <b class="fa-etape__titre">Stage marketing</b>
-                <span class="fa-etape__lieu">Mosh l’agence, Nyon</span>
-                <span class="fa-etape__desc">Observation et découverte du métier en agence.</span>
-              </li>
-              <li class="fa-etape">
-                <b class="fa-etape__titre">Vendeur</b>
-                <span class="fa-etape__lieu">Quiksilver, Hossegor (France)</span>
-                <span class="fa-etape__desc">Conseil client et vente en boutique.</span>
-              </li>
-              <li class="fa-etape">
-                <b class="fa-etape__titre">Coach football, équipe féminine</b>
-                <span class="fa-etape__lieu">Pully · 3 saisons</span>
-                <span class="fa-etape__desc">Entraînement et encadrement d’une équipe sur 3 ans.</span>
-              </li>
-            </ol>
           </div>
 
           <div class="fa-bloc">
@@ -634,51 +625,69 @@
           </div>
 
           <div class="fa-bloc">
-            <h3 class="fa-titre">Langues</h3>
-            <ul class="fa-langues">
-              <li class="fa-langue">
-                <span class="fa-langue__tete"><b>Français</b><i>Natif</i></span>
-                <span class="fa-jauge"><span class="fa-jauge__cran est-on"></span><span class="fa-jauge__cran est-on"></span><span class="fa-jauge__cran est-on"></span><span class="fa-jauge__cran est-on"></span></span>
+            <h3 class="fa-titre">Mon parcours</h3>
+            <ol class="fa-parcours">
+              <li class="fa-etape">
+                <b class="fa-etape__titre">Agence web, co-fondateur</b>
+                <span class="fa-etape__lieu">ClickSansBug</span>
+                <span class="fa-etape__desc">Sites web pour PME romandes et alémaniques. Com, ventes et administration.</span>
               </li>
-              <li class="fa-langue">
-                <span class="fa-langue__tete"><b>Anglais</b><i>C1</i></span>
-                <span class="fa-jauge"><span class="fa-jauge__cran est-on"></span><span class="fa-jauge__cran est-on"></span><span class="fa-jauge__cran est-on"></span><span class="fa-jauge__cran"></span></span>
+              <li class="fa-etape">
+                <b class="fa-etape__titre">Maître d’hôtel / Gérant banquet</b>
+                <span class="fa-etape__lieu">Château Bromont, Québec</span>
+                <span class="fa-etape__desc">~200 couverts/jour, banquets jusqu’à 400 personnes, équipe de 6 à 8 serveurs.</span>
+                <div class="fa-etape__photos">
+                  <figure class="fa-vig"><img src="assets/images/03_bromont_mont.jpg" alt="Bromont" width="440" height="440" loading="lazy" decoding="async"></figure>
+                  <figure class="fa-vig"><img src="assets/images/06_montreal_skyline.jpg" alt="Montréal" width="440" height="440" loading="lazy" decoding="async"></figure>
+                  <figure class="fa-vig"><img src="assets/images/04_canada_riviere.jpg" alt="Québec" width="440" height="440" loading="lazy" decoding="async"></figure>
+                </div>
               </li>
-              <li class="fa-langue">
-                <span class="fa-langue__tete"><b>Allemand</b><i>A2</i></span>
-                <span class="fa-jauge"><span class="fa-jauge__cran est-on"></span><span class="fa-jauge__cran"></span><span class="fa-jauge__cran"></span><span class="fa-jauge__cran"></span></span>
+              <li class="fa-etape">
+                <b class="fa-etape__titre">Management hôtelier</b>
+                <span class="fa-etape__lieu">Un an de formation</span>
+                <span class="fa-etape__desc">6 mois de pratique (cuisine, service, restaurant étoilé Michelin, réception) + 6 mois de cours.</span>
               </li>
-              <li class="fa-langue">
-                <span class="fa-langue__tete"><b>Espagnol</b><i>A1</i></span>
-                <span class="fa-jauge"><span class="fa-jauge__cran est-on"></span><span class="fa-jauge__cran"></span><span class="fa-jauge__cran"></span><span class="fa-jauge__cran"></span></span>
+              <li class="fa-etape">
+                <b class="fa-etape__titre">Agent logistique</b>
+                <span class="fa-etape__lieu">FS Trading, Bussigny</span>
+                <span class="fa-etape__desc">Préparation de commandes, gestion des stocks (sec, réfrigéré, surgelé).</span>
               </li>
-            </ul>
-          </div>
-
-          <div class="fa-bloc">
-            <h3 class="fa-titre">Compétences</h3>
-            <p class="fa-surtitre">Digital &amp; création</p>
-            <ul class="fa-puces">
-              <li>Next.js / React</li><li>DaVinci Resolve</li>
-              <li>CapCut</li><li>Adobe Lightroom</li>
-            </ul>
-            <p class="fa-surtitre">Bureautique</p>
-            <ul class="fa-puces"><li>Suite Microsoft Office</li></ul>
-          </div>
-
-          <div class="fa-bloc">
-            <h3 class="fa-titre">En quelques chiffres</h3>
-            <ul class="fa-chiffres">
-              <li><b>16</b><span>pays</span></li>
-              <li><b>4</b><span>langues</span></li>
-              <li><b>400</b><span>personnes en banquet</span></li>
-              <li><b>4</b><span>voyages en solo</span></li>
-            </ul>
+              <li class="fa-etape">
+                <b class="fa-etape__titre">Agent de sécurité</b>
+                <span class="fa-etape__lieu">Protectas, Lausanne · 9 mois</span>
+                <span class="fa-etape__desc">Surveillance de bâtiments et de centres d’accueil.</span>
+              </li>
+              <li class="fa-etape">
+                <b class="fa-etape__titre">Commis de cuisine</b>
+                <span class="fa-etape__lieu">Parker, Etoy</span>
+                <span class="fa-etape__desc">Travail en cuisine, service rapide et rigueur.</span>
+              </li>
+              <li class="fa-etape">
+                <b class="fa-etape__titre">Stagiaire communication</b>
+                <span class="fa-etape__lieu">Nestlé, Nescafé / Starbucks</span>
+                <span class="fa-etape__desc">Affiches, supports visuels, idéation de packaging.</span>
+              </li>
+              <li class="fa-etape">
+                <b class="fa-etape__titre">Stage marketing</b>
+                <span class="fa-etape__lieu">Mosh l’agence, Nyon</span>
+                <span class="fa-etape__desc">Observation et découverte du métier en agence.</span>
+              </li>
+              <li class="fa-etape">
+                <b class="fa-etape__titre">Vendeur</b>
+                <span class="fa-etape__lieu">Quiksilver, Hossegor (France)</span>
+                <span class="fa-etape__desc">Conseil client et vente en boutique.</span>
+              </li>
+              <li class="fa-etape">
+                <b class="fa-etape__titre">Coach football, équipe féminine</b>
+                <span class="fa-etape__lieu">Pully · 3 saisons</span>
+                <span class="fa-etape__desc">Entraînement et encadrement d’une équipe sur 3 ans.</span>
+              </li>
+            </ol>
           </div>
 
           <div class="fa-bloc fa-fin">
             <h3 class="fa-titre fa-titre--fin">On se parle ?</h3>
-            <p class="fa-sous">Au plaisir d’échanger.</p>
+            <p class="fa-sous">Écris-moi, ça me fait toujours plaisir.</p>
             <!-- Rendus tels qu'ils apparaissent sur la page, mais inertes :
                  on montre la page, on n'emmène pas le visiteur ailleurs. -->
             <div class="fa-liens">
@@ -804,7 +813,7 @@
       <p class="surtitre reveal">Au quotidien</p>
       <h2 class="titre reveal">Où tu le mets.</h2>
       <p class="ou__sous reveal">
-        Ton QR tient dans deux centimètres. Il va où tu veux.
+        Ton QR code tient dans deux centimètres. Il va où tu veux.
       </p>
 
       <!-- Les dessins ne portent aucun texte : ce sont des barres et des
@@ -927,13 +936,13 @@
         <h3 class="impression__titre reveal">Ou sur de vraies cartes.</h3>
         <p class="impression__sous reveal">
           Tu veux des cartes&nbsp;? Je les dessine aux couleurs de ta page, avec
-          ton QR au dos. 50 cartes imprimées, livrées chez toi.
+          ton QR code au dos. 50 cartes imprimées, livrées chez toi.
         </p>
         <ul class="impression__liste">
           <li class="reveal">
             <img src="assets/images/carte_brun.jpg" width="620" height="465"
                  loading="lazy" decoding="async"
-                 alt="Une carte de visite MyLayer en brun, recto et verso, le QR au dos">
+                 alt="Une carte de visite MyLayer en brun, recto et verso, le QR code au dos">
           </li>
           <li class="reveal">
             <img src="assets/images/carte_vert.jpg" width="620" height="465"
@@ -975,9 +984,8 @@
         <li class="reveal">Ta page est visible par tous ceux qui ont le lien.</li>
         <li class="reveal">Ton numéro n’apparaît que si tu le demandes.</li>
         <li class="reveal">Tes photos et tes réponses ne servent qu’à faire ta page. Elles ne vont nulle part ailleurs.</li>
-        <li class="reveal">Ta page reste en ligne, et ton QR ne change jamais.</li>
+        <li class="reveal">Ta page reste en ligne, et ton QR code ne change jamais.</li>
         <li class="reveal">Tu changes d’avis&nbsp;? Un message, et ta page disparaît.</li>
-        <li class="reveal">Ton adresse contient ton prénom, et elle ne change plus.</li>
       </ol>
 
       <!-- Les questions sont juste en dessous : un bouton n’aurait pas de
@@ -1002,20 +1010,38 @@
     <div class="wrap">
       <p class="surtitre reveal">On commence</p>
 
+      <!-- La sortie de secours : elle n’apparaît que si des réponses sont
+           gardées sur l’appareil. Sans elle, repartir de zéro obligerait à
+           vider le stockage du navigateur. -->
+      <p class="debut__reprise" data-reprise hidden>
+        <button type="button" class="debut__recommencer" data-recommencer>recommencer à zéro</button>
+      </p>
+
       <!-- Q1. prénom -->
       <div class="q reveal" data-q="1">
         <label class="q__label" for="q-prenom">Ton prénom</label>
         <input class="q__input" id="q-prenom" type="text" name="prenom"
                autocomplete="given-name" placeholder="Léa" maxlength="40"
                enterkeyhint="next">
-        <p class="q__aide">Il donnera l’adresse de ta page.</p>
+        <p class="q__aide">Avec ton nom, il donnera l’adresse de ta page. Elle ne changera plus.</p>
+      </div>
+
+      <!-- Q2. nom de famille. L’adresse se lit sous lui : c’est le premier
+           endroit où elle est complète. Un tiret sépare les deux, jamais un
+           point : les messageries coupent les adresses au point, et le tiret
+           se dicte mieux à l’oral. -->
+      <div class="q reveal" data-q="2">
+        <label class="q__label" for="q-nom">Ton nom de famille</label>
+        <input class="q__input" id="q-nom" type="text" name="nom"
+               autocomplete="family-name" placeholder="Moreau" maxlength="40"
+               enterkeyhint="next">
         <p class="q__adresse" data-adresse hidden>
           mylayer.netlify.app/<b data-slug></b>
         </p>
       </div>
 
-      <!-- Q2. âge -->
-      <div class="q reveal" data-q="2">
+      <!-- Q3. âge -->
+      <div class="q reveal" data-q="3">
         <label class="q__label" for="q-age">Ton âge</label>
         <div class="q__curseur">
           <input class="q__range" id="q-age" type="range" min="14" max="80" value="25"
@@ -1024,8 +1050,8 @@
         </div>
       </div>
 
-      <!-- Q3. la couleur : le moment où la page change -->
-      <div class="q reveal" data-q="3">
+      <!-- Q4. la couleur : le moment où la page change -->
+      <div class="q reveal" data-q="4">
         <span class="q__label" id="q-couleur-l">Ta couleur</span>
         <div class="palette" role="radiogroup" aria-labelledby="q-couleur-l" data-palette>
           <button type="button" class="pastille" role="radio" aria-checked="false"
@@ -1052,14 +1078,14 @@
         <p class="q__aide">Elle portera toute ta page.</p>
       </div>
 
-      <!-- Q4. la police : le second choix qui se voit tout de suite.
+      <!-- Q5. la police : le second choix qui se voit tout de suite.
            La vitrine porte le prénom à la taille qu'il aura vraiment sur la
            page : c'est là que le choix se juge. Les cinq tuiles en dessous
            restent visibles ensemble, et la vitrine bascule au clic.
            Deux polices sont en casse normale : Indie Flower parce qu'elle
            est manuscrite, Climate Crisis parce qu'en capitales elle fait
            deux fois la largeur d'Anton. -->
-      <div class="q reveal" data-q="4" data-polices>
+      <div class="q reveal" data-q="5" data-polices>
         <span class="q__label" id="q-police-l">Ta police</span>
         <!-- Elle redit ce que la tuile cochée montre déjà : rien à annoncer. -->
         <div class="vitrine" aria-hidden="true">
@@ -1122,6 +1148,7 @@
       <!-- Relus depuis la page d’accueil (clé « mylayer.debut ») : on ne
            redemande jamais ce qui a déjà été donné. -->
       <input type="hidden" name="prenom"  data-champ="prenom">
+      <input type="hidden" name="nom"     data-champ="nom">
       <input type="hidden" name="age"     data-champ="age">
       <input type="hidden" name="couleur" data-champ="couleur">
       <input type="hidden" name="police"  data-champ="police" value="Anton">
@@ -1252,7 +1279,7 @@
       <section class="ec" data-ec data-section="Ton histoire">
         <p class="ec__compteur" data-compteur></p>
         <label class="ec__q" for="c-fierte">Ce dont tu es le plus fier. Et pourquoi ça compte pour toi.</label>
-        <p class="ec__relance">Pro ou perso, on s’en page.</p>
+        <p class="ec__relance">Pro ou perso, peu importe.</p>
         <textarea class="ec__champ ec__champ--fond" id="c-fierte" name="fierte"
                   data-champ="fierte" rows="8"></textarea>
         <p class="ec__dictee"><svg viewBox="0 0 14 20" fill="none" aria-hidden="true"><rect x="4" y="1" width="6" height="10" rx="3" stroke="currentColor" stroke-width="1.6"/><path d="M1.5 8.5a5.5 5.5 0 0 0 11 0M7 14v4.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg> tu peux dicter au lieu d’écrire</p>
@@ -1472,7 +1499,7 @@
           <label class="depot" data-zone data-slots="realisations_fichier_1,realisations_fichier_2,realisations_fichier_3" data-max="3">
             <input type="file" accept="image/*,.pdf" multiple data-choix>
             <span class="depot__titre">Choisir des fichiers</span>
-            <span class="depot__note" data-depot-note>Photos ou PDF, jusqu’à trois. 8 Mo au plus par fichier, allégés sur ton téléphone avant de partir.</span>
+            <span class="depot__note" data-depot-note>Un diplôme, une attestation, quelque chose que tu veux montrer. Pas de papiers d’identité. Photos ou PDF, jusqu’à trois. 8 Mo au plus par fichier, allégés sur ton téléphone avant de partir.</span>
           </label>
           <div class="vignettes" data-vignettes></div>
         </div>
@@ -1712,7 +1739,7 @@
 </main>
 
 <footer class="site-footer">
-  <p>Fait à la main, une page à la fois.</p>
+  <p>Une page à la fois.</p>
 </footer>
 
 <script src="assets/js/main.js" defer></script>

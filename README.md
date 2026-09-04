@@ -13,7 +13,8 @@ mylayer/
 │   ├── js/main.js              → scroll, téléphone, trois premières questions, couleur
 │   ├── js/formulaire.js        → le moteur du questionnaire
 │   ├── js/fichiers.js          → compression et envoi des photos
-│   └── js/pays.js              → les 212 pays
+│   ├── js/pays.js              → les 212 pays
+│   └── js/regions.js           → les 26 cantons et les régions proches
 └── <prenom>/                   → une page client par dossier, à venir
 ```
 
@@ -30,24 +31,83 @@ soumission trop lourde échoue en bloc. Si les réponses écrites étaient dedan
 dix minutes de saisie partiraient avec. Le pire qui puisse arriver, ici, est de
 redéposer des photos.
 
+Chaque photo porte deux choses : une légende, qui dit ce qu’on voit, et un
+rôle, qui dit où la poser. La même photo d’atelier peut nourrir la galerie,
+illustrer une étape du parcours ou accompagner la fierté, et ces emplacements
+n’ont pas le même format. Le rôle par défaut, « je sais pas, à toi de voir »,
+est volontairement le plus permissif : une photo non classée reste utilisable.
+
+Cette page se remplit **autant de fois qu’il le faut** : sept photos par envoi,
+et la référence relie les envois entre eux. Le portrait est demandé seul, en
+haut : c’est le bloc d’accroche du gabarit, il est obligatoire, et il n’était
+jamais demandé avant. Une photo déposée en largeur reçoit un avertissement,
+jamais un refus.
+
+**L’interdit passe avant les zones de dépôt.** L’ancienne consigne citait un
+diplôme, une attestation et un document avant d’interdire les papiers
+d’identité, et c’est elle qui a fait arriver un permis de conduire. La page ne
+parle plus que de photos, et les mots « diplôme », « attestation » et
+« document » n’apparaissent plus que dans la liste de ce qu’on refuse.
+
 ---
 
 ## Les deux formulaires Netlify
 
 | Formulaire | Où | Champs |
 |---|---|---|
-| `mylayer-reponses` | `index.html` | 47 champs + 6 emplacements de fichiers joints |
-| `mylayer-fichiers` | `formulaire/fichiers/index.html` | 13 emplacements de photos |
+| `mylayer-reponses` | `index.html` | 55 champs, dont un seul fichier : le CV |
+| `mylayer-fichiers` | `formulaire/fichiers/index.html` | la référence, 7 photos, 6 légendes, 6 rôles |
 
 Netlify les détecte **au déploiement, en lisant le HTML**. Tout champ qui doit
 remonter existe donc en dur dans la page, `name` compris, même s’il est rempli
-par le JS. C’est pourquoi les emplacements de fichiers sont déclarés dans un
+par le JS. C’est pourquoi les emplacements de photos sont déclarés dans un
 `<div hidden data-emplacements>` : les zones de dépôt visibles ne sont que
-l’interface, et le corps envoyé reçoit les versions allégées à leur place.
+l’interface, et le corps envoyé reçoit les versions allégées à leur place. Les
+six champs de légende suivent la même règle : ils vivent dans un
+`<div hidden data-legendes>`, le JS les déplace auprès de leur vignette et les
+y remet dès que la photo est retirée.
+
+Les composants qui n’ont pas de champ à eux — les répéteurs du parcours et des
+chiffres, les listes cochées — sérialisent leur état dans le champ caché qui
+porte le nom de la question. Une étape par ligne, les colonnes séparées par
+` | ` :
+
+```
+parcours     Serveuse | Café du Grütli, Lausanne | 2019–2021 | 80 couverts par service
+chiffres     16 | pays visités
+competences  Cuisine | Pâtisserie, service en salle, gestion des commandes
+```
 
 Toucher au `name` du formulaire, à `data-netlify`, au champ caché `form-name` ou
 au `name` d’un champ suffit à faire disparaître les réponses **sans erreur
 visible**. C’est le point le plus fragile du projet.
+
+---
+
+## Deux règles d’écriture
+
+**Aucun tiret cadratin, aucun tiret d’incise** dans un texte affiché au client.
+Points, virgules ou deux-points à la place. Le tiret demi-cadratin reste permis
+dans une plage de dates, « 2019–2021 », ce n’est pas une incise.
+
+**Une question, une réponse courte.** Un lieu, une année, un chiffre. Les
+champs de fond de sept lignes ont disparu avec les questions qui produisaient
+des pavés : c’est la longueur du champ qui décide de la longueur de la réponse,
+pas la consigne.
+
+---
+
+## Ce que le questionnaire décide pour la page
+
+Trois réponses ne s’affichent nulle part mais commandent la rédaction entière :
+
+| Champ | Ce qu’il commande |
+|---|---|
+| `objectif` | le ton général, l’ordre des blocs |
+| `ton_page` | le tutoiement ou le vouvoiement, « Mon parcours » ou « Parcours » |
+| `origine` + `lieu_vie` | le paragraphe d’ouverture, qui s’écrit toujours pareil : l’âge, l’origine, ce qu’on fait aujourd’hui |
+
+Sans `ton_page`, la voix se devinait à partir de l’âge, et se devinait mal.
 
 ---
 
@@ -103,7 +163,9 @@ mais ses deux faces sont vides. Remplacer le contenu de `.carte-face` par des
 `<img>`, puis retirer la classe `est-en-attente` sur `.cartes`.
 
 **3. Le choix de la police par le client.** Prévu, pas encore fait : la
-typographie ne bouge pas pour l’instant.
+typographie ne bouge pas pour l’instant. `gabarit/2-gabarit.html` porte encore
+les `<link>` des quatre anciennes polices (Archivo Black, Bebas Neue, Fraunces,
+Syne) : une page fabriquée en Kavoon ou Smokum ne trouverait pas sa fonte.
 
 **4. Les pages d’exemple sont inventées.** Léa et Sami n’existent pas. À
 remplacer par de vrais clients dès les premiers. Aucun nom d’Adrien n’apparaît

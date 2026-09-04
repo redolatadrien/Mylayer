@@ -2,8 +2,9 @@
    MyLayer, le questionnaire
    --------------------------------------------------------------------------
    1. Ce que les premières questions ont donné (prénom, âge, couleur, police)
-   2. Les questions construites en JS : les mots, les langues, les pays
-   3. Les gestes : choix, duels, classement, champs multiples, fichiers joints
+   2. Les questions construites en JS : les mots, les répéteurs, les langues,
+      les pays
+   3. Les gestes : choix, duels, classement, champs multiples, répéteurs
    4. La navigation d’un écran à l’autre, dans les deux sens
    5. La sauvegarde locale, en continu
    6. L’envoi, et la référence qui rattachera les photos
@@ -108,9 +109,15 @@
      2. Les questions construites en JS
      ====================================================================== */
 
-  /* ---------- les 25 mots ----------
-     Cinq familles, aucun mot faible, aucun jugement de valeur. Trois mots au
-     minimum, et pas de plafond : au-delà de trois, c’est encore du portrait. */
+  /* ---------- les cinq mots ----------
+     Cinq familles, aucun mot faible, aucun jugement de valeur.
+
+     La règle a changé : ce n’est plus « trois minimum parmi vingt-cinq », une
+     consigne qui obligeait à compter et que personne ne comprenait du premier
+     coup. C’est un mot par ligne, cinq lignes. L’interaction se résout
+     d’elle-même : cliquer un mot désélectionne l’autre mot de sa ligne, et
+     on ne peut pas se tromper. Rien n’est obligatoire pour autant, sauter la
+     question reste un chemin normal. */
   var MOTS = [
     ['Rapport aux autres',  ['Sociable', 'Discret', 'Attentif', 'Direct', 'Diplomate']],
     ['Rapport à l’action',  ['Rapide', 'Méthodique', 'Débrouillard', 'Persévérant', 'Spontané']],
@@ -121,10 +128,20 @@
 
   function construireMots(hote) {
     var cible = hote.getAttribute('data-mots');
-    var choisis = (rep[cible] || '').split(', ').filter(Boolean);
     var jauge = document.querySelector('[data-jauge-mots="' + cible + '"]');
 
-    MOTS.forEach(function (fam) {
+    /* Un mot retenu par famille, jamais deux. Ce qui a été gardé est
+       redistribué dans sa ligne d’origine : l’ordre de sortie suit donc
+       toujours l’ordre des familles, quel que soit l’ordre des clics. */
+    var gardes = (rep[cible] || '').split(', ').filter(Boolean);
+    var retenus = MOTS.map(function (fam) {
+      for (var i = 0; i < gardes.length; i++) {
+        if (fam[1].indexOf(gardes[i]) > -1) return gardes[i];
+      }
+      return '';
+    });
+
+    MOTS.forEach(function (fam, rangIndex) {
       var bloc = document.createElement('div');
       bloc.className = 'famille';
       var titre = document.createElement('p');
@@ -134,36 +151,43 @@
 
       var rangee = document.createElement('div');
       rangee.className = 'choix';
+      rangee.setAttribute('role', 'radiogroup');
+      rangee.setAttribute('aria-label', fam[0]);
+
       fam[1].forEach(function (mot) {
         var b = document.createElement('button');
         b.type = 'button';
         b.className = 'choix__opt';
         b.textContent = mot;
-        b.setAttribute('aria-pressed', choisis.indexOf(mot) > -1 ? 'true' : 'false');
-        b.addEventListener('click', function () { basculerMot(b, mot); });
+        b.setAttribute('role', 'radio');
+        b.setAttribute('aria-checked', retenus[rangIndex] === mot ? 'true' : 'false');
+        b.addEventListener('click', function () { choisirMot(rangee, rangIndex, mot); });
         rangee.appendChild(b);
       });
       bloc.appendChild(rangee);
       hote.appendChild(bloc);
     });
 
-    function basculerMot(bouton, mot) {
-      var i = choisis.indexOf(mot);
-      if (i > -1) choisis.splice(i, 1); else choisis.push(mot);
-      bouton.setAttribute('aria-pressed', choisis.indexOf(mot) > -1 ? 'true' : 'false');
-      garder(cible, choisis.join(', '));
+    /* Recliquer le mot déjà retenu le retire : sans ça, une ligne cochée par
+       erreur ne pourrait plus être vidée. */
+    function choisirMot(rangee, rangIndex, mot) {
+      retenus[rangIndex] = (retenus[rangIndex] === mot) ? '' : mot;
+      var opts = rangee.querySelectorAll('.choix__opt');
+      for (var i = 0; i < opts.length; i++) {
+        opts[i].setAttribute('aria-checked',
+          opts[i].textContent === retenus[rangIndex] ? 'true' : 'false');
+      }
+      garder(cible, retenus.filter(Boolean).join(', '));
       majJauge();
     }
 
-    /* En dessous de trois, « Continuer » ne s’ouvre pas. « je passe » reste
-       ouvert : sauter une question est un chemin normal, ici comme ailleurs. */
-    var ecran = hote.closest('[data-ec]');
-    var bouton = ecran ? ecran.querySelector('[data-suivant]') : null;
-
     function majJauge() {
-      var assez = choisis.length >= 3;
-      if (jauge) jauge.classList.toggle('est-plein', assez);
-      if (bouton) bouton.disabled = !assez;
+      if (!jauge) return;
+      var n = retenus.filter(Boolean).length;
+      var plein = (n === MOTS.length);
+      jauge.textContent = plein ? 'c’est bon'
+                                : n + (n > 1 ? ' lignes' : ' ligne') + ' sur ' + MOTS.length;
+      jauge.classList.toggle('est-plein', plein);
     }
     majJauge();
   }
@@ -239,17 +263,45 @@
      Deux cent douze cases ne se parcourent pas au pouce : on tape trois
      lettres. Les pays déjà cochés restent visibles au-dessus de la liste,
      sinon on perd de vue ce qu’on a mis. */
-  (function construirePays() {
-    var liste = document.querySelector('[data-pays-liste]');
-    var hoteChoisis = document.querySelector('[data-pays-choisis]');
-    var cherche = document.getElementById('c-pays-cherche');
-    if (!liste || !window.MYLAYER_PAYS) return;
+  /* ---------- les lieux cochés : les pays, ou les régions ----------
+     Le même composant sert deux fois. Celui qui a voyagé coche des pays,
+     celui qui n’a pas voyagé coche des régions : le gabarit a une carte pour
+     chacun, et « non » ne doit plus mener à un écran mort.
 
-    /* « Thaïlande (TH), Canada (CA) » → ['TH', 'CA'] */
-    var choisis = (rep.pays || '').split(', ').filter(Boolean).map(function (b) {
+     Les pays portent leur code ISO, les régions n’en ont pas : il n’existe
+     pas de norme qui couvre à la fois un canton, un département français et
+     l’Oberland bernois. L’identité est donc le code s’il existe, le nom
+     sinon, et c’est la seule différence entre les deux listes. */
+  var LIEUX = {
+    pays:    function () { return window.MYLAYER_PAYS; },
+    regions: function () { return window.MYLAYER_REGIONS; }
+  };
+
+  /* Chaque bloc dépose ici de quoi se vider. Basculer de « oui » à « non »
+     doit effacer la liste qu’on referme, sinon des pays cochés partiraient
+     avec la réponse « je n’ai pas voyagé ». */
+  var videLesLieux = {};
+
+  function construireLieux(bloc) {
+    var quoi   = bloc.getAttribute('data-lieux');
+    var cible  = bloc.getAttribute('data-cible');
+    var source = LIEUX[quoi] && LIEUX[quoi]();
+    if (!source) return;
+
+    var liste       = bloc.querySelector('[data-lieux-liste]');
+    var hoteChoisis = bloc.querySelector('[data-lieux-choisis]');
+    var cherche     = bloc.querySelector('[data-lieux-cherche]');
+    if (!liste) return;
+
+    function cle(p) { return p.code || p.nom; }
+    function etiquette(p) { return p.code ? p.nom + ' (' + p.code + ')' : p.nom; }
+
+    /* « Thaïlande (TH), Canada (CA) » → ['TH', 'CA'] · « Vaud, Valais » →
+       ['Vaud', 'Valais']. On relit ce qu’on a écrit, dans les deux formes. */
+    var choisis = (rep[cible] || '').split(', ').filter(Boolean).map(function (b) {
       var o = b.lastIndexOf(' (');
-      return o > -1 ? b.slice(o + 2, -1) : '';
-    }).filter(Boolean);
+      return o > -1 ? b.slice(o + 2, -1) : b;
+    });
 
     function sansAccent(s) {
       return s.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
@@ -259,7 +311,7 @@
       var q = sansAccent((cherche && cherche.value || '').trim());
       liste.textContent = '';
 
-      var vus = window.MYLAYER_PAYS.filter(function (p) {
+      var vus = source.filter(function (p) {
         return !q || sansAccent(p.nom).indexOf(q) > -1;
       });
 
@@ -276,25 +328,26 @@
         b.type = 'button';
         b.className = 'pays__opt';
         b.textContent = p.nom;
-        b.setAttribute('aria-pressed', choisis.indexOf(p.code) > -1 ? 'true' : 'false');
+        b.setAttribute('aria-pressed', choisis.indexOf(cle(p)) > -1 ? 'true' : 'false');
         b.addEventListener('click', function () {
-          var i = choisis.indexOf(p.code);
-          if (i > -1) choisis.splice(i, 1); else choisis.push(p.code);
+          var i = choisis.indexOf(cle(p));
+          if (i > -1) choisis.splice(i, 1); else choisis.push(cle(p));
           b.setAttribute('aria-pressed', i > -1 ? 'false' : 'true');
-          majPays();
+          majLieux();
         });
         liste.appendChild(b);
       });
     }
 
-    function majPays() {
-      /* On garde les noms ET les codes : le nom pour se relire, le code
-         pour qu’une carte puisse être allumée plus tard sans re-deviner. */
-      var sortie = choisis.map(function (code) {
-        var p = window.MYLAYER_PAYS.filter(function (x) { return x.code === code; })[0];
-        return p ? p.nom + ' (' + p.code + ')' : code;
+    function majLieux() {
+      /* Pour les pays, on garde les noms ET les codes : le nom pour se
+         relire, le code pour qu’une carte s’allume plus tard sans re-deviner
+         les intitulés. Les régions n’ont que leur nom. */
+      var sortie = choisis.map(function (k) {
+        var p = source.filter(function (x) { return cle(x) === k; })[0];
+        return p ? etiquette(p) : k;
       });
-      garder('pays', sortie.join(', '));
+      garder(cible, sortie.join(', '));
 
       if (hoteChoisis) {
         hoteChoisis.textContent = '';
@@ -307,16 +360,26 @@
           b.setAttribute('aria-label', 'retirer ' + nom);
           b.addEventListener('click', function () {
             choisis.splice(i, 1);
-            majPays(); dessiner();
+            majLieux(); dessiner();
           });
           hoteChoisis.appendChild(b);
         });
       }
     }
 
+    videLesLieux[bloc.getAttribute('data-bloc')] = function () {
+      if (!choisis.length) return;
+      choisis.length = 0;
+      if (cherche) cherche.value = '';
+      majLieux(); dessiner();
+    };
+
     if (cherche) cherche.addEventListener('input', dessiner);
-    dessiner(); majPays();
-  })();
+    dessiner(); majLieux();
+  }
+
+  var blocsLieux = document.querySelectorAll('[data-lieux]');
+  for (var bl = 0; bl < blocsLieux.length; bl++) construireLieux(blocsLieux[bl]);
 
   /* ---------- les portes de sortie, à plusieurs entrées ----------
      Une seule ligne obligeait à choisir entre deux mots, deux langues, deux
@@ -393,39 +456,245 @@
   var multis = document.querySelectorAll('[data-multi]');
   for (var mm = 0; mm < multis.length; mm++) construireMulti(multis[mm]);
 
+  /* ---------- les répéteurs ----------
+     Deux blocs du gabarit attendent des cases, pas un récit : le PARCOURS
+     veut un intitulé, un lieu, une année, un détail chiffré ; les CHIFFRES
+     veulent un entier et deux mots de légende. Un textarea rendait des
+     paragraphes qu’il fallait ensuite découper à la main.
+
+     Les colonnes sont décrites ici, une seule fois, comme les mots et les
+     langues. Les champs d’une ligne n’ont pas de « name » : c’est le champ
+     caché de la question qui part chez Netlify, une ligne par étape, les
+     colonnes séparées par une barre verticale. */
+  var REPETEURS = {
+    parcours: {
+      depart: 2, max: 5, ajouter: '+ une étape', retirer: 'retirer cette étape',
+      champs: [
+        { label: 'Tu faisais quoi',           gabarit: 'Serveuse',                 long: 80 },
+        { label: 'Où',                        gabarit: 'Café du Grütli, Lausanne', long: 80 },
+        { label: 'Quand',                     gabarit: '2019–2021',                long: 30 },
+        { label: 'Un chiffre, si tu en as un', gabarit: '80 couverts par service', long: 60,
+          aide: 'Une quantité, une taille d’équipe, une durée. C’est ce qui rend une étape crédible.' }
+      ]
+    },
+    /* Deux familles, ni plus ni moins : le bloc du gabarit n’en affiche pas
+       davantage, et un bouton d’ajout promettrait une place qui n’existe pas.
+       Ni ajout ni croix, donc, d’où « fixe ». Les exemples changent d’une
+       ligne à l’autre : deux fois « Cuisine » aurait laissé croire qu’on
+       attend deux fois la même chose. */
+    competences: {
+      depart: 2, max: 2, fixe: true,
+      champs: [
+        { label: 'La famille',          gabarit: ['Cuisine', 'Administratif'], long: 24 },
+        { label: 'Ce qu’il y a dedans',
+          gabarit: ['Pâtisserie, service en salle, gestion des commandes',
+                    'Excel, caisse, plannings'], long: 120,
+          aide: 'Sépare-les par des virgules, c’est comme ça qu’elles s’afficheront.' }
+      ]
+    },
+    chiffres: {
+      depart: 2, max: 4, ajouter: '+ un chiffre', retirer: 'retirer ce chiffre',
+      champs: [
+        { label: 'Le nombre', gabarit: '16', long: 9, numerique: true,
+          aide: 'Un nombre entier. Sans texte.' },
+        /* Vingt-quatre signes : au-delà, la légende passe sur deux lignes et
+           casse la grille du bloc CHIFFRES. */
+        { label: 'De quoi',   gabarit: 'pays visités', long: 24 }
+      ]
+    }
+  };
+
+  function construireRepeteur(hote) {
+    var cible = hote.getAttribute('data-repeteur');
+    var reg   = REPETEURS[cible];
+    if (!reg) return;
+
+    var corps = document.createElement('div');
+    corps.className = 'repet__lignes';
+    hote.appendChild(corps);
+
+    var ajout = document.createElement('button');
+    ajout.type = 'button';
+    ajout.className = 'multi__ajouter';
+    ajout.textContent = reg.ajouter || '';
+    ajout.addEventListener('click', function () { ajouterLigne(null, true); });
+    if (!reg.fixe) hote.appendChild(ajout);
+
+    function lignes() {
+      return [].slice.call(corps.querySelectorAll('.repet__ligne'));
+    }
+
+    /* Une ligne entièrement vide ne part pas : ajouter trois étapes puis
+       n’en remplir qu’une ne doit pas envoyer deux lignes de barres. */
+    function enregistrer() {
+      var sortie = lignes().map(function (ligne) {
+        var vals = [].slice.call(ligne.querySelectorAll('.repet__champ'))
+                     .map(function (ch) { return ch.value.trim(); });
+        if (!vals.join('')) return '';
+        return vals.join(' | ').replace(/\s+$/, '');
+      }).filter(Boolean);
+      garder(cible, sortie.join('\n'));
+    }
+
+    /* La croix n’apparaît qu’à partir de la deuxième ligne : sur une ligne
+       seule, elle proposerait de retirer un champ vide. */
+    function majEtat() {
+      var tout = lignes();
+      tout.forEach(function (ligne, i) {
+        var croix = ligne.querySelector('.repet__retirer');
+        if (croix) croix.hidden = reg.fixe || (i === 0 || tout.length < 2);
+        var num = ligne.querySelector('.repet__num');
+        if (num) num.textContent = (i + 1);
+      });
+      ajout.hidden = (tout.length >= reg.max);
+    }
+
+    function ajouterLigne(valeurs, prendreLeCurseur) {
+      var ligne = document.createElement('div');
+      ligne.className = 'repet__ligne';
+
+      var num = document.createElement('span');
+      num.className = 'repet__num';
+      ligne.appendChild(num);
+
+      var cases = document.createElement('div');
+      cases.className = 'repet__cases';
+
+      reg.champs.forEach(function (spec, k) {
+        var part = document.createElement('div');
+        part.className = 'repet__case';
+
+        var champ = document.createElement('input');
+        champ.type = 'text';
+        champ.className = 'sortie__champ repet__champ';
+        /* Un exemple par ligne quand le registre en donne plusieurs : répéter
+           « Cuisine » sur les deux lignes ferait croire qu’on attend deux fois
+           la même famille. */
+        champ.placeholder = Array.isArray(spec.gabarit)
+          ? (spec.gabarit[lignes().length] || spec.gabarit[spec.gabarit.length - 1])
+          : spec.gabarit;
+        champ.maxLength = spec.long;
+        champ.autocomplete = 'off';
+        champ.setAttribute('aria-label', spec.label);
+        if (spec.numerique) {
+          champ.inputMode = 'numeric';
+          champ.pattern = '[0-9]*';
+        }
+        champ.value = (valeurs && valeurs[k]) || '';
+        champ.addEventListener('input', enregistrer);
+
+        var lab = document.createElement('span');
+        lab.className = 'repet__label';
+        lab.textContent = spec.label;
+
+        part.appendChild(lab);
+        part.appendChild(champ);
+
+        /* Le sous-titre ne se répète pas sur les cinq lignes : il est posé
+           sur la première, là où l’œil arrive. */
+        if (spec.aide && !lignes().length) {
+          var aide = document.createElement('p');
+          aide.className = 'repet__aide';
+          aide.textContent = spec.aide;
+          part.appendChild(aide);
+        }
+
+        cases.appendChild(part);
+      });
+      ligne.appendChild(cases);
+
+      var retirer = document.createElement('button');
+      retirer.type = 'button';
+      retirer.className = 'multi__retirer repet__retirer';
+      retirer.innerHTML = '&times;';
+      retirer.setAttribute('aria-label', reg.retirer);
+      retirer.addEventListener('click', function () {
+        corps.removeChild(ligne);
+        if (!lignes().length) ajouterLigne(null, false);
+        majEtat();
+        enregistrer();
+      });
+      ligne.appendChild(retirer);
+
+      corps.appendChild(ligne);
+      majEtat();
+      if (prendreLeCurseur) ligne.querySelector('.repet__champ').focus();
+    }
+
+    var gardees = (rep[cible] || '').split('\n').filter(function (l) { return l.trim(); });
+    var combien = Math.max(reg.depart, Math.min(gardees.length, reg.max));
+    for (var i = 0; i < combien; i++) {
+      ajouterLigne(gardees[i] ? gardees[i].split('|').map(function (v) { return v.trim(); }) : null, false);
+    }
+  }
+
+  var repeteurs = document.querySelectorAll('[data-repeteur]');
+  for (var rp = 0; rp < repeteurs.length; rp++) construireRepeteur(repeteurs[rp]);
+
   /* ======================================================================
      3. Les gestes
      ====================================================================== */
 
-  /* ---------- un seul choix ---------- */
+  /* ---------- un seul choix ----------
+     Le bouton peut porter une valeur différente de son texte : « on se
+     tutoie » se stocke « tutoiement », parce que c’est le mot que le gabarit
+     lira, pas la phrase qu’on montre au client. */
   var uniques = document.querySelectorAll('[data-unique]');
   for (var u = 0; u < uniques.length; u++) {
     (function (groupe) {
       var cible = groupe.getAttribute('data-cible');
       var opts = groupe.querySelectorAll('.choix__opt');
+      function valeurDe(b) { return b.getAttribute('data-val') || b.textContent; }
 
       for (var i = 0; i < opts.length; i++) {
         (function (b) {
-          if (rep[cible] === b.textContent) b.setAttribute('aria-checked', 'true');
+          if (rep[cible] === valeurDe(b)) b.setAttribute('aria-checked', 'true');
           b.addEventListener('click', function () {
             for (var j = 0; j < opts.length; j++) opts[j].setAttribute('aria-checked', 'false');
             b.setAttribute('aria-checked', 'true');
-            garder(cible, b.textContent);
-            reagir(groupe, b.textContent);
+            garder(cible, valeurDe(b));
+            reagir(groupe, valeurDe(b), true);
           });
         })(opts[i]);
       }
-      if (rep[cible]) reagir(groupe, rep[cible]);
+      if (rep[cible]) reagir(groupe, rep[cible], false);
     })(uniques[u]);
   }
 
-  /* « oui » ouvre un bloc dans le même écran : c’est le cas des pays, sous la
-     question du voyage. « non » le referme. */
-  function reagir(groupe, valeur) {
-    var ouvre = groupe.getAttribute('data-ouvre');
-    if (!ouvre) return;
-    var bloc = document.querySelector('[data-bloc="' + ouvre + '"]');
-    if (bloc) bloc.hidden = (valeur !== 'oui');
+  /* Une réponse ouvre des blocs dans le même écran, et referme ceux de
+     l’autre réponse. C’est le cas du voyage : « oui » ouvre les pays, « non »
+     ouvre les régions, et le champ libre reste sous les deux.
+
+     Refermer un bloc de lieux le vide. Sans ça, cocher trois pays puis
+     revenir sur « non » enverrait « je n’ai pas voyagé » avec trois pays
+     collés au champ caché. On ne vide qu’au clic : au chargement, ce qui est
+     gardé sur l’appareil doit être retrouvé tel quel. */
+  function reagir(groupe, valeur, depuisLeClic) {
+    var oui = groupe.getAttribute('data-ouvre-oui');
+    var non = groupe.getAttribute('data-ouvre-non');
+    var simple = groupe.getAttribute('data-ouvre');
+
+    if (simple) {
+      var b = document.querySelector('[data-bloc="' + simple + '"]');
+      if (b) b.hidden = (valeur !== 'oui');
+      return;
+    }
+    if (!oui && !non) return;
+
+    var aOuvrir = (valeur === 'oui' ? oui : valeur === 'non' ? non : '') || '';
+    var voulus = aOuvrir.split(',').filter(Boolean);
+
+    var tous = {};
+    (oui || '').split(',').filter(Boolean).forEach(function (n) { tous[n] = 1; });
+    (non || '').split(',').filter(Boolean).forEach(function (n) { tous[n] = 1; });
+
+    Object.keys(tous).forEach(function (nom) {
+      var bloc = document.querySelector('[data-bloc="' + nom + '"]');
+      if (!bloc) return;
+      var ouvert = voulus.indexOf(nom) > -1;
+      bloc.hidden = !ouvert;
+      if (!ouvert && depuisLeClic && videLesLieux[nom]) videLesLieux[nom]();
+    });
   }
 
   /* ---------- plusieurs choix ---------- */
@@ -588,6 +857,35 @@
     })(champs[c]);
   }
 
+  /* ---------- le compteur de signes ----------
+     Deux blocs du gabarit affichent leur phrase en très grand : au-delà de
+     leur limite, elle remplit l’écran d’un téléphone et perd son effet. Le
+     « maxlength » arrête la frappe, mais sans rien dire ; le compteur, lui,
+     prévient avant qu’on se cogne. */
+  (function poserCompteurs() {
+    var comptes = form.querySelectorAll('[data-compte]');
+    for (var i = 0; i < comptes.length; i++) {
+      (function (ch) {
+        var max   = parseInt(ch.getAttribute('maxlength'), 10) || 0;
+        if (!max) return;
+        var seuil = parseInt(ch.getAttribute('data-compte-seuil'), 10) || Math.max(1, max - 20);
+
+        var vu = document.createElement('p');
+        vu.className = 'ec__compte';
+        vu.setAttribute('aria-hidden', 'true');
+        ch.parentNode.insertBefore(vu, ch.nextSibling);
+
+        function maj() {
+          var n = ch.value.length;
+          vu.textContent = n + ' / ' + max;
+          vu.classList.toggle('est-proche', n >= seuil);
+        }
+        ch.addEventListener('input', maj);
+        maj();
+      })(comptes[i]);
+    }
+  })();
+
   /* ---------- le CV ---------- */
   (function construireDepot() {
     var depot = document.querySelector('[data-depot]');
@@ -615,199 +913,6 @@
     });
   })();
 
-
-  /* ---------- les fichiers joints à une question ----------
-     Deux questions peuvent montrer autre chose qu’un texte : les réalisations,
-     et les endroits qui comptent. Ces fichiers partent avec les réponses, dans
-     le même envoi que le CV.
-
-     La compression n’est pas un confort : une photo de téléphone pèse 2 à 4 Mo,
-     trois suffiraient à épuiser le quota mensuel. Allégées à 300-400 Ko, elles
-     rendent le circuit tenable. C’est le traitement de la page de dépôt, écrit
-     ici pour que cette page ne dépende d’aucune autre. */
-  var JOINT_CIBLE = 380 * 1024;      /* le poids visé par photo, une fois allégée */
-  var JOINT_COTE  = 1600;            /* le plus grand côté, en pixels */
-  var JOINT_MAX   = 8 * 1024 * 1024; /* le plafond par fichier, avant allègement */
-
-  var joints = {};                   /* nom d’emplacement → { blob, nom } */
-
-  /* Le navigateur applique tout seul l’orientation EXIF à une <img> : passer
-     par elle plutôt que par createImageBitmap évite les portraits couchés. */
-  function chargerImage(fichier) {
-    return new Promise(function (resoudre, rejeter) {
-      var url = URL.createObjectURL(fichier);
-      var img = new Image();
-      img.onload  = function () { URL.revokeObjectURL(url); resoudre(img); };
-      img.onerror = function () { URL.revokeObjectURL(url); rejeter(new Error('illisible')); };
-      img.src = url;
-    });
-  }
-
-  function versJpeg(img, largeur, hauteur, q) {
-    return new Promise(function (resoudre) {
-      var toile = document.createElement('canvas');
-      toile.width = largeur; toile.height = hauteur;
-      var ctx = toile.getContext('2d');
-      /* Un fond blanc : un PNG transparent aplati en JPEG sortirait noir. */
-      ctx.fillStyle = '#FFFFFF';
-      ctx.fillRect(0, 0, largeur, hauteur);
-      ctx.drawImage(img, 0, 0, largeur, hauteur);
-      toile.toBlob(resoudre, 'image/jpeg', q);
-    });
-  }
-
-  function estImage(fichier) {
-    return /^image\//.test(fichier.type) ||
-           /\.(jpe?g|png|gif|webp|heic|heif)$/i.test(fichier.name);
-  }
-
-  /* On descend la qualité par paliers, puis la taille si ça ne suffit pas. */
-  function alleger(fichier) {
-    if (!estImage(fichier)) {
-      return Promise.resolve({ blob: fichier, nom: fichier.name });
-    }
-
-    return chargerImage(fichier).then(function (img) {
-      var ratio = Math.min(1, JOINT_COTE / Math.max(img.naturalWidth, img.naturalHeight));
-      var l = Math.round(img.naturalWidth * ratio);
-      var h = Math.round(img.naturalHeight * ratio);
-
-      var qualites = [0.82, 0.72, 0.62, 0.52, 0.44];
-      var i = 0;
-
-      function essai(largeur, hauteur) {
-        return versJpeg(img, largeur, hauteur, qualites[i]).then(function (blob) {
-          if (!blob) throw new Error('illisible');
-          if (blob.size <= JOINT_CIBLE) return blob;
-          i++;
-          if (i < qualites.length) return essai(largeur, hauteur);
-          /* Toutes les qualités épuisées : on réduit encore la taille, une
-             seule fois. Au-delà, la photo ne vaudrait plus rien. */
-          if (largeur > 1200) {
-            i = 1;
-            return essai(Math.round(largeur * 0.75), Math.round(hauteur * 0.75));
-          }
-          return blob;
-        });
-      }
-
-      return essai(l, h).then(function (blob) {
-        return { blob: blob, nom: fichier.name.replace(/\.[^.]+$/, '') + '.jpg' };
-      });
-    }).catch(function () {
-      /* Le cas connu : les iPhone photographient en HEIC, que les navigateurs
-         de bureau ne savent pas ouvrir. Sur l’iPhone lui-même, Safari le
-         décode et on ne passe jamais ici. */
-      var heic = /\.(heic|heif)$/i.test(fichier.name);
-      throw new Error(heic
-        ? 'Cette photo est en HEIC, un format que ce navigateur ne sait pas ouvrir. Envoie-la depuis ton téléphone.'
-        : 'Je n’arrive pas à ouvrir ce fichier. Essaie une autre photo.');
-    });
-  }
-
-  function joliPoids(octets) {
-    return octets < 1024 * 1024
-      ? Math.round(octets / 1024) + ' Ko'
-      : (octets / 1048576).toFixed(1).replace('.', ',') + ' Mo';
-  }
-
-  function dessinerVignette(vignette, res, slot) {
-    vignette.textContent = '';
-
-    if (/^image\//.test(res.blob.type)) {
-      var img = document.createElement('img');
-      img.src = URL.createObjectURL(res.blob);
-      img.alt = '';
-      img.addEventListener('load', function () { URL.revokeObjectURL(img.src); });
-      vignette.appendChild(img);
-    } else {
-      var doc = document.createElement('span');
-      doc.className = 'vignette__doc';
-      doc.textContent = res.nom;
-      vignette.appendChild(doc);
-    }
-
-    var poids = document.createElement('span');
-    poids.className = 'vignette__poids';
-    poids.textContent = joliPoids(res.blob.size);
-    vignette.appendChild(poids);
-
-    var retirer = document.createElement('button');
-    retirer.type = 'button';
-    retirer.className = 'vignette__retirer';
-    retirer.innerHTML = '&times;';
-    retirer.setAttribute('aria-label', 'retirer ' + res.nom);
-    retirer.addEventListener('click', function (e) {
-      e.preventDefault();
-      delete joints[slot];
-      vignette.parentNode.removeChild(vignette);
-    });
-    vignette.appendChild(retirer);
-  }
-
-  function brancherJoint(zone) {
-    var slots  = zone.getAttribute('data-slots').split(',');
-    var max    = parseInt(zone.getAttribute('data-max'), 10) || 1;
-    var entree = zone.querySelector('[data-choix]');
-    var hote   = zone.parentNode.querySelector('[data-vignettes]');
-    var note   = zone.querySelector('[data-depot-note]');
-    var texteOrigine = note ? note.textContent : '';
-
-    function libres() {
-      return slots.filter(function (s) { return !joints[s]; });
-    }
-
-    entree.addEventListener('change', function () {
-      var fichiers = [].slice.call(entree.files || []);
-      entree.value = '';                    /* pour pouvoir reprendre le même */
-      if (!fichiers.length) return;
-
-      var place = libres();
-      if (!place.length) {
-        if (note) note.textContent = 'C’est complet (' + max + ' au maximum). Retires-en un d’abord.';
-        return;
-      }
-      if (note) note.textContent = texteOrigine;
-
-      /* Le plafond se dit avec le poids du fichier refusé : « c’est trop
-         lourd » sans chiffre n’apprend rien à personne. */
-      var refuses = [];
-      var retenus = fichiers.slice(0, place.length).filter(function (f) {
-        if (f.size <= JOINT_MAX) return true;
-        refuses.push(f.name + ' fait ' + joliPoids(f.size));
-        return false;
-      });
-
-      if (refuses.length && note) {
-        note.textContent = refuses.join(', ') + ' : c’est trop lourd. 8 Mo au plus par fichier.';
-      } else if (fichiers.length > place.length && note) {
-        note.textContent = 'J’en ai pris ' + place.length + ' : c’est le maximum ici.';
-      }
-
-      retenus.forEach(function (fichier, k) {
-        var slot = place[k];
-        joints[slot] = { blob: null, nom: fichier.name };   /* on réserve la place */
-
-        var vignette = document.createElement('div');
-        vignette.className = 'vignette est-en-cours';
-        hote.appendChild(vignette);
-
-        alleger(fichier).then(function (res) {
-          joints[slot] = res;
-          vignette.classList.remove('est-en-cours');
-          dessinerVignette(vignette, res, slot);
-        }).catch(function (err) {
-          delete joints[slot];
-          vignette.parentNode.removeChild(vignette);
-          if (note) note.textContent = err.message;
-        });
-      });
-    });
-  }
-
-  var zonesJointes = form.querySelectorAll('[data-joint] [data-zone]');
-  for (var zj = 0; zj < zonesJointes.length; zj++) brancherJoint(zonesJointes[zj]);
-
   /* ======================================================================
      4. La navigation
      ====================================================================== */
@@ -831,6 +936,14 @@
      donne les paliers du parcours, on ne franchit plus une trentaine de
      questions, on en franchit six. Il est posé ici plutôt qu’écrit dans le
      HTML pour que le nom d’une section n’existe qu’à un seul endroit. */
+  /* Une section peut annoncer sa règle sous son nom. « Deux histoires » est
+     la seule à en avoir besoin : c’est le seul endroit du formulaire où l’on
+     demande un vrai souvenir, et dire tout de suite qu’il tient en deux
+     lignes évite le pavé qu’on essaie justement de ne plus recevoir. */
+  var SOUS_TITRES = {
+    'Deux histoires': 'Deux souvenirs. Deux lignes chacun.'
+  };
+
   (function poserAnnonces() {
     var courante = null;
     var premiere = true;
@@ -854,6 +967,13 @@
       nom.className = 'ec__annonce';
       nom.textContent = sec;
       annonce.appendChild(nom);
+
+      if (SOUS_TITRES[sec]) {
+        var sous = document.createElement('p');
+        sous.className = 'ec__annonce-sous';
+        sous.textContent = SOUS_TITRES[sec];
+        annonce.appendChild(sous);
+      }
 
       ec.parentNode.insertBefore(annonce, ec);
     });
@@ -924,7 +1044,10 @@
     majRetour();
 
     if (annonce) {
-      minuterie = setTimeout(function () { minuterie = null; suivant(); }, 1150);
+      /* Une annonce qui porte une règle sous son nom demande le temps de la
+         lire : sinon elle passe avant qu’on l’ait vue. */
+      var duree = ecrans[actif].querySelector('.ec__annonce-sous') ? 1900 : 1150;
+      minuterie = setTimeout(function () { minuterie = null; suivant(); }, duree);
       return;
     }
 
@@ -1101,18 +1224,6 @@
       }
     }
 
-    /* Un fichier encore en cours d’allègement partirait vide. */
-    var enCours = Object.keys(joints).filter(function (s) { return !joints[s].blob; }).length;
-    if (enCours > 0) {
-      if (motEnvoi) {
-        motEnvoi.hidden = false;
-        motEnvoi.className = 'envoi';
-        motEnvoi.textContent = 'J’allège encore ' + enCours +
-          (enCours > 1 ? ' fichiers' : ' fichier') + ', deux secondes.';
-      }
-      return;
-    }
-
     /* Le prénom, l’âge et la couleur sont relus maintenant : ils viennent des
        trois questions posées plus haut dans la même page. */
     reprendreLeDebut();
@@ -1137,17 +1248,10 @@
       motEnvoi.textContent = 'J’envoie…';
     }
 
-    /* Les emplacements déclarés dans le HTML servent à la détection par
-       Netlify au déploiement ; le corps envoyé, lui, reçoit ici les versions
-       allégées à la place des fichiers d’origine. */
+    /* Le seul fichier de cet envoi est le CV : il part tel quel, sous le
+       « name » que porte son champ. Les photos, elles, ont leur page à
+       elles, et leur propre compression. */
     var corps = new FormData(form);
-    var places = form.querySelectorAll('[data-emplacements] input[name]');
-    for (var e = 0; e < places.length; e++) corps.delete(places[e].getAttribute('name'));
-    Object.keys(joints).forEach(function (slot) {
-      if (joints[slot] && joints[slot].blob) {
-        corps.append(slot, joints[slot].blob, joints[slot].nom);
-      }
-    });
 
     fetch(location.pathname, { method: 'POST', body: corps })
       .then(function (r) {

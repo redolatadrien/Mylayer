@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>MyLayer, tes fichiers</title>
+<title>MyLayer, tes photos</title>
 <meta name="description" content="La deuxième partie : tes photos. Deux minutes.">
 <meta name="theme-color" content="#0F5C46">
 <meta name="robots" content="noindex">
@@ -35,6 +35,10 @@
          confort : une soumission trop lourde échoue en bloc, et si les
          réponses étaient dedans, dix minutes de saisie partiraient avec.
          Ici, le pire qui puisse arriver est de redéposer des photos.
+
+         Cette page n’est pas un coffre à ouverture unique : elle se remplit
+         autant de fois qu’il le faut, et c’est la référence qui relie les
+         envois entre eux.
          ================================================================== -->
     <form id="depots" name="mylayer-fichiers" method="POST"
           data-netlify="true" netlify-honeypot="piege" enctype="multipart/form-data">
@@ -42,90 +46,169 @@
       <input type="hidden" name="form-name" value="mylayer-fichiers">
       <p hidden><label>À ne pas remplir : <input name="piege"></label></p>
 
-      <!-- La référence vient du lien (?ref=…) ou du stockage local. C’est
-           elle qui rattache ces photos aux réponses déjà envoyées. -->
-      <input type="hidden" name="reference" data-ref>
-      <input type="hidden" name="prenom"    data-prenom>
-      <input type="hidden" name="mail"      data-mail>
+      <header class="mot" style="max-width:44ch">
+        <h1 class="mot__titre">Tes photos.</h1>
 
-      <header class="mot" style="max-width:40ch">
-        <h1 class="mot__titre">Tes fichiers.</h1>
+        <!-- La référence vient du lien (?ref=…) ou du stockage local, et
+             reste modifiable : la page peut s’ouvrir sur un autre appareil,
+             ou servir un deuxième envoi des semaines plus tard. -->
+        <p class="sortie" style="border-top:0;padding-top:0">
+          <label class="sortie__label" for="c-ref">Ta référence</label>
+          <input class="sortie__champ" id="c-ref" type="text" name="reference"
+                 placeholder="lea-7K2M" autocomplete="off" spellcheck="false"
+                 maxlength="40" data-ref>
+        </p>
         <p class="mot__texte">
-          Pour les photos : lumière du jour, pas de flou, toi bien visible.
-          Format vertical si possible. Pas de photo de groupe.
-        </p>
-        <p class="ref" data-bloc-ref hidden>
-          <span class="ref__label">Ta référence</span>
-          <b class="ref__code" data-ref-code></b>
-        </p>
-        <p class="ec__erreur" data-sans-ref hidden>
-          Je n’ai pas ta référence. Ouvre cette page depuis le lien que je t’ai
-          envoyé par mail, ou écris-la ici quand tu enverras, sinon je ne saurai
-          pas à quelles réponses ces photos appartiennent.
-        </p>
-        <p class="sortie" data-ref-main hidden>
-          <label class="sortie__label" for="c-ref">Ta référence, si tu l’as sous la main</label>
-          <input class="sortie__champ" id="c-ref" type="text" placeholder="lea-7K2M"
-                 autocomplete="off" spellcheck="false" maxlength="40">
+          Tu peux revenir déposer des fichiers autant de fois que tu veux. Remets
+          simplement ta référence à chaque fois : c’est elle qui relie tes photos
+          à tes réponses.
         </p>
       </header>
 
+      <!-- ==============================================================
+           L’INTERDIT, AVANT TOUTE ZONE DE DÉPÔT
+           L’ancienne consigne citait trois documents administratifs avant
+           d’interdire les documents administratifs : c’est elle qui a
+           produit l’envoi d’un permis de conduire, pas le client. Ici
+           l’interdit passe en premier, et le mot « document » ne
+           réapparaît nulle part ailleurs sur la page.
+           ============================================================== -->
+      <aside class="garde">
+        <h2 class="garde__titre">Ce que je ne veux surtout pas recevoir</h2>
+        <p class="garde__texte">
+          Aucun document officiel : pas de carte d’identité, pas de passeport,
+          pas de permis, pas de carte AVS, pas de fiche de salaire, pas de
+          contrat, pas de document bancaire. Ils n’ont aucune utilité pour ta
+          page et je les efface sans les ouvrir.
+        </p>
+        <h2 class="garde__titre garde__titre--oui">Ce que je veux</h2>
+        <p class="garde__texte">
+          Des photos. Toi, ton travail, tes lieux, ce que tu fabriques.
+        </p>
+      </aside>
+
       <div class="cases">
 
-        <!-- ---------- A ---------- -->
-        <section class="case" data-case>
-          <p class="case__lettre">A</p>
-          <h2 class="case__titre">Ta photo principale</h2>
-          <p class="case__note">Une seule. C’est celle qui ouvre ta page.</p>
-          <label class="depot" data-zone data-slots="photo_principale" data-max="1">
+        <!-- ==============================================================
+             LE PORTRAIT
+             Seul, en haut, séparé du reste : c’est le bloc d’accroche du
+             gabarit, il est obligatoire, et il n’était jamais demandé.
+             ============================================================== -->
+        <section class="case case--portrait" data-case>
+          <h2 class="case__titre">Ta photo de portrait</h2>
+          <p class="case__note">
+            <b>Une photo verticale</b>, comme un écran de téléphone. C’est le
+            premier écran de ta page, elle occupe tout l’espace.
+          </p>
+          <p class="case__note">
+            Une photo prise en largeur ne marche pas : elle sera coupée sur les
+            côtés et ton visage se retrouvera flou et de travers. Si tu n’en as
+            pas en vertical, prends-en une maintenant, ça suffit largement.
+          </p>
+          <label class="depot" data-zone data-slots="portrait" data-max="1" data-portrait>
             <input type="file" accept="image/*" data-choix>
-            <span class="depot__titre">Choisir une photo</span>
+            <span class="depot__titre">Choisir mon portrait</span>
             <span class="depot__note">Elle sera allégée sur ton téléphone avant de partir.</span>
           </label>
           <div class="vignettes" data-vignettes></div>
         </section>
 
-        <!-- ---------- B ---------- -->
+        <!-- ==============================================================
+             LES AUTRES PHOTOS
+             Six par envoi, chacune avec sa légende : la galerie et la frise
+             d’objets du gabarit l’affichent sous l’image. Sans légende, il
+             faudrait l’inventer.
+             ============================================================== -->
         <section class="case" data-case>
-          <p class="case__lettre">B</p>
-          <h2 class="case__titre">D’autres photos de toi</h2>
-          <p class="case__note">Jusqu’à cinq. Des vraies, pas des photos d’identité.</p>
-          <label class="depot" data-zone
-                 data-slots="photo_autre_1,photo_autre_2,photo_autre_3,photo_autre_4,photo_autre_5"
-                 data-max="5">
+          <h2 class="case__titre">Tes photos</h2>
+          <p class="case__note">
+            Ton travail, tes lieux, ce que tu fabriques, toi en train de faire
+            ce que tu fais. Six par envoi, et tu peux revenir.
+          </p>
+          <label class="depot" data-zone data-max="6"
+                 data-slots="photo_1,photo_2,photo_3,photo_4,photo_5,photo_6">
             <input type="file" accept="image/*" multiple data-choix>
             <span class="depot__titre">Choisir des photos</span>
             <span class="depot__note">Tu peux en sélectionner plusieurs d’un coup.</span>
           </label>
-          <div class="vignettes" data-vignettes></div>
+          <div class="vignettes vignettes--legendees" data-vignettes></div>
         </section>
 
-        <!-- ---------- C ---------- -->
-        <section class="case" data-case>
-          <p class="case__lettre">C</p>
-          <h2 class="case__titre">Certificats, diplômes, documents</h2>
-          <p class="case__note">Facultatif. PDF ou photo, jusqu’à trois.</p>
-          <p class="case__note">Un diplôme, une attestation, quelque chose que tu veux montrer. Pas de papiers d’identité.</p>
-          <label class="depot" data-zone
-                 data-slots="document_1,document_2,document_3" data-max="3">
-            <input type="file" accept=".pdf,image/*" multiple data-choix>
-            <span class="depot__titre">Choisir des documents</span>
-            <span class="depot__note">Les PDF partent tels quels.</span>
-          </label>
-          <div class="vignettes" data-vignettes></div>
-        </section>
+      </div>
 
-        <!-- ==============================================================
-             Les cases conditionnelles.
-             Elles ne s’affichent que si la réponse correspondante a été
-             donnée, et elles sont construites par le JS à partir de ce qui
-             est gardé sur le téléphone. Ouverte sur un autre appareil, la
-             page n’affiche que les trois cases fixes, et c’est très bien :
-             une case « une photo de ça ? » sans savoir de quoi n’aiderait
-             personne.
-             ============================================================== -->
-        <div data-cases-liees></div>
+      <!-- Les légendes et les rôles. Ils sont écrits ici, en dur, sous leur
+           « name » : Netlify lit ce HTML au déploiement pour savoir quels
+           champs existent. Le JS les déplace ensuite auprès de leur vignette,
+           et les remet ici si la photo est retirée.
 
+           La légende dit ce qu’on voit sur la photo. Le rôle dit où la
+           poser : une photo d’atelier peut nourrir la galerie, illustrer une
+           étape du parcours ou accompagner la fierté, et ces trois
+           emplacements n’ont pas le même format. Sans le rôle, on choisit à
+           l’aveugle. La première option est la plus permissive, et c’est
+           voulu : personne ne doit se sentir obligé de trancher, une photo
+           non classée reste utilisable. -->
+      <div class="legendes" data-legendes hidden>
+        <input type="text" name="legende_1" maxlength="30" data-legende="photo_1"
+               placeholder="Atelier, mars" autocomplete="off" aria-label="légende de la photo 1">
+        <select name="role_1" data-role="photo_1" aria-label="rôle de la photo 1">
+          <option value="libre" selected>je sais pas, à toi de voir</option>
+          <option value="travail">mon travail, ce que je fabrique</option>
+          <option value="parcours">une étape de mon parcours</option>
+          <option value="fierte">ce dont je suis fier</option>
+          <option value="temps_libre">mon temps libre</option>
+          <option value="lieu">un lieu qui compte</option>
+        </select>
+        <input type="text" name="legende_2" maxlength="30" data-legende="photo_2"
+               placeholder="Atelier, mars" autocomplete="off" aria-label="légende de la photo 2">
+        <select name="role_2" data-role="photo_2" aria-label="rôle de la photo 2">
+          <option value="libre" selected>je sais pas, à toi de voir</option>
+          <option value="travail">mon travail, ce que je fabrique</option>
+          <option value="parcours">une étape de mon parcours</option>
+          <option value="fierte">ce dont je suis fier</option>
+          <option value="temps_libre">mon temps libre</option>
+          <option value="lieu">un lieu qui compte</option>
+        </select>
+        <input type="text" name="legende_3" maxlength="30" data-legende="photo_3"
+               placeholder="Atelier, mars" autocomplete="off" aria-label="légende de la photo 3">
+        <select name="role_3" data-role="photo_3" aria-label="rôle de la photo 3">
+          <option value="libre" selected>je sais pas, à toi de voir</option>
+          <option value="travail">mon travail, ce que je fabrique</option>
+          <option value="parcours">une étape de mon parcours</option>
+          <option value="fierte">ce dont je suis fier</option>
+          <option value="temps_libre">mon temps libre</option>
+          <option value="lieu">un lieu qui compte</option>
+        </select>
+        <input type="text" name="legende_4" maxlength="30" data-legende="photo_4"
+               placeholder="Atelier, mars" autocomplete="off" aria-label="légende de la photo 4">
+        <select name="role_4" data-role="photo_4" aria-label="rôle de la photo 4">
+          <option value="libre" selected>je sais pas, à toi de voir</option>
+          <option value="travail">mon travail, ce que je fabrique</option>
+          <option value="parcours">une étape de mon parcours</option>
+          <option value="fierte">ce dont je suis fier</option>
+          <option value="temps_libre">mon temps libre</option>
+          <option value="lieu">un lieu qui compte</option>
+        </select>
+        <input type="text" name="legende_5" maxlength="30" data-legende="photo_5"
+               placeholder="Atelier, mars" autocomplete="off" aria-label="légende de la photo 5">
+        <select name="role_5" data-role="photo_5" aria-label="rôle de la photo 5">
+          <option value="libre" selected>je sais pas, à toi de voir</option>
+          <option value="travail">mon travail, ce que je fabrique</option>
+          <option value="parcours">une étape de mon parcours</option>
+          <option value="fierte">ce dont je suis fier</option>
+          <option value="temps_libre">mon temps libre</option>
+          <option value="lieu">un lieu qui compte</option>
+        </select>
+        <input type="text" name="legende_6" maxlength="30" data-legende="photo_6"
+               placeholder="Atelier, mars" autocomplete="off" aria-label="légende de la photo 6">
+        <select name="role_6" data-role="photo_6" aria-label="rôle de la photo 6">
+          <option value="libre" selected>je sais pas, à toi de voir</option>
+          <option value="travail">mon travail, ce que je fabrique</option>
+          <option value="parcours">une étape de mon parcours</option>
+          <option value="fierte">ce dont je suis fier</option>
+          <option value="temps_libre">mon temps libre</option>
+          <option value="lieu">un lieu qui compte</option>
+        </select>
       </div>
 
       <!-- Les emplacements réels. Netlify lit ce HTML au déploiement pour
@@ -133,19 +216,13 @@
            en dur, même s’ils sont remplis par le JS avec les versions
            allégées des photos. Les zones ci-dessus ne sont que l’interface. -->
       <div hidden data-emplacements>
-        <input type="file" name="photo_principale">
-        <input type="file" name="photo_autre_1">
-        <input type="file" name="photo_autre_2">
-        <input type="file" name="photo_autre_3">
-        <input type="file" name="photo_autre_4">
-        <input type="file" name="photo_autre_5">
-        <input type="file" name="document_1">
-        <input type="file" name="document_2">
-        <input type="file" name="document_3">
-        <input type="file" name="photo_lieu">
-        <input type="file" name="photo_voyage">
-        <input type="file" name="photo_projet">
-        <input type="file" name="photo_activite">
+        <input type="file" name="portrait">
+        <input type="file" name="photo_1">
+        <input type="file" name="photo_2">
+        <input type="file" name="photo_3">
+        <input type="file" name="photo_4">
+        <input type="file" name="photo_5">
+        <input type="file" name="photo_6">
       </div>
 
       <p class="mot__texte mot__aparte" style="margin-top:2rem">
@@ -153,18 +230,26 @@
       </p>
 
       <div class="ec__nav">
-        <button type="button" class="cta" data-envoyer>Envoyer mes fichiers</button>
+        <button type="button" class="cta" data-envoyer>Envoyer mes photos</button>
       </div>
       <p class="envoi" data-envoi hidden></p>
       <p class="envoi" data-poids hidden></p>
     </form>
 
     <!-- L’écran final. Hors du formulaire : il n’apparaît qu’une fois
-         l’envoi accepté. -->
+         l’envoi accepté. Il redit la référence, parce qu’un deuxième envoi
+         est un chemin normal ici. -->
     <section data-final hidden>
       <div class="mot">
         <h2 class="mot__titre">Reçu.</h2>
         <p class="mot__texte">Ta page arrive dans 72 heures.</p>
+        <p class="mot__texte mot__aparte">
+          Il t’en reste d’autres ? Reviens sur cette page avec la même
+          référence, <b data-ref-rappel></b>, autant de fois qu’il le faudra.
+        </p>
+        <p class="mot__nav">
+          <button type="button" class="cta" data-encore>Déposer d’autres photos</button>
+        </p>
       </div>
     </section>
 

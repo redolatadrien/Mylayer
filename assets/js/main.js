@@ -165,14 +165,27 @@
     }
     majAdresse();
 
-    /* --- âge --- */
+    /* --- âge ---
+       Le curseur n’a pas de position de départ : un curseur posé sur 25
+       fait partir « 25 ans » de quelqu’un qui n’y a jamais touché. Tant
+       qu’il est vierge, le nombre reste vide et rien n’est mémorisé ; la
+       poignée est éteinte pour que ça se voie. Un âge déjà donné rallume
+       tout, évidemment. */
     var age = document.getElementById('q-age');
     var val = document.getElementById('q-age-val');
     if (age && val) {
-      if (enregistre.age) age.value = enregistre.age;
-      val.textContent = age.value;
-      age.addEventListener('input', function () {
+      function allumerAge() {
+        age.classList.remove('est-vierge');
+        age.removeAttribute('data-vierge');
+        val.classList.remove('q__val--vide');
         val.textContent = age.value;
+      }
+      if (enregistre.age) {
+        age.value = enregistre.age;
+        allumerAge();
+      }
+      age.addEventListener('input', function () {
+        allumerAge();
         memoriser('age', age.value);
       });
     }

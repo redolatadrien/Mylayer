@@ -800,6 +800,21 @@ code {
   font-variant-numeric: tabular-nums;
 }
 
+/* Le curseur d’âge tant qu’on n’y a pas touché. Il n’a pas de valeur de
+   départ : la poignée se pose au milieu de la course, mais rien n’est
+   répondu tant qu’on ne l’a pas déplacée. La poignée creuse le dit, et la
+   largeur minimale du nombre garde sa place vide, pour que la ligne ne
+   saute pas au premier geste. */
+.q__range.est-vierge::-webkit-slider-thumb {
+  background: transparent;
+  border: 2px solid rgba(255, 255, 255, .45);
+}
+.q__range.est-vierge::-moz-range-thumb {
+  background: transparent;
+  border: 2px solid rgba(255, 255, 255, .45);
+}
+.q__val--vide { min-width: 2.2ch; }
+
 .palette { display: flex; flex-wrap: wrap; gap: .8rem; }
 .pastille {
   width: 52px; height: 52px; border-radius: 50%;

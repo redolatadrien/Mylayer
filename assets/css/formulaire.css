@@ -86,6 +86,13 @@
   font-size: clamp(2.4rem, 12vw, 4.4rem);
   max-width: 14ch;
 }
+.ec__annonce-sous {
+  margin-top: .9rem;
+  font-size: 1rem;
+  color: var(--dim);
+  max-width: 24ch;
+}
+
 
 /* Le surtitre de section, sur chaque question. Petites capitales espacées,
    comme les surtitres du reste du site. « QUI TU ES · 2 SUR 4 » se franchit ;
@@ -137,22 +144,33 @@
   background: rgba(255,255,255,.10);
 }
 
-/* Les trois ambitions de réponse. Les valeurs sont des hauteurs de champ,
-   pas des maximums : on peut toujours écrire plus, le champ s’allonge. */
-.ec__champ--fond   { min-height: 15rem; }   /* 7 à 8 lignes  */
+/* Les hauteurs de réponse. Elles disent ce qu’on attend, et c’est le réglage
+   le plus important de la page : les champs de fond, sept à huit lignes, ont
+   disparu avec les questions qui produisaient des pavés. */
 .ec__champ--moyen  { min-height: 7.5rem; }  /* 3 lignes      */
 .ec__champ--ligne  { min-height: 0; }
 
-/* Le rappel de la dictée, sous chaque champ écrit. Il est répété partout :
-   posé une seule fois dans le pacte, il serait oublié dès l’écran suivant.
-   C’est le premier levier de longueur des réponses. */
-.ec__dictee {
-  margin-top: .6rem;
-  font-size: .82rem; font-style: italic;
-  color: var(--dimmer);
-  display: flex; align-items: center; gap: .45rem;
+/* Les champs d'une ligne portent une phrase entière, jusqu'à 110 signes.
+   À la taille des champs de fond, un téléphone n'en montrerait qu'un tiers
+   et la fin défilerait hors du cadre : on ne peut pas se relire. Un cran
+   plus petit, et la phrase tient sous les yeux. Ils gardent la hauteur de
+   frappe, seule la lettre rétrécit. */
+input.ec__champ--ligne { font-size: .95rem; padding: .95rem 1rem; }
+@media (min-width: 480px) { input.ec__champ--ligne { font-size: 1rem; } }
+
+/* Le compteur de signes. Deux blocs du gabarit affichent leur phrase en
+   très grand : passé leur limite, elle remplit l'écran d'un téléphone. Le
+   compteur reste presque invisible tant qu'on est loin du bord, et vire au
+   gris lisible dans les vingt derniers signes : il prévient au lieu de
+   surveiller. */
+.ec__compte {
+  margin-top: .5rem;
+  font-size: .78rem;
+  font-variant-numeric: tabular-nums;
+  color: rgba(255, 255, 255, .32);
+  transition: color .2s;
 }
-.ec__dictee svg { width: 13px; height: 18px; flex: none; }
+.ec__compte.est-proche { color: #D8D4CB; font-weight: 600; }
 
 /* ==========================================================================
    Les choix par tap
@@ -400,6 +418,11 @@
    perd de vue ce qu’on a déjà mis.
    ========================================================================== */
 .pays { margin-top: clamp(1.4rem, 5vw, 2rem); }
+/* Le titre du bloc de lieux. La question posée est « Tu as voyagé ? » ; ce
+   qui s'ouvre en dessous est une seconde demande, elle a droit à son titre
+   plutôt qu'à une simple étiquette de champ. */
+.lieux__titre { font-size: 1.05rem; font-weight: 600; margin-bottom: .5rem; }
+
 .pays__cherche {
   width: 100%;
   background: rgba(255,255,255,.08);
@@ -434,6 +457,102 @@
 .pays__vide { padding: .9rem .8rem; font-size: .9rem; color: var(--dimmer); }
 
 /* ==========================================================================
+   Les répéteurs
+   --------------------------------------------------------------------------
+   Le gabarit ne veut pas un récit, il veut des cases : un intitulé, un lieu,
+   une année, un chiffre. Une ligne du répéteur, c'est une étape de la
+   timeline ou une case du bloc CHIFFRES, et rien d'autre.
+
+   Chaque case porte son étiquette au-dessus plutôt qu'un simple exemple
+   grisé : sur un téléphone, quatre champs à la suite sans étiquette ne se
+   distinguent plus une fois qu'on a commencé à écrire dedans.
+   ========================================================================== */
+.repet { margin-top: clamp(1.4rem, 5vw, 2rem); }
+.repet__lignes { display: grid; gap: 1.4rem; }
+
+.repet__ligne {
+  position: relative;
+  display: grid;
+  grid-template-columns: 1.6rem 1fr auto;
+  align-items: start;
+  gap: .6rem;
+  padding-top: .2rem;
+}
+
+/* Le numéro. Il dit à quelle étape on est sans faire de titre. */
+.repet__num {
+  font-family: Anton, Inter, sans-serif; font-weight: 400;
+  font-size: 1.15rem; line-height: 1.6;
+  color: rgba(255, 255, 255, .28);
+  font-variant-numeric: tabular-nums;
+}
+
+.repet__cases { display: grid; gap: .8rem; min-width: 0; }
+.repet__case { min-width: 0; }
+.repet__label {
+  display: block;
+  font-size: .78rem; color: var(--dimmer);
+  margin-bottom: .25rem;
+}
+.repet__champ { width: 100%; max-width: none; }
+.repet__aide {
+  margin-top: .35rem;
+  font-size: .78rem; font-style: italic;
+  color: var(--dimmer);
+  max-width: 42ch;
+}
+
+/* La croix se cale sur la première case, pas au milieu de la ligne : c'est
+   là qu'on la cherche. La première étape n'en a pas, il en reste toujours
+   une. */
+.repet__retirer { margin-top: 1.25rem; }
+.repet__retirer[hidden] { display: none; }
+.repet .multi__ajouter { margin-top: 1.3rem; }
+.repet .multi__ajouter[hidden] { display: none; }
+
+/* Dès qu'il y a la place, les quatre cases d'une étape tiennent sur une
+   ligne : on voit l'étape entière d'un coup d'œil, comme sur la timeline. */
+@media (min-width: 720px) {
+  .repet__cases { grid-template-columns: repeat(auto-fit, minmax(9rem, 1fr)); gap: 1rem; }
+  /* Le sous-titre reste sous sa colonne, il n'en déborde pas : c'est à ce
+     champ-là qu'il parle, pas à l'étape entière. Les cases d'une même ligne
+     s'étirent à la même hauteur, il ne décale donc rien. */
+  .repet__aide { max-width: none; }
+}
+
+/* ==========================================================================
+   L'écran à trois petites questions
+   --------------------------------------------------------------------------
+   Trois demandes minuscules sur un écran, séparées par un filet : le registre
+   et les deux lieux n'ont rien à voir entre eux, et sans séparation ils se
+   liraient comme une seule question à trois champs.
+   ========================================================================== */
+.trio { margin-top: clamp(1.4rem, 5vw, 2rem); display: grid; gap: 1.6rem; }
+.trio__part + .trio__part { padding-top: 1.4rem; border-top: 1px solid var(--line-soft); }
+.trio .choix { margin-top: .7rem; }
+.trio .ec__champ { margin-top: .5rem; }
+
+/* ==========================================================================
+   Les questions à deux cases
+   --------------------------------------------------------------------------
+   Quatre blocs du gabarit ont besoin de deux morceaux distincts : ce qu'on a
+   fait et pourquoi ça compte, ce qui a foiré et ce qu'on en a tiré, la
+   phrase et qui l'a dite. Rassemblés dans un seul champ, le second morceau
+   manquait une fois sur deux et le bloc se supprimait.
+   ========================================================================== */
+.duo { margin-top: clamp(1.4rem, 5vw, 2rem); display: grid; gap: 1.3rem; }
+.duo__label {
+  display: block;
+  font-size: .82rem; color: var(--dimmer);
+  margin-bottom: .35rem;
+}
+.duo__aide {
+  margin-top: .4rem;
+  font-size: .78rem; font-style: italic; color: var(--dimmer);
+}
+.ec__champ--duo { min-height: 4.6rem; }
+
+/* ==========================================================================
    Le dépôt du CV
    ========================================================================== */
 .depot {
@@ -450,11 +569,6 @@
 .depot__titre { font-weight: 600; font-size: 1.05rem; }
 .depot__note { margin-top: .45rem; font-size: .85rem; color: var(--dimmer); }
 .depot.est-rempli { border-style: solid; border-color: var(--white); background: rgba(255,255,255,.09); }
-
-/* Le fichier joint à une question. Il vient après le texte, jamais à sa
-   place : on peut écrire, montrer, ou les deux. */
-.joint { margin-top: 1.6rem; padding-top: 1.2rem; border-top: 1px solid var(--line-soft); }
-.joint .depot { margin-top: 0; }
 
 /* ==========================================================================
    La navigation
@@ -579,17 +693,31 @@
 
 .case { position: relative; }
 
-/* La lettre, en typographie de titre et très effacée : elle donne le rythme
-   du bloc, comme les chiffres de « Les choses claires ». */
-.case__lettre {
-  font-family: Anton, Inter, sans-serif; font-weight: 400;
-  font-size: clamp(2.2rem, 9vw, 3.2rem); line-height: .8;
-  color: rgba(255, 255, 255, .18);
-  margin-bottom: .5rem;
-}
 .case__titre { font-size: 1.25rem; font-weight: 700; }
 .case__note { margin-top: .35rem; font-size: .9rem; color: var(--dimmer); }
 .case .depot { margin-top: 1rem; }
+
+/* Le portrait est seul en haut, séparé du reste par un trait : c'est le
+   premier écran de la page du client, il ne se mélange pas aux autres. */
+.case--portrait { padding-bottom: clamp(2rem, 7vw, 3rem); border-bottom: 1px solid var(--line-soft); }
+
+/* ---------- l'encadré de ce qu'on ne veut pas ----------
+   L'interdit passe avant tout le reste et avant toute zone de dépôt : la
+   consigne précédente citait trois documents administratifs avant de les
+   interdire, et c'est elle qui a fait arriver un permis de conduire. */
+.garde {
+  margin-top: clamp(2rem, 7vw, 3rem);
+  border: 2px solid var(--line-soft);
+  border-radius: var(--radius);
+  padding: clamp(1.2rem, 5vw, 1.8rem);
+  max-width: 44ch;
+}
+.garde__titre {
+  font-size: .78rem; letter-spacing: .14em; text-transform: uppercase;
+  font-weight: 700;
+}
+.garde__titre--oui { margin-top: 1.3rem; }
+.garde__texte { margin-top: .6rem; font-size: .95rem; color: var(--dim); }
 
 /* ---------- les vignettes ----------
    On voit ce qu’on a déposé, et son poids une fois allégé : c’est ce qui
@@ -631,8 +759,62 @@
 }
 .vignette__retirer:hover { background: rgba(0,0,0,.8); }
 
-/* La vignette encore en cours de compression. */
-.vignette.est-en-cours { opacity: .5; }
+/* La vignette encore en cours de compression. Elle occupe déjà sa place :
+   sans ça, les six vignettes sauteraient une par une à l'écran. */
+.vignette.est-en-cours { opacity: .5; min-height: 92px; }
+
+/* Une vignette qui porte une légende ne peut plus faire 92 px : le champ
+   demande de la place, et la légende est indispensable : la galerie et la
+   frise d'objets du gabarit l'affichent sous chaque image. */
+.vignettes--legendees { gap: 1rem; }
+.vignettes--legendees .vignette { width: 100%; max-width: 15rem; }
+.vignettes--legendees .vignette img { width: 100%; height: 10rem; }
+.vignettes--legendees .vignette.est-en-cours { height: 10rem; }
+
+.vignette__legende { display: block; padding: .5rem .55rem .6rem; }
+.vignette__legende-titre {
+  display: block;
+  font-size: .7rem; color: var(--dimmer);
+  margin-bottom: .3rem;
+}
+.vignette__legende input {
+  width: 100%;
+  background: transparent; border: 0; border-bottom: 1px solid var(--line-soft);
+  color: var(--white); font: inherit; font-size: .85rem;
+  padding: .25rem 0;
+}
+.vignette__legende input::placeholder { color: rgba(255,255,255,.3); }
+.vignette__legende input:focus { outline: none; border-bottom-color: var(--white); }
+
+/* Le rôle de la photo. Il tient sous la légende, dans la même vignette :
+   la légende dit ce qu'on voit, le rôle dit où la poser. Le menu prend
+   toute la largeur, un menu étroit se toucherait mal au pouce. */
+.vignette__role { border-top: 1px solid var(--line-soft); }
+.vignette__role select {
+  width: 100%;
+  background: transparent; border: 0;
+  color: var(--white); font: inherit; font-size: .8rem;
+  padding: .25rem 0;
+  -webkit-appearance: none; appearance: none;
+}
+.vignette__role select:focus { outline: none; }
+/* Le fond du menu déroulant est peint par le système : sans encre sombre,
+   les options sortiraient en blanc sur blanc. */
+.vignette__role select option { color: #14201C; }
+
+/* L'avertissement d'une photo couchée, ou d'un PDF. Il tient sous la
+   vignette, il n'empêche rien : on avertit, on n'interdit pas. */
+.vignette__alerte {
+  padding: .5rem .55rem;
+  font-size: .72rem; line-height: 1.35;
+  color: #FFD9CE;
+  border-top: 1px solid var(--line-soft);
+}
+
+/* La réserve des légendes. Les champs vivent dans le formulaire même quand
+   aucune photo ne les porte : Netlify ne connaît que ce qui est déclaré
+   dans le HTML livré. */
+.legendes[hidden] { display: none; }
 
 /* Le poids total. Il ne s’affiche que quand il commence à compter : afficher
    « 0,2 Mo » à la première photo n’apprendrait rien à personne. */

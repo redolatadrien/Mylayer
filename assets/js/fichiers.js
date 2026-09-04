@@ -1,23 +1,27 @@
 /* ==========================================================================
-   MyLayer, le dépôt de fichiers, partie 2
+   MyLayer, le dépôt de photos, partie 2
    --------------------------------------------------------------------------
-   1. La référence, qui rattache ces photos aux réponses déjà envoyées
-   2. Les cases conditionnelles, tirées de ce qui a été répondu
-   3. La compression, avant l’envoi et sur le téléphone
+   1. La référence, qui relie ces photos aux réponses déjà envoyées
+   2. La compression, dans le navigateur, avant l’envoi
+   3. Les zones de dépôt, les légendes, l’avertissement du portrait
    4. L’envoi
 
-   La compression n’est pas un confort : une photo de téléphone pèse 2 à 4 Mo,
-   trois suffiraient à épuiser le quota mensuel de fichiers. Allégées à
-   300-400 Ko, un client complet tient sous le mégaoctet. C’est ce qui rend
-   le circuit tenable, pas ce qui le rend joli.
+   La compression n’est pas un confort. Le quota Netlify est de dix mégaoctets
+   par mois ; une photo de téléphone en pèse trois à cinq. Six photos brutes
+   feraient donc sauter le quota d’un seul client. Ramenées à 1600 px de côté
+   et exportées en JPEG, elles tombent autour de 350 Ko, et un client complet
+   tient largement dedans.
+
+   La page n’est pas un coffre à ouverture unique : elle se remplit autant de
+   fois qu’il le faut, et c’est la référence qui relie les envois.
    ========================================================================== */
 
 (function () {
   'use strict';
 
-  var CLE   = 'mylayer.formulaire';
-  var CIBLE = 380 * 1024;   /* le poids visé par photo, une fois allégée */
-  var COTE  = 1600;         /* le plus grand côté, en pixels */
+  var CLE     = 'mylayer.formulaire';
+  var COTE    = 1600;   /* le plus grand côté, en pixels */
+  var QUALITE = 0.82;   /* au-delà, le gain de poids ne se voit plus */
 
   var form = document.getElementById('depots');
   if (!form) return;
@@ -31,134 +35,21 @@
   /* ======================================================================
      1. La référence
      Elle vient du lien envoyé par mail, ou du téléphone si c’est le même
-     appareil. Si elle manque, page ouverte ailleurs, lien recopié de
-     travers, on la demande plutôt que d’envoyer des photos orphelines.
+     appareil. Elle reste modifiable dans tous les cas : la page peut
+     s’ouvrir ailleurs, et un deuxième dépôt peut arriver des semaines plus
+     tard, sur un autre navigateur.
      ====================================================================== */
-  var champRef    = form.querySelector('[data-ref]');
-  var champPrenom = form.querySelector('[data-prenom]');
-  var champMail   = form.querySelector('[data-mail]');
+  var champRef = form.querySelector('[data-ref]');
 
   var reference = '';
   try {
     reference = new URLSearchParams(location.search).get('ref') || '';
   } catch (e) { /* vieux navigateur : on se rabat sur le stockage */ }
   if (!reference) reference = rep.reference || '';
-
-  champRef.value    = reference;
-  champPrenom.value = rep.prenom || '';
-  champMail.value   = rep.mail || '';
-
-  var blocRef  = form.querySelector('[data-bloc-ref]');
-  var sansRef  = form.querySelector('[data-sans-ref]');
-  var refMain  = form.querySelector('[data-ref-main]');
-
-  if (reference) {
-    blocRef.hidden = false;
-    form.querySelector('[data-ref-code]').textContent = reference;
-  } else {
-    sansRef.hidden = false;
-    refMain.hidden = false;
-    document.getElementById('c-ref').addEventListener('input', function () {
-      champRef.value = this.value.trim();
-    });
-  }
+  champRef.value = reference;
 
   /* ======================================================================
-     2. Les cases conditionnelles
-     Elles reprennent ce qui a été répondu : « une photo de ça ? » n’a de
-     sens que si l’on sait de quoi. Sur un autre appareil, le stockage est
-     vide et la page s’en tient aux trois cases fixes.
-     ====================================================================== */
-  function extrait(texte) {
-    var t = String(texte || '').replace(/\s+/g, ' ').trim();
-    return t.length > 90 ? t.slice(0, 88).replace(/[\s,;.]+$/, '') + '…' : t;
-  }
-
-  var LIEES = [
-    { si: function () { return !!rep.lieux_qui_comptent; },
-      slot: 'photo_lieu',
-      titre: 'Une photo de ça ?',
-      note: function () { return 'Tu m’as dit : « ' + extrait(rep.lieux_qui_comptent) + ' »'; },
-      accepte: 'image/*' },
-
-    { si: function () { return rep.a_voyage === 'oui' || !!rep.pays; },
-      slot: 'photo_voyage',
-      titre: 'Une photo d’un de tes voyages ?',
-      note: function () {
-        return rep.pays ? 'Tu as coché : ' + extrait(rep.pays)
-                        : 'Celle que tu veux.';
-      },
-      accepte: 'image/*' },
-
-    { si: function () { return rep.a_projet === 'oui'; },
-      slot: 'photo_projet',
-      titre: 'Une photo de ton projet ?',
-      note: function () { return rep.projet ? 'Tu m’as dit : « ' + extrait(rep.projet) + ' »' : 'Celle que tu veux.'; },
-      accepte: 'image/*' },
-
-    { si: function () { return !!rep.temps_libre; },
-      slot: 'photo_activite',
-      titre: 'Une photo de toi en train de faire ça ?',
-      note: function () { return 'Tu m’as dit : « ' + extrait(rep.temps_libre) + ' »'; },
-      accepte: 'image/*' }
-  ];
-
-  (function construireCasesLiees() {
-    var hote = form.querySelector('[data-cases-liees]');
-    if (!hote) return;
-    var lettre = 'D'.charCodeAt(0);
-
-    LIEES.forEach(function (cas) {
-      if (!cas.si()) return;
-
-      var section = document.createElement('section');
-      section.className = 'case';
-
-      var l = document.createElement('p');
-      l.className = 'case__lettre';
-      l.textContent = String.fromCharCode(lettre++);
-
-      var t = document.createElement('h2');
-      t.className = 'case__titre';
-      t.textContent = cas.titre;
-
-      var n = document.createElement('p');
-      n.className = 'case__note';
-      n.textContent = cas.note();
-
-      var zone = document.createElement('label');
-      zone.className = 'depot';
-      zone.setAttribute('data-zone', '');
-      zone.setAttribute('data-slots', cas.slot);
-      zone.setAttribute('data-max', '1');
-
-      var entree = document.createElement('input');
-      entree.type = 'file';
-      entree.accept = cas.accepte;
-      entree.setAttribute('data-choix', '');
-
-      var zt = document.createElement('span');
-      zt.className = 'depot__titre';
-      zt.textContent = 'Choisir une photo';
-
-      var zn = document.createElement('span');
-      zn.className = 'depot__note';
-      zn.textContent = 'Si t’as pas, laisse vide.';
-
-      zone.appendChild(entree); zone.appendChild(zt); zone.appendChild(zn);
-
-      var vign = document.createElement('div');
-      vign.className = 'vignettes';
-      vign.setAttribute('data-vignettes', '');
-
-      section.appendChild(l); section.appendChild(t); section.appendChild(n);
-      section.appendChild(zone); section.appendChild(vign);
-      hote.appendChild(section);
-    });
-  })();
-
-  /* ======================================================================
-     3. La compression
+     2. La compression
      ====================================================================== */
 
   /* Le navigateur applique tout seul l’orientation EXIF à une <img> : passer
@@ -173,7 +64,7 @@
     });
   }
 
-  function versJpeg(img, largeur, hauteur, q) {
+  function versJpeg(img, largeur, hauteur) {
     return new Promise(function (resoudre) {
       var toile = document.createElement('canvas');
       toile.width = largeur; toile.height = hauteur;
@@ -182,20 +73,25 @@
       ctx.fillStyle = '#FFFFFF';
       ctx.fillRect(0, 0, largeur, hauteur);
       ctx.drawImage(img, 0, 0, largeur, hauteur);
-      toile.toBlob(resoudre, 'image/jpeg', q);
+      toile.toBlob(resoudre, 'image/jpeg', QUALITE);
     });
   }
 
   function estImage(fichier) {
     return /^image\//.test(fichier.type) || /\.(jpe?g|png|gif|webp|heic|heif)$/i.test(fichier.name);
   }
+  function estPdf(fichier) {
+    return fichier.type === 'application/pdf' || /\.pdf$/i.test(fichier.name);
+  }
 
-  /* On descend la qualité par paliers, puis la taille si ça ne suffit pas.
-     Une photo de portrait bien exposée tombe sous la cible dès le deuxième
-     palier ; les captures d’écran très détaillées vont jusqu’au bout. */
+  /* Un seul passage : 1600 px de côté, qualité 0,82. On ne descend pas plus
+     bas pour gratter des kilo-octets, la photo finirait par se voir. Et si
+     le résultat pèse plus lourd que l’original, cas d’une petite image déjà
+     bien compressée, on garde l’original : recompresser une
+     deuxième fois n’ajoute que des artefacts. */
   function alleger(fichier) {
     if (!estImage(fichier)) {
-      return Promise.resolve({ blob: fichier, nom: fichier.name });
+      return Promise.resolve({ blob: fichier, nom: fichier.name, avant: fichier.size });
     }
 
     return chargerImage(fichier).then(function (img) {
@@ -203,28 +99,16 @@
       var l = Math.round(img.naturalWidth * ratio);
       var h = Math.round(img.naturalHeight * ratio);
 
-      var qualites = [0.82, 0.72, 0.62, 0.52, 0.44];
-      var i = 0;
-
-      function essai(largeur, hauteur) {
-        return versJpeg(img, largeur, hauteur, qualites[i]).then(function (blob) {
-          if (!blob) throw new Error('illisible');
-          if (blob.size <= CIBLE) return blob;
-          i++;
-          if (i < qualites.length) return essai(largeur, hauteur);
-          /* Toutes les qualités épuisées : on réduit encore la taille, une
-             seule fois. Au-delà, la photo ne vaudrait plus rien. */
-          if (largeur > 1200) {
-            i = 1;
-            return essai(Math.round(largeur * 0.75), Math.round(hauteur * 0.75));
-          }
-          return blob;
-        });
-      }
-
-      return essai(l, h).then(function (blob) {
-        var nom = fichier.name.replace(/\.[^.]+$/, '') + '.jpg';
-        return { blob: blob, nom: nom };
+      return versJpeg(img, l, h).then(function (blob) {
+        if (!blob) throw new Error('illisible');
+        if (blob.size >= fichier.size) {
+          return { blob: fichier, nom: fichier.name, avant: fichier.size,
+                   large: img.naturalWidth, haut: img.naturalHeight };
+        }
+        return { blob: blob,
+                 nom: fichier.name.replace(/\.[^.]+$/, '') + '.jpg',
+                 avant: fichier.size,
+                 large: img.naturalWidth, haut: img.naturalHeight };
       });
     }).catch(function () {
       /* Le cas connu : les iPhone photographient en HEIC, que les
@@ -238,10 +122,13 @@
   }
 
   /* ======================================================================
-     Les zones de dépôt
+     3. Les zones de dépôt
      ====================================================================== */
-  var choisis = {};        /* nom d’emplacement → { blob, nom } */
+  var choisis = {};        /* nom d’emplacement → { blob, nom, avant } */
   var motPoids = form.querySelector('[data-poids]');
+  var motEnvoi = form.querySelector('[data-envoi]');
+  var bouton   = form.querySelector('[data-envoyer]');
+  var reserve  = form.querySelector('[data-legendes]');
 
   function joliPoids(octets) {
     return octets < 1024 * 1024
@@ -251,19 +138,40 @@
 
   function majPoids() {
     var total = 0, n = 0;
-    Object.keys(choisis).forEach(function (s) { total += choisis[s].blob.size; n++; });
+    Object.keys(choisis).forEach(function (s) {
+      if (!choisis[s].blob) return;
+      total += choisis[s].blob.size; n++;
+    });
     if (!n) { motPoids.hidden = true; return; }
     motPoids.hidden = false;
     motPoids.className = 'envoi envoi--poids';
     motPoids.textContent = n + (n > 1 ? ' fichiers, ' : ' fichier, ') + joliPoids(total) + ' en tout.';
   }
 
+  /* Le bouton se ferme tant qu’une photo est encore sur l’établi : envoyée
+     à ce moment-là, elle partirait vide. Six images prennent deux à quatre
+     secondes sur un téléphone, il faut le dire plutôt que laisser croire
+     que la page a planté. */
+  function majBouton() {
+    var enCours = Object.keys(choisis).filter(function (s) { return !choisis[s].blob; }).length;
+    bouton.disabled = enCours > 0;
+    if (enCours > 0) {
+      motEnvoi.hidden = false;
+      motEnvoi.className = 'envoi';
+      motEnvoi.textContent = 'Je prépare tes photos…';
+    } else if (motEnvoi.textContent === 'Je prépare tes photos…') {
+      motEnvoi.hidden = true;
+      motEnvoi.textContent = '';
+    }
+  }
+
   function brancherZone(zone) {
-    var slots = zone.getAttribute('data-slots').split(',');
-    var max = parseInt(zone.getAttribute('data-max'), 10) || 1;
-    var entree = zone.querySelector('[data-choix]');
-    var hote = zone.parentNode.querySelector('[data-vignettes]');
-    var note = zone.querySelector('.depot__note');
+    var slots     = zone.getAttribute('data-slots').split(',');
+    var max       = parseInt(zone.getAttribute('data-max'), 10) || 1;
+    var portrait  = zone.hasAttribute('data-portrait');
+    var entree    = zone.querySelector('[data-choix]');
+    var hote      = zone.parentNode.querySelector('[data-vignettes]');
+    var note      = zone.querySelector('.depot__note');
     var noteOrigine = note ? note.textContent : '';
 
     function libres() {
@@ -272,7 +180,7 @@
 
     entree.addEventListener('change', function () {
       var fichiers = [].slice.call(entree.files || []);
-      entree.value = '';                      /* pour pouvoir reprendre le même */
+      entree.value = '';                      /* pour pouvoir reprendre la même */
       if (!fichiers.length) return;
 
       var place = libres();
@@ -286,20 +194,23 @@
         var slot = place[k];
         choisis[slot] = { blob: null, nom: fichier.name };   /* on réserve la place */
 
-        var vignette = document.createElement('div');
+        var vignette = document.createElement('figure');
         vignette.className = 'vignette est-en-cours';
         hote.appendChild(vignette);
+        majBouton();
 
         alleger(fichier).then(function (res) {
           choisis[slot] = res;
           vignette.classList.remove('est-en-cours');
-          dessinerVignette(vignette, res, slot, hote);
+          dessinerVignette(vignette, res, slot, portrait);
           majPoids();
+          majBouton();
         }).catch(function (err) {
           delete choisis[slot];
           vignette.remove();
           if (note) note.textContent = err.message;
           majPoids();
+          majBouton();
         });
       });
 
@@ -309,7 +220,7 @@
     });
   }
 
-  function dessinerVignette(vignette, res, slot, hote) {
+  function dessinerVignette(vignette, res, slot, portrait) {
     vignette.textContent = '';
 
     if (/^image\//.test(res.blob.type)) {
@@ -325,10 +236,69 @@
       vignette.appendChild(doc);
     }
 
+    /* Le poids avant et après. C’est ce qui rend l’attente compréhensible :
+       on voit où sont passées les quatre secondes. La flèche ne s’affiche que
+       si les deux poids s’écrivent différemment : sur une petite photo, un
+       gain de deux cents octets donnait « 14 Ko → 14 Ko », qui a l’air d’une
+       panne plutôt que d’un travail bien fait. */
+    var avant = res.avant ? joliPoids(res.avant) : '';
+    var apres = joliPoids(res.blob.size);
     var poids = document.createElement('span');
     poids.className = 'vignette__poids';
-    poids.textContent = joliPoids(res.blob.size);
+    poids.textContent = (avant && avant !== apres) ? avant + ' → ' + apres : apres;
     vignette.appendChild(poids);
+
+    /* Le portrait couché. On avertit, on ne bloque pas : une photo de
+       travers vaut toujours mieux que pas de photo, et le bloc d’accroche
+       est obligatoire. */
+    if (portrait && res.haut && res.large && res.haut < res.large) {
+      var alerte = document.createElement('p');
+      alerte.className = 'vignette__alerte';
+      alerte.textContent = 'Cette photo est en largeur. Elle sera mal recadrée. ' +
+        'Tu peux quand même l’envoyer, mais une photo verticale rendra beaucoup mieux.';
+      vignette.appendChild(alerte);
+    }
+
+    /* Un PDF n’a rien à faire ici, mais on ne peut pas savoir à sa place ce
+       qu’il contient : on le dit, on laisse faire. */
+    if (estPdf(res.blob) || /\.pdf$/i.test(res.nom)) {
+      var pdf = document.createElement('p');
+      pdf.className = 'vignette__alerte';
+      pdf.textContent = 'Un PDF ? Vérifie que ce n’est pas un document officiel. ' +
+        'je ne peux rien en faire.';
+      vignette.appendChild(pdf);
+    }
+
+    /* La légende et le rôle voyagent auprès de leur vignette et retournent
+       à leur réserve quand la photo s’en va : leurs champs doivent rester
+       dans le formulaire, ce sont eux que Netlify connaît.
+
+       La légende dit ce qu’on voit. Le rôle dit où la poser : la même photo
+       d’atelier peut nourrir la galerie, illustrer une étape du parcours ou
+       accompagner la fierté, et ces emplacements n’ont pas le même format. */
+    var legende = reserve ? reserve.querySelector('[data-legende="' + slot + '"]') : null;
+    if (legende) {
+      var lab = document.createElement('label');
+      lab.className = 'vignette__legende';
+      var t = document.createElement('span');
+      t.className = 'vignette__legende-titre';
+      t.textContent = 'En trois mots, c’est quoi ?';
+      lab.appendChild(t);
+      lab.appendChild(legende);
+      vignette.appendChild(lab);
+    }
+
+    var role = reserve ? reserve.querySelector('[data-role="' + slot + '"]') : null;
+    if (role) {
+      var labR = document.createElement('label');
+      labR.className = 'vignette__legende vignette__role';
+      var tR = document.createElement('span');
+      tR.className = 'vignette__legende-titre';
+      tR.textContent = 'Elle va avec quoi ?';
+      labR.appendChild(tR);
+      labR.appendChild(role);
+      vignette.appendChild(labR);
+    }
 
     var retirer = document.createElement('button');
     retirer.type = 'button';
@@ -338,8 +308,11 @@
     retirer.addEventListener('click', function (e) {
       e.preventDefault();
       delete choisis[slot];
+      if (legende) { legende.value = ''; reserve.appendChild(legende); }
+      if (role) { role.selectedIndex = 0; reserve.appendChild(role); }
       vignette.remove();
       majPoids();
+      majBouton();
     });
     vignette.appendChild(retirer);
   }
@@ -353,22 +326,11 @@
      Netlify au déploiement ; le corps envoyé, lui, est construit ici avec
      les versions allégées.
      ====================================================================== */
-  var motEnvoi = form.querySelector('[data-envoi]');
-  var bouton = form.querySelector('[data-envoyer]');
   var final = document.querySelector('[data-final]');
   var confirmeVide = false;
 
   bouton.addEventListener('click', function () {
     var noms = Object.keys(choisis).filter(function (s) { return choisis[s].blob; });
-    var enCours = Object.keys(choisis).length - noms.length;
-
-    if (enCours > 0) {
-      motEnvoi.hidden = false;
-      motEnvoi.className = 'envoi';
-      motEnvoi.textContent = 'J’allège encore ' + enCours +
-        (enCours > 1 ? ' photos' : ' photo') + ', deux secondes.';
-      return;
-    }
 
     if (!noms.length && !confirmeVide) {
       confirmeVide = true;
@@ -378,7 +340,7 @@
       return;
     }
 
-    if (!champRef.value) {
+    if (!champRef.value.trim()) {
       motEnvoi.hidden = false;
       motEnvoi.className = 'envoi envoi--rate';
       motEnvoi.textContent = 'Il me manque ta référence : sans elle je ne peux pas rattacher ces photos à tes réponses.';
@@ -387,11 +349,13 @@
 
     var corps = new FormData();
     corps.append('form-name', 'mylayer-fichiers');
-    corps.append('reference', champRef.value);
-    corps.append('prenom', champPrenom.value);
-    corps.append('mail', champMail.value);
+    corps.append('reference', champRef.value.trim());
     noms.forEach(function (slot) {
       corps.append(slot, choisis[slot].blob, choisis[slot].nom);
+      var legende = form.querySelector('[data-legende="' + slot + '"]');
+      if (legende) corps.append(legende.getAttribute('name'), legende.value.trim());
+      var role = form.querySelector('[data-role="' + slot + '"]');
+      if (role) corps.append(role.getAttribute('name'), role.value);
     });
 
     bouton.disabled = true;
@@ -403,7 +367,11 @@
       .then(function (r) {
         if (!r.ok) throw new Error(r.status);
         form.hidden = true;
-        if (final) final.hidden = false;
+        if (final) {
+          final.hidden = false;
+          var rappel = final.querySelector('[data-ref-rappel]');
+          if (rappel) rappel.textContent = champRef.value.trim();
+        }
         window.scrollTo(0, 0);
       })
       .catch(function () {
@@ -413,4 +381,36 @@
           'sélectionnées ici, réessaie. Tes réponses, elles, sont déjà arrivées.';
       });
   });
+
+  /* Redéposer, sans recharger : le formulaire revient vide, la référence
+     conservée. C’est le chemin normal quand on a plus de six photos. */
+  var encore = document.querySelector('[data-encore]');
+  if (encore) {
+    encore.addEventListener('click', function () {
+      Object.keys(choisis).forEach(function (s) { delete choisis[s]; });
+      /* Les légendes rentrent d’abord : elles vivent dans les vignettes, et
+         vider les vignettes avant les aurait emportées avec. Leurs champs
+         doivent rester dans le formulaire, c’est eux que Netlify connaît. */
+      var legs = form.querySelectorAll('[data-legende]');
+      for (var j = 0; j < legs.length; j++) {
+        legs[j].value = '';
+        if (reserve) reserve.appendChild(legs[j]);
+      }
+      var rls = form.querySelectorAll('[data-role]');
+      for (var k = 0; k < rls.length; k++) {
+        rls[k].selectedIndex = 0;
+        if (reserve) reserve.appendChild(rls[k]);
+      }
+      var vus = form.querySelectorAll('[data-vignettes]');
+      for (var i = 0; i < vus.length; i++) vus[i].textContent = '';
+      confirmeVide = false;
+      bouton.disabled = false;
+      motEnvoi.hidden = true;
+      motEnvoi.textContent = '';
+      majPoids();
+      if (final) final.hidden = true;
+      form.hidden = false;
+      window.scrollTo(0, 0);
+    });
+  }
 })();

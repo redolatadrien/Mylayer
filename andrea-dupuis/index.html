@@ -1,0 +1,1873 @@
+<!DOCTYPE html>
+<html lang="fr">
+<!--
+  ══════════════════════════════════════════════════════════════════════════
+  MYLAYER : ANDREA DUPUIS
+  ══════════════════════════════════════════════════════════════════════════
+  Fabriquée à partir de gabarit/2-gabarit.html, selon gabarit/1-methode.md.
+
+  Couleur : Bordeaux #B5122E   ·   Police des titres : Anton
+  Adresse : mylayer.netlify.app/andrea-dupuis
+  Neuf blocs retenus sur vingt-quatre, dans cet ordre :
+    accroche · pitch + mots-forces · les lieux qui comptent · parcours ·
+    langues + compétences · duels · chiffres · ce que je sais faire · contact
+  Le moment fort est le bloc « les lieux qui comptent », la ligne qui se
+  dessine au scroll, suivie des quatre photos.
+
+  Mise à jour du 8 septembre 2026, en deux temps.
+
+  LA COUPE. De quinze blocs à neuf, parce que six blocs pleins valent mieux que
+  quinze à moitié remplis. Sont partis : la carte du monde (six pays dont quatre
+  petits pays européens, donc visuellement vide sur un téléphone alors qu'elle
+  tenait le rôle du moment fort ; « les lieux qui comptent » prend sa place et
+  récupère ses photos), le curseur (quatrième expression de la même idée que le
+  duel plan / impro, le mot-force « spontané » et la fin du pitch), la fierté
+  (phrase passe-partout), ce qu'on ne devine pas (révélait ce que le pitch et le
+  parcours disaient déjà), le temps libre (recopiait le pitch mot pour mot), le
+  podium et ce que j'aimerais apprendre (cinq mots, quatre mots).
+
+  LE DÉPLIAGE. Le texte était trop maigre. Repris du CV, donc rien d'inventé :
+  Lausanne, la date de janvier 2024, le certificat Leadership 1, les hivers
+  2024 à 2026 à Gryon, octobre à décembre 2022 à Dublin, et la colonne des
+  compétences, reprise mot pour mot. Le niveau d'allemand passe de 1 à 2 sur 4
+  parce que son CV dit B2 ; sa formule « je me débrouille » reste la sienne.
+  Les trois lignes sous la phrase sur la cuisine sont une lecture, pas un fait :
+  elles ne disent rien qu'un document pourrait contredire.
+
+  CORRECTIFS. Le trait du parcours et les pastilles se calent maintenant sur un
+  axe commun (--axe) au lieu d'être posés à la main chacun de son côté : cinq
+  pixels de décalage sur toute la hauteur, c'est réglé. Le titre au-dessus de la
+  phrase sur la cuisine est supprimé, deux titres l'un sur l'autre se battaient.
+  Espaces insécables avant les ? ! : ; pour que le signe ne tombe plus seul en
+  bout de ligne.
+
+  Reste un doublon assumé : les chiffres annoncent « 4 langues » et « 3 pays où
+  j'ai vécu », que les blocs langues et lieux détaillent déjà. Les formats sont
+  assez différents pour que ça se lise comme un rappel. À surveiller au test du
+  pote.
+
+  Le bloc LIGNE DE VIE du gabarit est ici détourné en frise de lieux plutôt que
+  de dates, faute d'années confirmées pour Dublin et Munich. Légendes à cinq
+  mots maximum, sinon elles décalent les pastilles. « Nouveauté » porte la
+  classe duel__mot--long pour tenir sur une ligne sur un téléphone étroit.
+
+  Images dans images/ : portrait.jpg, bangkok.jpg, voyage-1.jpg, voyage-2.jpg,
+  grimpe.jpg. bangkok.jpg est l'ancien 15229.jpg, redimensionné à 900px et
+  compressé de 962 Ko à 52 Ko.
+  LE CV. cv.pdf est une copie de « CV SIR.pdf », le seul CV du dossier de
+  collecte. À VÉRIFIER AVANT LA MISE EN LIGNE, deux choses : ce CV est taillé
+  pour une candidature précise, il porte « Candidature agent de sécurité
+  étudiant » écrit en tête, ce qui enferme Andrea dans un métier sur une page
+  publique ; et il contient son adresse et son numéro dans un fichier
+  téléchargeable, ce qu'il doit savoir. La version générale est à réclamer.
+  Les trois autres documents de la collecte, les certificats d'armée et la
+  preuve de langue, ne sortent pas du dossier.
+  ══════════════════════════════════════════════════════════════════════════
+-->
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>Andrea Dupuis</title>
+
+  <meta name="description" content="Andrea Dupuis, 24 ans, lieutenant dans l'armée suisse et étudiant en relations internationales à Genève. Il a vécu à Dublin et à Munich, et part à Taiwan." />
+
+  <!-- La seule couleur en dur hors du bloc PALETTE : le HTML ne sait pas lire
+       une variable CSS. Recopiée de --couleur. -->
+  <meta name="theme-color" content="#B5122E" />
+
+  <!-- Aperçu quand on partage le lien -->
+  <meta property="og:title" content="Andrea Dupuis" />
+  <meta property="og:description" content="Spontané · Calme · Curieux" />
+  <meta property="og:image" content="images/portrait.jpg" />
+  <meta property="og:type" content="website" />
+
+  <!-- Les polices. Inter pour le corps, Anton pour les titres : les réglages
+       Anton sont actifs dans le bloc TYPOGRAPHIE du <style>. -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Anton&display=swap" rel="stylesheet" />
+
+<style>
+/* ══════════════════════════════════════════════════════════════════════════
+   PALETTE : LE SEUL ENDROIT OÙ L'ON TOUCHE AUX COULEURS
+   ──────────────────────────────────────────────────────────────────────────
+   Changer les trois valeurs ci-dessous suffit à recolorer toute la page :
+   fond, dégradé, traits, cadres, boutons, carte. Aucune couleur n'est écrite
+   en dur ailleurs dans ce fichier.
+
+   Les dix couleurs MyLayer , copier la ligne voulue :
+
+     Bleu cobalt        #3B4DD4   #2A38A8   #4759F0
+     Vert forêt         #0F5C46   #0A4536   #176E54
+     Terracotta         #B8432A   #8F3220   #D2542F
+     Bordeaux           #B5122E   #8A0D22   #D4213C
+     Ocre               #8A6A12   #634B0A   #A8821D
+     Violet prune       #5A2A6E   #3F1B4E   #70358A
+     Bleu nuit          #1F3A5F   #142845   #2B5183
+     Anthracite         #1A1A1A   #000000   #333333
+     Rose profond       #96206E   #74184F   #B32D85
+     Turquoise sombre   #0B5F69   #06444B   #14727E
+
+                        (base)    (foncé)   (claire)
+
+   Ne pas oublier de recopier la valeur « base » dans la balise
+   <meta name="theme-color"> plus haut.
+   ══════════════════════════════════════════════════════════════════════════ */
+:root {
+  --couleur:        #B5122E;   /* la couleur dominante , le fond de la page  */
+  --couleur-fonce:  #8A0D22;   /* la même en plus foncé , profondeur, bas    */
+  --couleur-claire: #D4213C;   /* la même en plus clair , accents, haut      */
+
+  /* La couleur du texte et des traits. Crème quasi blanc : lisible sur les
+     dix couleurs de la palette. On n'y touche normalement pas. */
+  --creme:          #FFFFFF;
+
+  /* ---- Nuances calculées à partir des quatre valeurs ci-dessus.
+          Rien à modifier ici. ---- */
+  --trait:       color-mix(in srgb, var(--creme) 85%, transparent);
+  --trait-doux:  color-mix(in srgb, var(--creme) 30%, transparent);
+  --texte-95:    color-mix(in srgb, var(--creme) 95%, transparent);
+  --texte-92:    color-mix(in srgb, var(--creme) 92%, transparent);
+  --texte-85:    color-mix(in srgb, var(--creme) 85%, transparent);
+  --texte-82:    color-mix(in srgb, var(--creme) 82%, transparent);
+  --texte-75:    color-mix(in srgb, var(--creme) 75%, transparent);
+  --texte-72:    color-mix(in srgb, var(--creme) 72%, transparent);
+  --texte-70:    color-mix(in srgb, var(--creme) 70%, transparent);
+  --texte-60:    color-mix(in srgb, var(--creme) 60%, transparent);
+  --texte-55:    color-mix(in srgb, var(--creme) 55%, transparent);
+  --voile-14:    color-mix(in srgb, var(--creme) 14%, transparent);
+  --voile-05:    color-mix(in srgb, var(--creme)  5%, transparent);
+  --voile-04:    color-mix(in srgb, var(--creme)  4%, transparent);
+  --voile-03:    color-mix(in srgb, var(--creme)  3%, transparent);
+  --carte-vide:  color-mix(in srgb, var(--creme)  5%, transparent);
+  --carte-trait: color-mix(in srgb, var(--creme) 16%, transparent);
+  --halo:        color-mix(in srgb, var(--creme) 50%, transparent);
+  --cap-fond:    color-mix(in srgb, var(--couleur-fonce) 85%, transparent);
+  --pastille-fond: color-mix(in srgb, var(--couleur-fonce) 55%, transparent);
+  --creux:       color-mix(in srgb, #000 8%, transparent);
+  --ombre:       color-mix(in srgb, #000 25%, transparent);
+}
+
+/* ══════════════════════════════════════════════════════════════════════════
+   TYPOGRAPHIE : LE SEUL ENDROIT OÙ L'ON TOUCHE AUX POLICES
+   ──────────────────────────────────────────────────────────────────────────
+   Même principe que la PALETTE : tout se change ici, rien n'est écrit en dur
+   ailleurs. Cinq polices de titre sont prévues. Chacune a SES réglages : une
+   taille qui va à Anton est trop grosse en Archivo Black et trop petite en
+   Bebas Neue. On n'active donc jamais une police sans son jeu de réglages.
+
+   POUR CHANGER DE POLICE , deux gestes :
+     1. dans le <head>, activer la ligne <link> de la police voulue
+        (et remettre en commentaire celle qui était active) ;
+     2. ici, recopier le jeu de réglages correspondant dans les six lignes
+        « ACTIF » ci-dessous.
+
+   LES CINQ JEUX DE RÉGLAGES , copier les six valeurs de la police voulue :
+
+     ANTON  (l'actuelle , condensée, très grasse, punchy)
+       --titre-police:     "Anton", "Inter", sans-serif;
+       --titre-graisse:    400;
+       --titre-echelle:    1;
+       --titre-interligne: 0.95;
+       --titre-espacement: 0.5px;
+       --titre-casse:      uppercase;
+
+     ARCHIVO BLACK  (plus large, plus carrée , solide, américaine)
+       Beaucoup plus large qu'Anton à taille égale : on réduit l'échelle et
+       on resserre les lettres, sinon les titres débordent.
+       --titre-police:     "Archivo Black", "Inter", sans-serif;
+       --titre-graisse:    400;
+       --titre-echelle:    0.78;
+       --titre-interligne: 1;
+       --titre-espacement: -0.5px;
+       --titre-casse:      uppercase;
+
+     BEBAS NEUE  (haute et fine , élégante, verticale)
+       Beaucoup plus étroite et plus basse de capitale : on agrandit, et on
+       écarte les lettres qui sinon se collent.
+       --titre-police:     "Bebas Neue", "Inter", sans-serif;
+       --titre-graisse:    400;
+       --titre-echelle:    1.14;
+       --titre-interligne: 0.92;
+       --titre-espacement: 1.5px;
+       --titre-casse:      uppercase;
+
+     FRAUNCES  (serif à caractère , chaleureuse, un peu excentrique)
+       Serif large à fort contraste. En capitales elle devient lourde et peu
+       lisible : on la laisse en casse normale (--titre-casse: none). Les
+       titres du gabarit sont donc à écrire avec leur majuscule initiale
+       seulement , « Mon parcours », pas « MON PARCOURS ».
+       --titre-police:     "Fraunces", Georgia, serif;
+       --titre-graisse:    900;
+       --titre-echelle:    0.82;
+       --titre-interligne: 1;
+       --titre-espacement: -0.5px;
+       --titre-casse:      none;
+
+     SYNE  (contemporaine, géométrique, volontairement bizarre)
+       Très large, avec des formes inhabituelles : on réduit franchement.
+       --titre-police:     "Syne", "Inter", sans-serif;
+       --titre-graisse:    800;
+       --titre-echelle:    0.76;
+       --titre-interligne: 1.02;
+       --titre-espacement: -0.5px;
+       --titre-casse:      uppercase;
+
+   À QUOI SERT CHAQUE RÉGLAGE
+     --titre-police      la famille, avec ses polices de secours
+     --titre-graisse     la graisse : chaque police n'a pas les mêmes
+     --titre-echelle     multiplie TOUTES les tailles de titre de la page
+                         d'un seul coup (1 = taille de référence)
+     --titre-interligne  l'espace entre deux lignes d'un même titre
+     --titre-espacement  l'espace entre les lettres
+     --titre-casse       uppercase = tout en capitales · none = tel qu'écrit
+   ══════════════════════════════════════════════════════════════════════════ */
+:root {
+  /* ---- ACTIF : ANTON. Remplacer ces six lignes pour changer de police. ---- */
+  --titre-police:     "Anton", "Inter", sans-serif;
+  --titre-graisse:    400;
+  --titre-echelle:    1;
+  --titre-interligne: 0.95;
+  --titre-espacement: 0.5px;
+  --titre-casse:      uppercase;
+  /* ------------------------------------------------------------------------ */
+
+  /* L'espacement des petits titres en pastille (mots-forces, environnement).
+     Suit la police active : on le laisse tel quel dans presque tous les cas. */
+  --titre-espacement-petit: .04em;
+
+  /* Réduction automatique du nom de l'accroche. Le script la recalcule tout
+     seul si le nom est trop long ; ne pas y toucher à la main. */
+  --hero-nom-echelle: 1;
+}
+
+/* ══════════════════════════════════════════════════════════════════════════
+   RÉGLAGES DE MISE EN PAGE , communs à toutes les pages, ne pas modifier
+   ══════════════════════════════════════════════════════════════════════════ */
+:root {
+  --maxw:   720px;                        /* largeur de lecture, mobile-first */
+  --pad:    clamp(1.25rem, 6vw, 2.5rem);
+  --radius: 18px;
+}
+
+/* ---------- reset léger ---------- */
+*, *::before, *::after { box-sizing: border-box; }
+* { margin: 0; }
+html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
+
+body {
+  background: var(--couleur);
+  color: var(--creme);
+  font-family: "Inter", system-ui, -apple-system, sans-serif;
+  font-size: 17px;
+  line-height: 1.6;
+  overflow-x: hidden;
+  background-image: radial-gradient(120% 80% at 70% 0%, var(--couleur-claire) 0%, var(--couleur) 38%, var(--couleur-fonce) 100%);
+  background-attachment: fixed;
+}
+
+img { max-width: 100%; display: block; }
+ul, ol { list-style: none; padding: 0; }
+a { color: inherit; text-decoration: none; }
+main { width: 100%; }
+
+/* Un {{…}} pas encore remplacé est un long mot sans aucune espace :
+   sans cette règle il sort de son cadre et le gabarit vide se met à défiler
+   en largeur, ce qui donne l'impression d'une page cassée alors qu'elle ne
+   l'est pas. La règle sert aussi sur du vrai contenu : une adresse de site,
+   un mot allemand ou un nom composé très long se coupent au lieu de déborder.
+   Sur un texte normal elle ne change rien , elle n'agit que sur les mots
+   plus larges que la colonne qui les contient. */
+main { overflow-wrap: anywhere; }
+
+section {
+  padding: clamp(3.5rem, 12vw, 7rem) var(--pad);
+  max-width: var(--maxw);
+  margin-inline: auto;
+}
+
+.section-title {
+  /* Police, graisse, casse, interlignage et espacement : bloc TYPOGRAPHIE. */
+  font-family: var(--titre-police);
+  font-weight: var(--titre-graisse);
+  text-transform: var(--titre-casse);
+  letter-spacing: var(--titre-espacement);
+  line-height: var(--titre-interligne);
+  font-size: calc(clamp(2.5rem, 11vw, 4.5rem) * var(--titre-echelle));
+  margin-bottom: 1.5rem;
+  /* Un titre long , ou un {{…}} pas encore remplacé, qui ne
+     contient aucune espace , revient à la ligne au lieu de déborder. */
+  overflow-wrap: anywhere;
+}
+.section-sub {
+  font-size: 1.05rem;
+  color: var(--texte-85);
+  margin-bottom: 2rem;
+}
+
+/* ---------- animations « reveal on scroll » ---------- */
+.reveal {
+  opacity: 0;
+  transform: translateY(28px);
+  transition: opacity .7s ease, transform .7s cubic-bezier(.2,.65,.3,1);
+  will-change: opacity, transform;
+}
+.reveal.is-in { opacity: 1; transform: none; }
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .reveal { opacity: 1; transform: none; transition: none; }
+  .scroll-hint__arrow, .hero__photo img { animation: none !important; }
+}
+
+/* ---------- cadres photo au trait ---------- */
+.frame {
+  position: relative;
+  border: 2px solid var(--trait);
+  border-radius: var(--radius);
+  overflow: hidden;
+  background: var(--voile-04);
+}
+.frame img { width: 100%; height: 100%; object-fit: cover; aspect-ratio: 4 / 5; }
+.frame__cap {
+  position: absolute; left: 0; right: 0; bottom: 0;
+  font-size: .8rem; letter-spacing: .04em; text-transform: uppercase;
+  padding: .5rem .7rem;
+  background: linear-gradient(to top, var(--cap-fond), transparent);
+}
+
+/* ---------- icônes ---------- */
+.ic { width: 22px; height: 22px; flex: none; }
+
+/* ══════════════════════════════════════════════════════════════════════════
+   BLOC 1 : ACCROCHE (hero)
+   ══════════════════════════════════════════════════════════════════════════ */
+.hero {
+  min-height: 100svh;
+  display: flex; flex-direction: column; justify-content: flex-end;
+  position: relative;
+  padding-top: 4.5rem;
+  padding-bottom: 4.5rem;
+}
+.hero__photo {
+  position: relative;
+  align-self: center;
+  width: 100%;
+  max-width: clamp(200px, 56vw, 270px);
+  border: 2px solid var(--trait);
+  border-radius: var(--radius);
+  overflow: hidden;
+  margin-bottom: 1.75rem;
+  box-shadow: 0 20px 50px var(--ombre);
+}
+.hero__photo img {
+  width: 100%; height: auto; aspect-ratio: 9 / 16; object-fit: cover; object-position: center;
+  animation: heroZoom 14s ease-out forwards;
+}
+@keyframes heroZoom { from { transform: scale(1.08); } to { transform: scale(1); } }
+
+.hero__hi { font-size: 1.1rem; font-weight: 600; opacity: .9; }
+.hero__name {
+  font-family: var(--titre-police); font-weight: var(--titre-graisse);
+  text-transform: var(--titre-casse);
+  /* --hero-nom-echelle : réduction automatique des noms longs, posée par le
+     script. Vaut 1 tant que le nom tient sur sa ligne. */
+  font-size: calc(clamp(3.2rem, 17vw, 6.4rem) * var(--titre-echelle) * var(--hero-nom-echelle));
+  line-height: calc(var(--titre-interligne) + 0.07);
+  letter-spacing: var(--titre-espacement);
+  margin: .35rem 0 1rem;
+  /* Coupe les très longs noms d'un seul tenant plutôt que de les laisser
+     dépasser de l'écran, si la réduction ne suffit pas. */
+  overflow-wrap: anywhere;
+}
+.hero__tagline { font-size: 1.12rem; max-width: 32ch; color: var(--texte-95); }
+
+.scroll-hint {
+  position: absolute; left: 50%; bottom: 1.2rem; transform: translateX(-50%);
+  display: flex; flex-direction: column; align-items: center; gap: .3rem;
+  font-size: .7rem; letter-spacing: .22em; text-transform: uppercase;
+  opacity: .9;
+}
+.scroll-hint__arrow { width: 22px; height: 34px; animation: bob 1.8s ease-in-out infinite; }
+.scroll-hint__arrow path { stroke: var(--creme); }
+@keyframes bob { 0%,100% { transform: translateY(0); } 50% { transform: translateY(7px); } }
+
+/* ══════════════════════════════════════════════════════════════════════════
+   BLOC 2 : PITCH + MOTS-FORCES
+   ══════════════════════════════════════════════════════════════════════════ */
+.pitch__body { font-size: 1.2rem; line-height: 1.65; max-width: 34ch; font-weight: 400; }
+.pitch__body p + p { margin-top: 1.4rem; }
+
+.keywords { display: flex; flex-wrap: wrap; gap: .7rem; margin-top: 2.2rem; }
+.keyword {
+  font-family: var(--titre-police); font-weight: var(--titre-graisse);
+  text-transform: var(--titre-casse);
+  font-size: calc(clamp(1rem, 4.5vw, 1.35rem) * var(--titre-echelle));
+  letter-spacing: var(--titre-espacement-petit);
+  padding: .5rem 1.1rem;
+  border: 1.5px solid var(--trait); border-radius: 999px;
+}
+
+/* ══════════════════════════════════════════════════════════════════════════
+   BLOC 3 : PARCOURS (timeline)
+   ══════════════════════════════════════════════════════════════════════════ */
+/* L'axe du trait et le diamètre des pastilles sont écrits ici, une seule
+   fois. Le trait ET les pastilles se calent dessus : ils ne peuvent plus se
+   décaler l'un par rapport à l'autre.
+   Le défaut d'avant : les deux étaient posés à la main, chacun de son côté.
+   Le trait tombait à 8px du bord gauche, les pastilles à 3px. Cinq pixels
+   d'écart, visibles sur toute la hauteur de la section. */
+.timeline__track {
+  --axe:      8px;      /* du bord gauche du bloc au milieu du trait */
+  --pastille: 14px;     /* diamètre d'une pastille, bordure comprise */
+  --retrait:  2.2rem;   /* de combien le texte s'écarte, à droite du trait */
+  position: relative;
+  padding-left: var(--retrait);
+}
+/* Le svg fait 4px de large et peint son trait en plein milieu : sa boîte se
+   pose donc à 2px à gauche de l'axe. */
+.timeline__line {
+  position: absolute; left: calc(var(--axe) - 2px); top: 4px; bottom: 0;
+  width: 4px; height: calc(100% - 4px);
+}
+.timeline__line line { stroke: var(--creme); transition: stroke-dashoffset .1s linear; }
+
+.timeline__list { display: flex; flex-direction: column; gap: 2.6rem; }
+.step { position: relative; }
+/* La pastille se positionne par rapport à .step, dont le bord gauche est
+   déjà à --retrait du bloc : on retire donc ce retrait du calcul. */
+.step::before {
+  content: ""; position: absolute; top: .45rem;
+  left: calc(var(--axe) - var(--pastille) / 2 - var(--retrait));
+  width: var(--pastille); height: var(--pastille);
+  background: var(--couleur); border: 2.5px solid var(--creme); border-radius: 50%;
+}
+.step__title { font-size: 1.18rem; font-weight: 700; line-height: 1.25; }
+.step__place { font-size: .92rem; font-weight: 600; color: var(--texte-72); margin: .15rem 0 .4rem; }
+.step__desc  { font-size: 1rem; color: var(--texte-92); max-width: 42ch; }
+.step__media { display: flex; gap: .8rem; margin-top: 1rem; }
+.step__media .frame { flex: 1 1 0; max-width: 220px; }
+
+/* ══════════════════════════════════════════════════════════════════════════
+   BLOC 4 : CARTE DU MONDE
+   ══════════════════════════════════════════════════════════════════════════ */
+.map__wrap {
+  border: 2px solid var(--trait); border-radius: var(--radius);
+  padding: 1rem; background: var(--creux);
+}
+.map__wrap svg { width: 100%; height: auto; display: block; }
+/* pays non visités : ils se fondent dans le fond */
+.map__wrap svg path {
+  fill: var(--carte-vide);
+  stroke: var(--carte-trait);
+  stroke-width: 0.4;
+  transition: fill 1.2s ease;
+}
+/* pays visités : ils s'allument */
+.map__wrap svg path.visited { fill: var(--creme); stroke: var(--creme); }
+.map__wrap.is-in svg path.visited { filter: drop-shadow(0 0 6px var(--halo)); }
+
+/* L'ÉTIQUETTE DU SURVOL , le nom du pays quand la souris passe dessus.
+   Elle n'existe que sur ordinateur : le script ne la pose pas sur un écran
+   tactile, où il n'y a pas de survol. */
+.map__etiquette {
+  position: fixed;
+  z-index: 30;
+  pointer-events: none;
+  opacity: 0;
+  transform: translate(-50%, -150%);
+  transition: opacity .18s ease;
+  background: var(--couleur);
+  color: var(--creme);
+  border: 1.5px solid var(--trait-doux);
+  border-radius: 999px;
+  padding: .3rem .75rem;
+  font-size: .85rem;
+  font-weight: 600;
+  line-height: 1.2;
+  white-space: nowrap;
+  box-shadow: 0 6px 18px var(--ombre);
+}
+.map__etiquette.is-on { opacity: 1; }
+
+.map__photos { display: grid; grid-template-columns: repeat(2, 1fr); gap: .9rem; margin-top: 1.4rem; }
+
+/* ══════════════════════════════════════════════════════════════════════════
+   BLOC 5 : LANGUES + COMPÉTENCES
+   ══════════════════════════════════════════════════════════════════════════ */
+.skills { display: flex; flex-direction: column; gap: 3rem; }
+.skills__sub {
+  font-size: .85rem; text-transform: uppercase; letter-spacing: .12em;
+  color: var(--texte-70); margin: 1.4rem 0 .8rem;
+}
+.lang-list { display: flex; flex-direction: column; gap: 1.1rem; }
+.lang-row__head { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: .45rem; }
+.lang-row__name { font-size: 1.2rem; font-weight: 700; }
+.lang-row__lvl  { font-size: .85rem; font-weight: 600; color: var(--texte-75); }
+.lang-bar { display: flex; gap: .4rem; }
+.lang-bar__dot {
+  flex: 1 1 0; height: 7px; border-radius: 4px;
+  border: 1.5px solid var(--trait); background: transparent;
+  transition: background .4s ease;
+}
+.lang-bar__dot.is-on { background: var(--creme); }
+
+.chips { display: flex; flex-wrap: wrap; gap: .6rem; }
+.chip {
+  font-size: .95rem; font-weight: 500;
+  padding: .45rem .9rem;
+  border: 1.5px solid var(--trait); border-radius: 999px;
+}
+
+/* ══════════════════════════════════════════════════════════════════════════
+   BLOC 6 : LES CHIFFRES
+   ══════════════════════════════════════════════════════════════════════════ */
+.stats__grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 2.5rem 1.5rem; }
+/* min-width:0 : même raison que .skills__col , une case de grille ne se
+   rétrécit pas sous son contenu sans cela. */
+.stat { text-align: left; min-width: 0; }
+.stat__num {
+  display: block;
+  font-family: var(--titre-police); font-weight: var(--titre-graisse);
+  line-height: calc(var(--titre-interligne) - 0.05);
+  font-size: calc(clamp(3.2rem, 18vw, 5.5rem) * var(--titre-echelle));
+  overflow-wrap: anywhere;
+}
+.stat__label {
+  display: block; margin-top: .3rem;
+  font-size: .9rem; text-transform: uppercase; letter-spacing: .06em;
+  color: var(--texte-82);
+}
+
+/* ══════════════════════════════════════════════════════════════════════════
+   BLOC 7 : CONTACT
+   ══════════════════════════════════════════════════════════════════════════ */
+.contact { text-align: center; padding-bottom: 5rem; }
+.contact__title {
+  font-family: var(--titre-police); font-weight: var(--titre-graisse);
+  text-transform: var(--titre-casse);
+  font-size: calc(clamp(2.6rem, 13vw, 5rem) * var(--titre-echelle));
+  line-height: var(--titre-interligne);
+}
+.contact__sub { font-size: 1.1rem; color: var(--texte-85); margin: .6rem 0 2.3rem; }
+.contact__links {
+  display: grid; grid-template-columns: repeat(2, 1fr); gap: .8rem;
+  max-width: 460px; margin-inline: auto;
+}
+.contact-link {
+  display: flex; align-items: center; justify-content: center; gap: .55rem;
+  padding: .95rem 1rem;
+  border: 1.5px solid var(--trait); border-radius: 14px;
+  font-weight: 600; font-size: 1rem;
+  background: var(--voile-03);
+  transition: background .2s ease, transform .15s ease;
+}
+.contact-link:hover, .contact-link:focus-visible { background: var(--voile-14); transform: translateY(-2px); }
+.contact-link--cv {
+  grid-column: 1 / -1;
+  background: var(--creme); color: var(--couleur-fonce);
+}
+.contact-link--cv:hover { background: var(--texte-85); }
+.contact__footer { margin-top: 2.5rem; font-size: .85rem; color: var(--texte-60); }
+
+:focus-visible { outline: 2px solid var(--creme); outline-offset: 3px; border-radius: 4px; }
+
+/* ══════════════════════════════════════════════════════════════════════════
+   DESKTOP / écrans larges
+   ══════════════════════════════════════════════════════════════════════════ */
+@media (min-width: 760px) {
+  :root { --maxw: 1000px; }
+
+  .hero { flex-direction: row; align-items: center; gap: 3rem; min-height: 100svh; }
+  .hero__photo { flex: 0 0 auto; width: clamp(250px, 28vw, 330px); max-width: none; margin-bottom: 0; align-self: center; }
+  .hero__content { flex: 1; }
+
+  .pitch__body { font-size: 1.4rem; max-width: 40ch; }
+  .step__media .frame { max-width: 200px; }
+  .map__photos { grid-template-columns: repeat(4, 1fr); }
+
+  .skills { flex-direction: row; gap: 4rem; }
+  /* min-width:0 : sans lui, une colonne dont le contenu est large (un titre
+     long, un {{…}} non remplacé) refuse de se rétrécir et pousse
+     l'autre colonne hors de l'écran. */
+  .skills__col { flex: 1; min-width: 0; }
+
+  .stats__grid { grid-template-columns: repeat(4, 1fr); }
+
+  .contact__links { grid-template-columns: repeat(3, 1fr); }
+  .contact-link--cv { grid-column: 1 / -1; }
+}
+
+@media (min-width: 1100px) { .stat__num { font-size: calc(5.5rem * var(--titre-echelle)); } }
+
+/* ══════════════════════════════════════════════════════════════════════════
+   BLOCS OPTIONNELS, 8 À 19
+   ──────────────────────────────────────────────────────────────────────────
+   Les styles des blocs ajoutés après « LES CHIFFRES ». Chaque bloc a sa
+   propre zone, encadrée comme celles du haut. Si l'on supprime un bloc dans
+   le HTML, on peut supprimer sa zone de style ici : rien d'autre n'en dépend.
+   Aucune couleur n'est écrite en dur : tout vient de la PALETTE.
+   ══════════════════════════════════════════════════════════════════════════ */
+
+/* ---------- pleine largeur : casse la colonne de lecture ----------
+   Utilisé par les blocs qui doivent occuper tout l'écran (la phrase
+   inattendue, le compteur, le mur de mots). Ne pas modifier. */
+.pleine-largeur {
+  max-width: none;
+  width: 100vw;
+  margin-left: calc(50% - 50vw);
+  margin-right: calc(50% - 50vw);
+}
+.pleine-largeur > * { max-width: var(--maxw); margin-inline: auto; }
+
+/* ══════ BLOC 8 : LES DUELS ══════ */
+.duels__liste { display: flex; flex-direction: column; gap: 1.6rem; }
+.duel {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  gap: .9rem;
+}
+.duel__mot {
+  font-family: var(--titre-police);
+  font-weight: var(--titre-graisse);
+  text-transform: var(--titre-casse);
+  letter-spacing: var(--titre-espacement-petit);
+  font-size: calc(clamp(1.05rem, 5vw, 1.6rem) * var(--titre-echelle));
+  line-height: 1.05;
+  color: var(--texte-55);            /* état par défaut : le mot en retrait  */
+  transition: color .5s ease;
+}
+.duel__mot--gauche { text-align: right; }
+.duel__mot--droite { text-align: left; }
+/* dix signes maximum par côté. Au delà, on descend ce mot d'un cran pour
+   qu'il tienne sur une ligne sur un téléphone étroit. */
+.duel__mot--long { font-size: calc(clamp(.85rem, 3.9vw, 1.3rem) * var(--titre-echelle)); }
+
+/* le trait qui relie les deux mots */
+.duel__piste {
+  position: relative;
+  width: clamp(56px, 20vw, 130px);
+  height: 2px;
+  background: var(--trait-doux);
+}
+/* les deux marqueurs, aux extrémités : creux par défaut */
+.duel__piste::before,
+.duel__piste::after {
+  content: "";
+  position: absolute; top: 50%;
+  width: 13px; height: 13px;
+  margin-top: -6.5px;
+  border: 2px solid var(--trait);
+  border-radius: 50%;
+  background: transparent;
+  transition: background .5s ease, box-shadow .5s ease;
+}
+.duel__piste::before { left: -6.5px; }
+.duel__piste::after  { right: -6.5px; }
+
+/* le côté choisi : le mot reprend sa couleur pleine, son marqueur se remplit */
+.duel[data-choix="gauche"] .duel__mot--gauche,
+.duel[data-choix="droite"] .duel__mot--droite { color: var(--creme); }
+.duel[data-choix="gauche"] .duel__piste::before,
+.duel[data-choix="droite"] .duel__piste::after {
+  background: var(--creme);
+  box-shadow: 0 0 0 4px var(--voile-14);
+}
+
+/* L'ÉTAT D'ATTENTE, juste avant que le duel ne se décide.
+   Le script pose la classe « est-en-attente » sur chaque duel avant que le
+   bloc n'entre dans l'écran, puis la retire un duel après l'autre : le
+   marqueur plein glisse du centre vers son côté et le mot choisi s'affirme.
+   Sans JavaScript, la classe n'est jamais posée et le bloc s'affiche
+   directement dans son état final. */
+.duel.est-en-attente[data-choix="gauche"] .duel__piste::before { left: calc(50% - 6.5px); }
+.duel.est-en-attente[data-choix="droite"] .duel__piste::after  { right: calc(50% - 6.5px); }
+.duel.est-en-attente .duel__mot { color: var(--texte-55); }
+
+/* ══════ BLOC 9 : LE CURSEUR ══════ */
+.curseur__extremes {
+  display: flex; justify-content: space-between; gap: 1rem;
+  margin-bottom: .9rem;
+}
+.curseur__extreme {
+  font-family: var(--titre-police);
+  font-weight: var(--titre-graisse);
+  text-transform: var(--titre-casse);
+  letter-spacing: var(--titre-espacement-petit);
+  font-size: calc(clamp(1.05rem, 5vw, 1.6rem) * var(--titre-echelle));
+  line-height: 1.05;
+  max-width: 45%;
+}
+.curseur__extreme--droite { text-align: right; }
+
+.curseur__piste {
+  position: relative;
+  height: 2px;
+  background: var(--trait-doux);
+  margin: 0 8px;
+}
+.curseur__piste::before,
+.curseur__piste::after {
+  content: ""; position: absolute; top: 50%;
+  width: 9px; height: 9px; margin-top: -4.5px;
+  border-radius: 50%; background: var(--trait-doux);
+}
+.curseur__piste::before { left: -8px; }
+.curseur__piste::after  { right: -8px; }
+
+/* le point. --curseur-position est posée par le script depuis data-position. */
+.curseur__point {
+  position: absolute; top: 50%;
+  left: var(--curseur-position, 50%);
+  width: 20px; height: 20px;
+  margin: -10px 0 0 -10px;
+  border-radius: 50%;
+  background: var(--creme);
+  box-shadow: 0 0 0 6px var(--voile-14), 0 4px 14px var(--ombre);
+}
+
+/* Quand le bloc CURSEUR suit directement le bloc DUELS, on supprime l'espace
+   entre les deux pour qu'ils se lisent comme un seul ensemble. */
+.duels + .curseur { padding-top: 0; }
+.duels + .curseur .section-title { display: none; }
+
+/* ══════ BLOC 10 : LE PODIUM ══════ */
+.podium { counter-reset: rang; }
+.podium__liste { display: flex; flex-direction: column; gap: .5rem; }
+.podium__rang {
+  counter-increment: rang;
+  display: flex; align-items: baseline; gap: 1rem;
+  padding: .7rem 0;
+  border-bottom: 1.5px solid var(--trait-doux);
+}
+.podium__rang::before {
+  content: counter(rang);
+  font-family: var(--titre-police);
+  font-weight: var(--titre-graisse);
+  line-height: .9;
+  flex: none;
+  min-width: 1.6ch;
+  color: var(--texte-55);
+}
+.podium__mot {
+  font-family: var(--titre-police);
+  font-weight: var(--titre-graisse);
+  text-transform: var(--titre-casse);
+  letter-spacing: var(--titre-espacement);
+  line-height: 1;
+}
+/* L'escalier : la première priorité domine, les suivantes décroissent en
+   taille, en présence, et se décalent vers la droite. */
+.podium__rang:nth-child(1) { padding-left: 0; }
+.podium__rang:nth-child(2) { padding-left: .8rem; }
+.podium__rang:nth-child(3) { padding-left: 1.6rem; }
+.podium__rang:nth-child(4) { padding-left: 2.4rem; }
+.podium__rang:nth-child(5) { padding-left: 3.2rem; border-bottom: none; }
+
+.podium__rang:nth-child(1) .podium__mot,
+.podium__rang:nth-child(1)::before { font-size: calc(clamp(2rem, 9vw, 3.2rem) * var(--titre-echelle)); }
+.podium__rang:nth-child(2) .podium__mot,
+.podium__rang:nth-child(2)::before { font-size: calc(clamp(1.6rem, 7vw, 2.4rem) * var(--titre-echelle)); }
+.podium__rang:nth-child(3) .podium__mot,
+.podium__rang:nth-child(3)::before { font-size: calc(clamp(1.35rem, 6vw, 1.9rem) * var(--titre-echelle)); }
+.podium__rang:nth-child(4) .podium__mot,
+.podium__rang:nth-child(4)::before { font-size: calc(clamp(1.2rem, 5.2vw, 1.6rem) * var(--titre-echelle)); }
+.podium__rang:nth-child(5) .podium__mot,
+.podium__rang:nth-child(5)::before { font-size: calc(clamp(1.1rem, 4.6vw, 1.4rem) * var(--titre-echelle)); }
+
+.podium__rang:nth-child(1) .podium__mot { color: var(--creme); }
+.podium__rang:nth-child(2) .podium__mot { color: var(--texte-92); }
+.podium__rang:nth-child(3) .podium__mot { color: var(--texte-82); }
+.podium__rang:nth-child(4) .podium__mot { color: var(--texte-72); }
+.podium__rang:nth-child(5) .podium__mot { color: var(--texte-60); }
+
+/* ══════ BLOC 11 : CE QU'ON NE DEVINE PAS ══════ */
+.rupture {
+  background: var(--couleur-fonce);
+  padding-top: clamp(5rem, 20vw, 10rem);
+  padding-bottom: clamp(5rem, 20vw, 10rem);
+}
+.rupture__phrase {
+  font-family: var(--titre-police);
+  font-weight: var(--titre-graisse);
+  text-transform: var(--titre-casse);
+  letter-spacing: var(--titre-espacement);
+  line-height: calc(var(--titre-interligne) + 0.05);
+  font-size: calc(clamp(2.2rem, 10vw, 4.2rem) * var(--titre-echelle));
+  padding-inline: var(--pad);
+  text-wrap: balance;
+}
+
+/* ══════ BLOC 12 : CE QUE LES AUTRES DISENT ══════ */
+.citation__bloc { position: relative; padding-top: 2.5rem; }
+/* le guillemet ouvrant, en gros, posé derrière le texte */
+.citation__bloc::before {
+  content: "\201C";
+  position: absolute; top: -.35em; left: -.06em;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: clamp(6rem, 26vw, 11rem);
+  line-height: 1;
+  color: var(--voile-14);
+  pointer-events: none;
+}
+.citation__texte {
+  position: relative;
+  font-family: Georgia, "Times New Roman", serif;
+  font-style: italic;
+  font-size: clamp(1.4rem, 6vw, 2.1rem);
+  line-height: 1.4;
+  max-width: 26ch;
+  text-wrap: pretty;
+}
+.citation__source {
+  margin-top: 1.4rem;
+  font-size: .9rem; text-transform: uppercase; letter-spacing: .12em;
+  color: var(--texte-70);
+}
+.citation__source::before { content: "· "; }
+
+/* ══════ BLOC 13 : LA FIERTÉ ══════ */
+.fierte__texte { font-size: 1.15rem; line-height: 1.6; max-width: 38ch; color: var(--texte-92); }
+.fierte__photo { margin-top: 2rem; max-width: 420px; }
+.fierte__photo img { aspect-ratio: 4 / 3; }
+
+/* ══════ BLOC 14 : LE COUP DUR ══════
+   Traitement volontairement sobre : pas de gros titre, pas d'effet. Un filet
+   à gauche, du texte, rien d'autre. C'est ce qui le rend crédible. */
+.coup-dur__cadre {
+  border-left: 2px solid var(--trait-doux);
+  padding-left: clamp(1.1rem, 5vw, 1.8rem);
+}
+.coup-dur__titre {
+  font-size: 1.25rem; font-weight: 700; line-height: 1.3;
+  margin-bottom: .8rem;
+}
+.coup-dur__texte { font-size: 1.05rem; line-height: 1.65; max-width: 40ch; color: var(--texte-92); }
+
+/* ══════ BLOC 15 : CE QUE JE SAIS FAIRE ══════ */
+.savoir-faire__suite {
+  font-size: 1rem; color: var(--texte-92); max-width: 42ch; margin-top: 1.4rem;
+}
+.savoir-faire__phrase {
+  font-family: var(--titre-police);
+  font-weight: var(--titre-graisse);
+  text-transform: var(--titre-casse);
+  letter-spacing: var(--titre-espacement);
+  line-height: calc(var(--titre-interligne) + 0.05);
+  font-size: calc(clamp(1.8rem, 8vw, 3.2rem) * var(--titre-echelle));
+  max-width: 20ch;
+  text-wrap: balance;
+}
+
+/* ══════ BLOC 16 : LA GALERIE ══════
+   Grille volontairement irrégulière : les photos n'ont ni la même taille ni
+   la même hauteur, comme des tirages posés sur une table. */
+.galerie__grille {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: .9rem;
+  align-items: start;
+}
+/* On neutralise le format 4/5 imposé par .frame : ici chaque photo a le sien. */
+.galerie__grille .frame img { aspect-ratio: auto; height: 100%; }
+.galerie__photo { --format: 3 / 4; aspect-ratio: var(--format); }
+/* Le rythme : grande · petite · petite · grande · large · petite */
+.galerie__photo:nth-child(1) { --format: 3 / 4;  grid-column: span 1; margin-top: 0; }
+.galerie__photo:nth-child(2) { --format: 1 / 1;  margin-top: 2.2rem; }
+.galerie__photo:nth-child(3) { --format: 4 / 5;  margin-top: -1rem; }
+.galerie__photo:nth-child(4) { --format: 3 / 4;  margin-top: 1.4rem; }
+.galerie__photo:nth-child(5) { --format: 16 / 10; grid-column: span 2; }
+.galerie__photo:nth-child(6) { --format: 1 / 1;  margin-top: -.6rem; }
+
+/* L'apparition en cascade : chaque photo entre un peu après la précédente. */
+.galerie__photo:nth-child(1) { transition-delay: 0s; }
+.galerie__photo:nth-child(2) { transition-delay: .10s; }
+.galerie__photo:nth-child(3) { transition-delay: .20s; }
+.galerie__photo:nth-child(4) { transition-delay: .30s; }
+.galerie__photo:nth-child(5) { transition-delay: .40s; }
+.galerie__photo:nth-child(6) { transition-delay: .50s; }
+
+@media (min-width: 760px) {
+  .galerie__grille { grid-template-columns: repeat(3, 1fr); gap: 1.2rem; }
+  .galerie__photo:nth-child(1) { grid-row: span 2; --format: 3 / 4; }
+  .galerie__photo:nth-child(5) { grid-column: span 2; }
+}
+
+/* ══════ BLOC 17 : LE TEMPS LIBRE ══════ */
+.temps-libre__texte { font-size: 1.15rem; line-height: 1.6; max-width: 38ch; color: var(--texte-92); }
+.temps-libre__photo { margin-top: 2rem; max-width: 460px; }
+.temps-libre__photo img { aspect-ratio: 3 / 2; }
+
+/* ══════ BLOC 18 : L'ENVIRONNEMENT IDÉAL ══════
+   Aucun style propre : ce bloc réutilise .keywords / .keyword, les pastilles
+   des mots-forces. Si l'on change l'allure des pastilles, les deux blocs
+   suivent ensemble , c'est voulu. */
+
+/* ══════ BLOC 19 : CE QUE J'AIMERAIS APPRENDRE ══════ */
+.apprendre { padding-top: clamp(2.5rem, 9vw, 4.5rem); }
+.apprendre__phrase {
+  font-size: clamp(1.3rem, 5.5vw, 1.9rem);
+  line-height: 1.4;
+  max-width: 30ch;
+  color: var(--texte-92);
+}
+.apprendre__phrase::after {
+  content: "";
+  display: block;
+  width: 60px; height: 2px;
+  margin-top: 1.6rem;
+  background: var(--trait-doux);
+}
+
+/* ══════════════════════════════════════════════════════════════════════════
+   ALTERNATIVES AU BLOC CARTE : STYLES
+   Les cinq blocs interchangeables. On n'en garde qu'un seul par page ; on
+   peut supprimer ici les styles des quatre autres.
+   ══════════════════════════════════════════════════════════════════════════ */
+
+/* ══════ ALTERNATIVE A : LA CARTE LOCALE ══════
+   Reprend tous les styles de .map__wrap : seul le cadrage change, dans le
+   HTML (attribut viewBox). Rien à ajouter ici. */
+
+/* ══════ ALTERNATIVE B : LA FRISE D'OBJETS ══════ */
+.frise__piste {
+  position: relative;
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding-bottom: 1rem;
+  scrollbar-width: thin;
+  -webkit-overflow-scrolling: touch;
+}
+.frise__liste {
+  display: flex;
+  gap: 1.1rem;
+  min-width: min-content;
+  padding-top: 1.6rem;
+  position: relative;
+}
+/* le trait horizontal qui court derrière les objets */
+.frise__liste::before {
+  content: "";
+  position: absolute; left: 0; right: 0; top: 6px;
+  height: 2px; background: var(--trait-doux);
+}
+.objet { flex: 0 0 clamp(150px, 42vw, 200px); position: relative; padding-top: 1.4rem; }
+.objet::before {
+  content: "";
+  position: absolute; left: 0; top: 1px;
+  width: 12px; height: 12px;
+  background: var(--couleur); border: 2.5px solid var(--creme); border-radius: 50%;
+}
+.objet__date {
+  position: absolute; top: 0; left: 1.4rem;
+  font-size: .8rem; font-weight: 600; letter-spacing: .06em;
+  color: var(--texte-75);
+}
+.objet .frame { margin-bottom: .6rem; }
+.objet .frame img { aspect-ratio: 1 / 1; }
+.objet__nom { font-size: 1rem; font-weight: 700; line-height: 1.25; }
+
+/* ══════ ALTERNATIVE C : LE COMPTEUR UNIQUE ══════ */
+.compteur {
+  min-height: 78svh;
+  display: flex; flex-direction: column; justify-content: center;
+  text-align: center;
+  background: var(--couleur-fonce);
+}
+.compteur__valeur {
+  display: block;
+  font-family: var(--titre-police);
+  font-weight: var(--titre-graisse);
+  line-height: .85;
+  letter-spacing: var(--titre-espacement);
+  font-size: calc(clamp(6rem, 42vw, 18rem) * var(--titre-echelle));
+}
+.compteur__legende {
+  display: block;
+  margin-top: 1.4rem;
+  font-size: clamp(1rem, 4.5vw, 1.4rem);
+  text-transform: uppercase; letter-spacing: .14em;
+  color: var(--texte-82);
+}
+
+/* ══════ ALTERNATIVE D : LE MUR DE MOTS ══════ */
+.mur {
+  min-height: 88svh;
+  display: flex; align-items: center;
+  background: var(--couleur-fonce);
+}
+.mur__liste {
+  display: flex; flex-wrap: wrap;
+  align-items: baseline;
+  gap: .1em .35em;
+  padding-inline: var(--pad);
+}
+.mur__mot {
+  font-family: var(--titre-police);
+  font-weight: var(--titre-graisse);
+  text-transform: var(--titre-casse);
+  letter-spacing: var(--titre-espacement);
+  line-height: .92;
+}
+/* Les cinq tailles. 5 = le mot le plus important, 1 = le plus discret.
+   L'importance se lit aussi dans la couleur : les petits mots s'effacent. */
+.mur__mot[data-taille="5"] { font-size: calc(clamp(3.4rem, 19vw, 8rem)   * var(--titre-echelle)); color: var(--creme); }
+.mur__mot[data-taille="4"] { font-size: calc(clamp(2.5rem, 14vw, 5.6rem) * var(--titre-echelle)); color: var(--texte-92); }
+.mur__mot[data-taille="3"] { font-size: calc(clamp(1.8rem, 10vw, 4rem)   * var(--titre-echelle)); color: var(--texte-82); }
+.mur__mot[data-taille="2"] { font-size: calc(clamp(1.3rem, 7vw, 2.8rem)  * var(--titre-echelle)); color: var(--texte-70); }
+.mur__mot[data-taille="1"] { font-size: calc(clamp(1rem, 5vw, 2rem)      * var(--titre-echelle)); color: var(--texte-55); }
+
+/* ══════ ALTERNATIVE E : LA LIGNE DE VIE ══════ */
+.ligne__piste {
+  position: relative;
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding: 3.2rem 0 1rem;
+  scrollbar-width: thin;
+  -webkit-overflow-scrolling: touch;
+}
+.ligne__liste {
+  position: relative;
+  display: flex;
+  min-width: min-content;
+  gap: clamp(2rem, 11vw, 5rem);
+  padding-inline: 4px;
+}
+/* le rail éteint, puis le trait qui se dessine par-dessus au scroll */
+.ligne__liste::before,
+.ligne__liste::after {
+  content: "";
+  position: absolute; left: 0; right: 0; top: 0;
+  height: 2px;
+}
+.ligne__liste::before { background: var(--trait-doux); }
+.ligne__liste::after {
+  background: var(--creme);
+  transform: scaleX(var(--ligne-progression, 0));
+  transform-origin: left center;
+}
+.repere { position: relative; flex: 0 0 auto; padding-top: 1.5rem; max-width: 22ch; }
+.repere::before {
+  content: "";
+  position: absolute; left: 0; top: -5px;
+  width: 12px; height: 12px;
+  background: var(--couleur);
+  border: 2.5px solid var(--trait-doux);
+  border-radius: 50%;
+  transition: border-color .45s ease, background .45s ease, box-shadow .45s ease;
+}
+.repere.is-on::before {
+  border-color: var(--creme);
+  background: var(--creme);
+  box-shadow: 0 0 0 5px var(--voile-14);
+}
+.repere__annee {
+  display: block;
+  font-family: var(--titre-police);
+  font-weight: var(--titre-graisse);
+  letter-spacing: var(--titre-espacement);
+  font-size: calc(clamp(1.5rem, 7vw, 2.4rem) * var(--titre-echelle));
+  line-height: 1;
+  color: var(--texte-55);
+  transition: color .45s ease;
+}
+.repere.is-on .repere__annee { color: var(--creme); }
+.repere__libelle {
+  display: block;
+  margin-top: .35rem;
+  font-size: .95rem; line-height: 1.3;
+  color: var(--texte-75);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ligne__liste::after { transform: none; }
+  .galerie__photo { transition-delay: 0s !important; }
+}
+/* ══════════════════════════════════════════════════════════════════════════
+   AJUSTEMENT PROPRE À CETTE PAGE
+   ──────────────────────────────────────────────────────────────────────────
+   Le gabarit range les photos de voyage sur quatre colonnes à partir de
+   760 px, ce qui suppose quatre photos. Andrea n'en a que deux : sans cette
+   règle elles restent serrées dans le quart gauche, sous une carte pleine
+   largeur, et le moment fort de la page a l'air inachevé. Chaque photo
+   occupe donc deux colonnes : la ligne se remplit, la grille ne change pas.
+   ══════════════════════════════════════════════════════════════════════════ */
+@media (min-width: 760px) {
+  /* quatre photos, quatre colonnes : la grille par défaut suffit, plus
+     besoin de la surcharge span 2 qui servait quand il n'y en avait que deux. */
+}
+</style>
+</head>
+
+<body>
+
+<!-- Réserve d'icônes. Chaque lien de contact pioche dedans avec son nom. -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="ic-mail" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M4 7l8 6 8-6"/></symbol>
+  <symbol id="ic-tel" viewBox="0 0 24 24"><path d="M5 4h3l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v3a2 2 0 0 1-2.2 2A16 16 0 0 1 3 6.2 2 2 0 0 1 5 4z"/></symbol>
+  <symbol id="ic-cv" viewBox="0 0 24 24"><path d="M6 2h8l4 4v16H6z"/><path d="M14 2v4h4M9 13l3 3 3-3M12 16V9"/></symbol>
+  <symbol id="ic-linkedin" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M7 10v7M7 7v.01M11 17v-4a2 2 0 0 1 4 0v4M11 11v6"/></symbol>
+  <symbol id="ic-instagram" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><path d="M17.5 6.5v.01"/></symbol>
+  <symbol id="ic-tiktok" viewBox="0 0 24 24"><path d="M9 12a4 4 0 1 0 4 4V4c1 2 2.5 3 5 3"/></symbol>
+  <symbol id="ic-youtube" viewBox="0 0 24 24"><rect x="2" y="5" width="20" height="14" rx="4"/><path d="M10 9l5 3-5 3z"/></symbol>
+  <symbol id="ic-facebook" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="3"/><path d="M15 8h-2a2 2 0 0 0-2 2v8M9 12h5"/></symbol>
+  <symbol id="ic-whatsapp" viewBox="0 0 24 24"><path d="M3 21l1.7-5A8.5 8.5 0 1 1 8 19.3z"/><path d="M8.5 9.5c0 3 2 5 5 5"/></symbol>
+  <symbol id="ic-site" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a15 15 0 0 1 0 18a15 15 0 0 1 0-18z"/></symbol>
+</svg>
+
+<main>
+
+<!-- ══════ BLOC : L'ACCROCHE ══════ -->
+<section class="hero" id="hero">
+  <figure class="hero__photo reveal">
+    <img src="images/portrait.jpg" alt="Andrea Dupuis" />
+  </figure>
+
+  <div class="hero__content">
+    <p class="hero__hi">Salut, moi c'est</p>
+
+    <h1 class="hero__name">Andrea<br>Dupuis</h1>
+
+    <p class="hero__tagline">J'ai fini le gymnase, et c'est là que ma vie a commencé. La suite est en dessous.</p>
+  </div>
+
+  <a class="scroll-hint" href="#pitch" aria-label="Descendre">
+    <span class="scroll-hint__label">Scrolle</span>
+    <svg class="scroll-hint__arrow" viewBox="0 0 24 38" fill="none" aria-hidden="true">
+      <path d="M12 2 V30" stroke-width="2" stroke-linecap="round"/>
+      <path d="M4 23 L12 32 L20 23" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+  </a>
+</section>
+<!-- ══════ FIN BLOC : L'ACCROCHE ══════ -->
+
+
+<!-- ══════ BLOC : LE PITCH + LES MOTS-FORCES ══════ -->
+<section class="pitch" id="pitch">
+  <div class="pitch__body reveal">
+    <p>J'ai 24 ans, je vis à Lausanne. Lieutenant dans l'armée suisse, étudiant en relations internationales à Genève. Entre les deux, j'ai vécu à Dublin et à Munich.</p>
+
+    <p>L'armée m'a appris à m'organiser et à travailler sous stress. Le reste du temps, je nage, je grimpe et je cuisine. Prochaine étape : Taiwan.</p>
+
+    <p>Ce que je cherche, c'est ce mélange : la rigueur d'un côté, l'envie de découvrir de l'autre.</p>
+  </div>
+
+  <ul class="keywords reveal" aria-label="Mots-clés">
+    <li class="keyword">Spontané</li>
+    <li class="keyword">Calme</li>
+    <li class="keyword">Curieux</li>
+  </ul>
+</section>
+<!-- ══════ FIN BLOC : LE PITCH + LES MOTS-FORCES ══════ -->
+
+
+<!-- ══════ BLOC : LES LIEUX QUI COMPTENT ══════
+     Adaptation du bloc LIGNE DE VIE du gabarit : quatre lieux plutôt que
+     quatre dates, parce que les années de Dublin et de Munich ne sont
+     données nulle part dans ses réponses ni sur son CV, et qu'il est hors
+     de question d'en inventer une. Le nom du lieu prend la place réservée
+     à l'année, bien en évidence ; la légende porte le repère temporel réel
+     quand on l'a, et reste au présent sinon. L'ordre reprend mot pour mot
+     la suite qu'il a lui-même racontée : gymnase, Dublin, armée, Munich,
+     université, Taiwan. -->
+<section class="ligne" id="lieux">
+  <h2 class="section-title reveal">Les lieux qui comptent</h2>
+
+  <div class="ligne__piste reveal" id="ligneDeVie">
+    <ol class="ligne__liste">
+
+      <li class="repere">
+        <span class="repere__annee">Dublin</span>
+        <span class="repere__libelle">Un premier départ</span>
+      </li>
+
+      <li class="repere">
+        <span class="repere__annee">Munich</span>
+        <span class="repere__libelle">Après l'armée</span>
+      </li>
+
+      <li class="repere">
+        <span class="repere__annee">Genève</span>
+        <span class="repere__libelle">Le bachelor, depuis 2025</span>
+      </li>
+
+      <li class="repere">
+        <span class="repere__annee">Taiwan</span>
+        <span class="repere__libelle">La prochaine étape</span>
+      </li>
+
+    </ol>
+  </div>
+
+  <!-- Les photos du bloc, en dessous de la ligne. Quatre exactement : la
+       grille passe à quatre colonnes à partir de 760px et c'est pour ce
+       nombre qu'elle est calibrée. Légendes de deux ou trois mots. -->
+  <div class="map__photos">
+    <figure class="frame reveal">
+      <img src="images/bangkok.jpg" alt="Bangkok, de nuit" loading="lazy" decoding="async" />
+      <figcaption class="frame__cap">Bangkok, de nuit</figcaption>
+    </figure>
+    <figure class="frame reveal">
+      <img src="images/voyage-1.jpg" alt="Khao Sok, Thaïlande" loading="lazy" decoding="async" />
+      <figcaption class="frame__cap">Khao Sok, Thaïlande</figcaption>
+    </figure>
+    <figure class="frame reveal">
+      <img src="images/voyage-2.jpg" alt="Railay, Thaïlande" loading="lazy" decoding="async" />
+      <figcaption class="frame__cap">Railay, Thaïlande</figcaption>
+    </figure>
+    <figure class="frame reveal">
+      <img src="images/grimpe.jpg" alt="En paroi" loading="lazy" decoding="async" />
+      <figcaption class="frame__cap">En paroi</figcaption>
+    </figure>
+  </div>
+</section>
+<!-- ══════ FIN BLOC : LES LIEUX QUI COMPTENT ══════ -->
+
+
+<!-- ══════ BLOC : MON PARCOURS ══════
+     Aucune étape ne porte de photo : les quatre photos disponibles servent
+     ailleurs (accroche, carte, temps libre). Les <div class="step__media">
+     ont donc été retirés , un cadre vide ne se laisse jamais. -->
+<section class="timeline" id="timeline">
+  <h2 class="section-title reveal">Mon parcours</h2>
+  <div class="timeline__track">
+    <!-- Le trait vertical qui se dessine au scroll. Ne pas toucher. -->
+    <svg class="timeline__line" viewBox="0 0 4 100" preserveAspectRatio="none" aria-hidden="true">
+      <line x1="2" y1="0" x2="2" y2="100" stroke-width="2" />
+    </svg>
+
+    <ol class="timeline__list">
+
+      <li class="step reveal">
+        <div class="step__body">
+          <h3 class="step__title">Bachelor en relations internationales</h3>
+          <p class="step__place">Université de Genève, depuis 2025</p>
+          <p class="step__desc">Je m'approche de la fin, et je pars en échange à Taiwan. C'est la seule chose que je n'ai choisie ni pour l'uniforme ni pour la montagne.</p>
+        </div>
+      </li>
+
+      <li class="step reveal">
+        <div class="step__body">
+          <h3 class="step__title">Lieutenant</h3>
+          <p class="step__place">Armée suisse, depuis janvier 2024</p>
+          <p class="step__desc">Je commande une section : instruire, planifier des journées entières, garder le calme et décider vite quand ça se tend. Un an et demi de service, et j'ai gradé. Certificat Leadership 1 en 2025, à côté.</p>
+        </div>
+      </li>
+
+      <li class="step reveal">
+        <div class="step__body">
+          <h3 class="step__title">Moniteur de ski</h3>
+          <p class="step__place">École suisse de ski, Gryon, hivers 2024 à 2026</p>
+          <p class="step__desc">Enseigner à des enfants et à des adultes, ce qui n'est pas le même métier : on n'explique pas un virage de la même façon à six ans et à quarante. Et garder tout le monde en sécurité sur les pistes, ce qui reste la vraie tâche.</p>
+        </div>
+      </li>
+
+      <li class="step reveal">
+        <div class="step__body">
+          <h3 class="step__title">Serveur</h3>
+          <p class="step__place">Brother Hubbard, Dublin, octobre à décembre 2022</p>
+          <p class="step__desc">Trois mois en salle, à un rythme qui ne laissait pas le temps de réfléchir. Mon premier vrai travail, dans une langue qui n'était pas la mienne. C'est là que j'ai appris à tenir un service.</p>
+        </div>
+      </li>
+
+    </ol>
+  </div>
+</section>
+<!-- ══════ FIN BLOC : MON PARCOURS ══════ -->
+
+
+<!-- ══════ BLOC : LANGUES ══════
+     Colonne unique : aucune compétence distincte de ce qui est déjà dit
+     ailleurs (la cuisine, dans LE TEMPS LIBRE) n'a été fournie, donc la
+     colonne COMPÉTENCES du gabarit n'est pas activée ici. -->
+<section class="skills" id="skills">
+  <div class="skills__col reveal">
+    <h2 class="section-title">Langues</h2>
+    <ul class="lang-list">
+      <li class="lang-row reveal">
+        <div class="lang-row__head">
+          <span class="lang-row__name">Français</span>
+          <span class="lang-row__lvl">Langue maternelle</span>
+        </div>
+        <div class="lang-bar" data-niveau="4"></div>
+      </li>
+      <li class="lang-row reveal">
+        <div class="lang-row__head">
+          <span class="lang-row__name">Anglais</span>
+          <span class="lang-row__lvl">Bilingue</span>
+        </div>
+        <div class="lang-bar" data-niveau="4"></div>
+      </li>
+      <li class="lang-row reveal">
+        <div class="lang-row__head">
+          <span class="lang-row__name">Allemand</span>
+          <span class="lang-row__lvl">Je me débrouille</span>
+        </div>
+        <!-- Niveau 2 et non 1 : son CV dit B2. Sa formule reste la sienne. -->
+        <div class="lang-bar" data-niveau="2"></div>
+      </li>
+      <li class="lang-row reveal">
+        <div class="lang-row__head">
+          <span class="lang-row__name">Suisse allemand</span>
+          <span class="lang-row__lvl">Notions</span>
+        </div>
+        <div class="lang-bar" data-niveau="0"></div>
+      </li>
+    </ul>
+  </div>
+
+  <!-- Colonne COMPÉTENCES, reprise mot pour mot de son CV. Rien de reformulé,
+       rien d'ajouté : ce sont ses quatre lignes, dans son ordre. -->
+  <div class="skills__col reveal">
+    <h2 class="section-title">Ce que je sais tenir</h2>
+
+    <h3 class="skills__sub">Conduite</h3>
+    <ul class="chips">
+      <li class="chip">Leadership et conduite d'équipe</li>
+      <li class="chip">Prise de décision sous pression</li>
+      <li class="chip">Gestion des conflits</li>
+    </ul>
+
+    <h3 class="skills__sub">Tenue</h3>
+    <ul class="chips">
+      <li class="chip">Rigueur et discipline</li>
+      <li class="chip">Sens des responsabilités</li>
+    </ul>
+  </div>
+</section>
+<!-- ══════ FIN BLOC : LANGUES ══════ -->
+
+
+<!-- ══════ BLOC : LES DUELS ══════
+     Les huit paires du questionnaire. data-choix vaut « gauche » ou
+     « droite », rien d'autre : une faute de frappe éteint les deux côtés
+     sans aucun message d'erreur. -->
+<section class="duels" id="duels">
+  <h2 class="section-title reveal">Plutôt</h2>
+
+  <ul class="duels__liste">
+
+    <li class="duel reveal" data-choix="gauche">
+      <span class="duel__mot duel__mot--gauche">Matin</span>
+      <span class="duel__piste" aria-hidden="true"></span>
+      <span class="duel__mot duel__mot--droite">Soir</span>
+    </li>
+
+    <li class="duel reveal" data-choix="droite">
+      <span class="duel__mot duel__mot--gauche">Plan</span>
+      <span class="duel__piste" aria-hidden="true"></span>
+      <span class="duel__mot duel__mot--droite">Impro</span>
+    </li>
+
+    <li class="duel reveal" data-choix="gauche">
+      <span class="duel__mot duel__mot--gauche">Équipe</span>
+      <span class="duel__piste" aria-hidden="true"></span>
+      <span class="duel__mot duel__mot--droite">Solo</span>
+    </li>
+
+    <li class="duel reveal" data-choix="droite">
+      <span class="duel__mot duel__mot--gauche">Ville</span>
+      <span class="duel__piste" aria-hidden="true"></span>
+      <span class="duel__mot duel__mot--droite">Nature</span>
+    </li>
+
+    <li class="duel reveal" data-choix="gauche">
+      <span class="duel__mot duel__mot--gauche">Parler</span>
+      <span class="duel__piste" aria-hidden="true"></span>
+      <span class="duel__mot duel__mot--droite">Écouter</span>
+    </li>
+
+    <li class="duel reveal" data-choix="droite">
+      <span class="duel__mot duel__mot--gauche">Vitesse</span>
+      <span class="duel__piste" aria-hidden="true"></span>
+      <span class="duel__mot duel__mot--droite">Précision</span>
+    </li>
+
+    <li class="duel reveal" data-choix="droite">
+      <span class="duel__mot duel__mot--gauche">Routine</span>
+      <span class="duel__piste" aria-hidden="true"></span>
+      <span class="duel__mot duel__mot--droite duel__mot--long">Nouveauté</span>
+    </li>
+
+    <li class="duel reveal" data-choix="droite">
+      <span class="duel__mot duel__mot--gauche">Dedans</span>
+      <span class="duel__piste" aria-hidden="true"></span>
+      <span class="duel__mot duel__mot--droite">Dehors</span>
+    </li>
+
+  </ul>
+</section>
+<!-- ══════ FIN BLOC : LES DUELS ══════ -->
+
+
+<!-- ══════ BLOC : LES CHIFFRES ══════ -->
+<section class="stats" id="stats">
+  <h2 class="section-title reveal">En quelques chiffres</h2>
+  <div class="stats__grid">
+
+    <div class="stat reveal">
+      <span class="stat__num">186</span>
+      <span class="stat__label">km, le tour du Léman à vélo</span>
+    </div>
+
+    <div class="stat reveal">
+      <span class="stat__num">4</span>
+      <span class="stat__label">langues</span>
+    </div>
+
+    <div class="stat reveal">
+      <span class="stat__num">3</span>
+      <span class="stat__label">pays où j'ai vécu</span>
+    </div>
+
+  </div>
+</section>
+<!-- ══════ FIN BLOC : LES CHIFFRES ══════ -->
+
+
+<!-- ══════ BLOC : CE QUE JE SAIS FAIRE ══════
+     Ses mots, tels qu'il les a écrits, sortis du bloc temps libre où ils
+     étaient enterrés. Placé après les chiffres et juste avant le contact :
+     c'est la dernière chose qu'on lit d'Andrea, et c'est celle qu'on
+     n'attendait pas d'un lieutenant. -->
+<section class="savoir-faire" id="savoir-faire">
+  <!-- Pas de titre au-dessus : la phrase est déjà écrite dans la police des
+       titres. Deux titres l'un sur l'autre se battent. -->
+  <p class="savoir-faire__phrase reveal">La cuisine, c'est le truc que je fais vraiment bien.</p>
+  <p class="savoir-faire__suite reveal">C'est le contraire du reste. Personne à commander, rien à planifier, pas de consignes de sécurité à donner. On ouvre le frigo et on décide en marchant. Je nage et je grimpe aussi, mais c'est la cuisine qui revient le plus souvent.</p>
+</section>
+<!-- ══════ FIN BLOC : CE QUE JE SAIS FAIRE ══════ -->
+
+
+<!-- ══════ BLOC : CONTACT ══════
+     Pas de bouton CV : les trois CV fournis sont des candidatures ciblées.
+     À sa place, la vCard, qu'Andrea a demandée. -->
+<section class="contact" id="contact">
+  <h2 class="contact__title reveal">On se parle ?</h2>
+  <p class="contact__sub reveal">Écris-moi, appelle-moi, ou passe me voir en montagne.</p>
+
+  <div class="contact__links reveal">
+
+    <a class="contact-link" href="mailto:17andrea.dupuis@gmail.com" aria-label="Mail">
+      <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><use href="#ic-mail"/></svg>
+      <span>Mail</span>
+    </a>
+
+    <a class="contact-link" href="tel:+41786372818" aria-label="Téléphone">
+      <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><use href="#ic-tel"/></svg>
+      <span>Téléphone</span>
+    </a>
+
+    <a class="contact-link" href="https://instagram.com/andrea.dup" target="_blank" rel="noopener noreferrer" aria-label="Instagram">
+      <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><use href="#ic-instagram"/></svg>
+      <span>Instagram</span>
+    </a>
+
+    <!-- Le bouton CV. Obligatoire sur toutes les pages MyLayer : la page
+         raconte, le CV prouve. Le fichier est une copie de son CV, posée à
+         côté de cette page sous le nom cv.pdf. -->
+    <a class="contact-link contact-link--cv" href="cv.pdf" download target="_blank" rel="noopener noreferrer" aria-label="Télécharger le CV d'Andrea">
+      <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><use href="#ic-cv"/></svg>
+      <span>Télécharger mon CV</span>
+    </a>
+
+    <!-- La vCard : le fichier andrea-dupuis.vcf est posé à côté de cette page. -->
+    <a class="contact-link contact-link--cv" href="andrea-dupuis.vcf" download aria-label="Ajouter Andrea à mes contacts">
+      <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><use href="#ic-cv"/></svg>
+      <span>Ajouter à mes contacts</span>
+    </a>
+
+  </div>
+
+  <p class="contact__footer">Merci d'être allé jusqu'ici.</p>
+</section>
+<!-- ══════ FIN BLOC : CONTACT ══════ -->
+
+</main>
+
+<noscript>
+  <p style="padding:1rem;text-align:center">
+    Active JavaScript pour l'expérience complète.
+  </p>
+</noscript>
+
+<script>
+/* ══════════════════════════════════════════════════════════════════════════
+   LES ANIMATIONS DE LA PAGE
+   Une seule ligne se modifie ici : PAYS_VISITES, juste en dessous.
+   Tout le reste est commun à toutes les pages MyLayer.
+
+   Le script s'adapte tout seul aux blocs présents : chaque fonction commence
+   par vérifier que son bloc existe et ne fait rien s'il a été supprimé. On
+   ne touche donc à rien ici quand on retire un bloc du HTML.
+   ══════════════════════════════════════════════════════════════════════════ */
+(function () {
+  "use strict";
+
+  /* ---- LES PAYS VISITÉS ----------------------------------------------
+     Codes pays à deux lettres, en minuscules, entre guillemets, séparés
+     par des virgules. Voir la liste d'exemples dans le bloc CARTE DU MONDE.
+     Si le bloc CARTE DU MONDE a été supprimé, laisser la liste vide : [] */
+  const PAYS_VISITES = ["ch","fr","ie","de","eg","th"];
+
+  /* Les noms français des pays allumés, pour l'étiquette au survol. */
+  const NOMS_PAYS = {
+    ch: "Suisse", fr: "France", ie: "Irlande", de: "Allemagne",
+    eg: "Égypte", th: "Thaïlande"
+  };
+  /* -------------------------------------------------------------------- */
+
+  const $  = (sel, ctx = document) => ctx.querySelector(sel);
+  const $$ = (sel, ctx = document) => Array.from(ctx.querySelectorAll(sel));
+
+  /* ---------- 1. LES PAYS S'ALLUMENT SUR LA CARTE, UN PAR UN ---------- */
+  /* Les pays s'allument dans l'ordre de PAYS_VISITES, quand la carte entre
+     dans l'écran, une seule fois. Un pays en plusieurs morceaux (France...)
+     s'allume d'un seul coup.
+     DECALAGE_PAYS : le temps entre deux pays, en millisecondes.
+     CASCADE_MAX : la durée totale des départs, jamais dépassée. */
+  const DECALAGE_PAYS = 150;
+  const CASCADE_MAX   = 1800;
+
+  function allumerPays() {
+    const cartes = $$(".map__wrap").map(wrap => {
+      const pays = [];
+      PAYS_VISITES.forEach(code => {
+        const traces = [];
+        wrap.querySelectorAll("svg #" + code + ", svg ." + code).forEach(node => {
+          if (node.tagName.toLowerCase() === "path") traces.push(node);
+          else node.querySelectorAll("path").forEach(p => traces.push(p));
+        });
+        if (traces.length) pays.push(traces);
+      });
+      return { wrap: wrap, pays: pays };
+    }).filter(c => c.pays.length);
+    if (!cartes.length) return;
+
+    const allumer = traces => traces.forEach(p => p.classList.add("visited"));
+
+    const reduit = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (reduit || !("IntersectionObserver" in window)) {
+      cartes.forEach(c => c.pays.forEach(allumer));
+      return;
+    }
+
+    const obs = new IntersectionObserver(entries => {
+      entries.forEach(e => {
+        if (!e.isIntersecting) return;
+        obs.unobserve(e.target);
+        const carte = cartes.filter(c => c.wrap === e.target)[0];
+        if (!carte) return;
+        const pas = Math.min(DECALAGE_PAYS, CASCADE_MAX / Math.max(carte.pays.length - 1, 1));
+        carte.pays.forEach((traces, i) => {
+          window.setTimeout(function () { allumer(traces); }, i * pas);
+        });
+      });
+    }, { threshold: 0.2 });
+    cartes.forEach(c => obs.observe(c.wrap));
+  }
+
+  /* ---------- 1 bis. LE NOM DU PAYS AU SURVOL ---------- */
+  /* Sur ordinateur seulement, pays visités seulement. */
+  function survolerPays() {
+    const cartes = $$(".map__wrap");
+    if (!cartes.length) return;
+    if (!window.matchMedia("(hover: hover) and (pointer: fine)").matches) return;
+
+    const etiquette = document.createElement("div");
+    etiquette.className = "map__etiquette";
+    etiquette.setAttribute("aria-hidden", "true");
+    document.body.appendChild(etiquette);
+
+    const codeDe = node => {
+      let n = node;
+      while (n && n.nodeType === 1 && n.tagName.toLowerCase() !== "svg") {
+        if (n.id && NOMS_PAYS.hasOwnProperty(n.id)) return n.id;
+        const classes = (n.getAttribute("class") || "").split(/\s+/);
+        for (let i = 0; i < classes.length; i++) {
+          if (classes[i] && NOMS_PAYS.hasOwnProperty(classes[i])) return classes[i];
+        }
+        n = n.parentNode;
+      }
+      return null;
+    };
+    const estVisite = n => n && n.classList && n.classList.contains("visited");
+    const placer = e => {
+      const marge = 70;
+      const x = Math.min(Math.max(e.clientX, marge), window.innerWidth - marge);
+      etiquette.style.left = x + "px";
+      etiquette.style.top  = e.clientY + "px";
+    };
+
+    cartes.forEach(wrap => {
+      wrap.addEventListener("mouseover", e => {
+        if (!estVisite(e.target)) return;
+        const code = codeDe(e.target);
+        const nom  = code ? NOMS_PAYS[code] : null;
+        if (!nom) return;
+        etiquette.textContent = nom;
+        placer(e);
+        etiquette.classList.add("is-on");
+      });
+      wrap.addEventListener("mousemove", e => {
+        if (etiquette.classList.contains("is-on")) placer(e);
+      }, { passive: true });
+      wrap.addEventListener("mouseout", e => {
+        const vers = e.relatedTarget;
+        if (estVisite(vers) && codeDe(vers) === codeDe(e.target)) return;
+        etiquette.classList.remove("is-on");
+      });
+    });
+  }
+
+  /* ---------- 2. LES BARRES DE NIVEAU DE LANGUE ---------- */
+  function construireBarres() {
+    $$(".lang-bar").forEach(bar => {
+      const niveau = parseInt(bar.dataset.niveau, 10);
+      const n = isNaN(niveau) ? 0 : Math.max(0, Math.min(4, niveau));
+      bar.innerHTML = "";
+      for (let i = 0; i < 4; i++) {
+        const dot = document.createElement("span");
+        dot.className = "lang-bar__dot" + (i < n ? " is-on" : "");
+        bar.appendChild(dot);
+      }
+    });
+  }
+
+  /* ---------- 3. APPARITION AU SCROLL ---------- */
+  function observerApparitions() {
+    if (!("IntersectionObserver" in window)) {
+      $$(".reveal").forEach(n => n.classList.add("is-in"));
+      return;
+    }
+    const obs = new IntersectionObserver(entries => {
+      entries.forEach(e => {
+        if (e.isIntersecting) { e.target.classList.add("is-in"); obs.unobserve(e.target); }
+      });
+    }, { threshold: 0.15, rootMargin: "0px 0px -8% 0px" });
+    $$(".reveal").forEach(n => obs.observe(n));
+  }
+
+  /* ---------- 4. LES CHIFFRES QUI MONTENT ---------- */
+  function observerChiffres() {
+    // on n'anime que les nombres entiers ; tout autre texte reste tel quel
+    // le bloc CHIFFRES et le bloc COMPTEUR UNIQUE utilisent la même animation
+    const cibles = $$(".stat__num, .compteur__valeur").filter(n => /^\d+$/.test(n.textContent.trim()));
+    cibles.forEach(n => { n.dataset.cible = n.textContent.trim(); });
+
+    if (!("IntersectionObserver" in window)) return;
+    const obs = new IntersectionObserver(entries => {
+      entries.forEach(e => {
+        if (e.isIntersecting) { compter(e.target); obs.unobserve(e.target); }
+      });
+    }, { threshold: 0.6 });
+    cibles.forEach(n => { n.textContent = "0"; obs.observe(n); });
+  }
+  function compter(node) {
+    const cible = +node.dataset.cible;
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      node.textContent = cible; return;
+    }
+    const duree = 1400, t0 = performance.now();
+    (function pas(now) {
+      const p = Math.min((now - t0) / duree, 1);
+      const adouci = 1 - Math.pow(1 - p, 3);          // easeOutCubic
+      node.textContent = Math.round(adouci * cible);
+      if (p < 1) requestAnimationFrame(pas);
+    })(t0);
+  }
+
+  /* ---------- 5. LE TRAIT DU PARCOURS QUI SE DESSINE ---------- */
+  function dessinerTrait() {
+    const piste = $(".timeline__track");
+    const trait = $(".timeline__line line");
+    if (!piste || !trait) return;
+    const len = trait.getTotalLength();
+    trait.style.strokeDasharray = len;
+    const auScroll = () => {
+      const r = piste.getBoundingClientRect();
+      const vh = window.innerHeight;
+      const total = r.height + vh * 0.5;
+      const p = Math.min(Math.max((vh * 0.85 - r.top) / total, 0), 1);
+      trait.style.strokeDashoffset = len * (1 - p);
+    };
+    auScroll();
+    window.addEventListener("scroll", auScroll, { passive: true });
+    window.addEventListener("resize", auScroll, { passive: true });
+  }
+
+  /* ---------- 6. LE POINT DU CURSEUR ---------- */
+  /* Lit data-position (0 à 100) et pose le point au bon endroit du trait.
+     Une valeur absente ou farfelue laisse le point au milieu. */
+  function placerCurseur() {
+    $$(".curseur__piste").forEach(piste => {
+      const brut = parseFloat(piste.dataset.position);
+      const pos = isNaN(brut) ? 50 : Math.max(0, Math.min(100, brut));
+      piste.style.setProperty("--curseur-position", pos + "%");
+    });
+  }
+
+  /* ---------- 7. LA LIGNE DE VIE QUI SE DESSINE ---------- */
+  /* Même principe que le trait du parcours, mais à l'horizontale : le trait
+     avance avec le scroll et chaque repère s'allume quand il est atteint. */
+  function dessinerLigneDeVie() {
+    const piste = $("#ligneDeVie");
+    if (!piste) return;
+    const reperes = $$(".repere", piste);
+    if (!reperes.length) return;
+
+    const reduit = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (reduit) {
+      piste.style.setProperty("--ligne-progression", 1);
+      reperes.forEach(r => r.classList.add("is-on"));
+      return;
+    }
+
+    const auScroll = () => {
+      const r = piste.getBoundingClientRect();
+      const vh = window.innerHeight;
+      const total = r.height + vh * 0.5;
+      const p = Math.min(Math.max((vh * 0.85 - r.top) / total, 0), 1);
+      piste.style.setProperty("--ligne-progression", p);
+      // un repère s'allume dès que le trait a dépassé sa position
+      reperes.forEach((rep, i) => {
+        const seuil = reperes.length > 1 ? i / (reperes.length - 1) : 0;
+        rep.classList.toggle("is-on", p >= seuil - 0.02);
+      });
+    };
+    auScroll();
+    window.addEventListener("scroll", auScroll, { passive: true });
+    window.addEventListener("resize", auScroll, { passive: true });
+  }
+
+  /* ---------- 8. LE NOM DE L'ACCROCHE QUI SE RÉDUIT ---------- */
+  /* Les polices de titre en très grand supportent mal les noms longs :
+     « JEAN-CHRISTOPHE » ou « VANDENBERGHE » débordent de l'écran sur mobile.
+     On mesure ici la largeur réelle du nom dans la police active, et on
+     réduit la taille juste ce qu'il faut pour qu'il tienne.
+
+     REPÈRE À CONNAÎTRE, mesuré sur un écran de téléphone de 375 points
+     (un iPhone courant), avec Anton :
+       jusqu'à 10 signes  sur la ligne la plus longue , aucune réduction,
+                          rien à vérifier ( « CHRISTOPHE », « CONSTANTIN » ) ;
+       11 à 15 signes     , la réduction se déclenche en douceur, entre 95 %
+                          et 75 % ( « MAXIMILIENNE » à 93 %,
+                          « JEAN-CHRISTOPHE » à 76 % ). C'est le moment
+                          d'ouvrir la page sur un téléphone et de regarder ;
+       au-delà de 19 signes environ , la réduction atteint sa limite basse
+                          et le nom reste trop gros pour l'écran.
+     Ces seuils bougent un peu selon la police active : Bebas Neue, plus
+     étroite, laisse passer deux ou trois signes de plus ; Archivo Black,
+     plus large, deux ou trois de moins.
+
+     La réduction ne descend jamais sous 55 % de la taille de départ , en
+     dessous, le nom deviendrait plus petit que la phrase d'accroche placée
+     juste en dessous, ce qui n'a plus de sens. Pour un nom qui atteint cette
+     limite : couper le nom sur trois lignes en ajoutant un <br> à la main
+     dans le HTML, ou n'afficher que le prénom. */
+  function ajusterNomAccroche() {
+    const nom = $(".hero__name");
+    if (!nom) return;
+
+    const MINIMUM = 0.55;
+
+    const mesurer = () => {
+      // on repart toujours de la taille pleine avant de mesurer
+      document.documentElement.style.setProperty("--hero-nom-echelle", 1);
+
+      const st = getComputedStyle(nom);
+      const dispo = nom.clientWidth;
+      if (!dispo) return;
+
+      // les lignes du nom, séparées par le <br>
+      const lignes = nom.innerHTML.split(/<br\s*\/?>/i)
+        .map(l => l.replace(/<[^>]*>/g, "").trim())
+        .filter(Boolean);
+      if (!lignes.length) return;
+
+      // une règle invisible, réglée exactement comme le titre
+      const regle = document.createElement("span");
+      regle.style.cssText = "position:absolute;visibility:hidden;white-space:pre;left:-9999px;top:0";
+      regle.style.fontFamily    = st.fontFamily;
+      regle.style.fontWeight    = st.fontWeight;
+      regle.style.fontSize      = st.fontSize;
+      regle.style.letterSpacing = st.letterSpacing;
+      regle.style.textTransform = st.textTransform;
+      document.body.appendChild(regle);
+
+      let large = 0;
+      lignes.forEach(l => { regle.textContent = l; large = Math.max(large, regle.offsetWidth); });
+      document.body.removeChild(regle);
+
+      if (large > dispo) {
+        const echelle = Math.max((dispo / large) * 0.98, MINIMUM);
+        document.documentElement.style.setProperty("--hero-nom-echelle", echelle.toFixed(3));
+      }
+    };
+
+    mesurer();
+    // les polices Google arrivent après le HTML : on remesure une fois posées
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(mesurer);
+    window.addEventListener("resize", mesurer, { passive: true });
+  }
+
+  /* ---------- 9. LES DUELS QUI SE DÉCIDENT ---------- */
+  /* Le marqueur du côté choisi part du centre du trait et glisse jusqu'à sa
+     place ; le mot choisi s'affirme en même temps. Cascade à l'entrée du
+     bloc, une seule fois.
+     DECALAGE_DUELS : le temps entre deux duels, en millisecondes.
+     DUELS_MAX : la durée totale des départs, jamais dépassée. */
+  const DECALAGE_DUELS = 100;
+  const DUELS_MAX      = 1200;
+
+  function deciderDuels() {
+    const liste = $(".duels__liste");
+    if (!liste) return;
+    const duels = $$(".duel", liste).filter(d => {
+      const c = d.getAttribute("data-choix");
+      return c === "gauche" || c === "droite";
+    });
+    if (!duels.length) return;
+
+    const reduit = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (reduit || !("IntersectionObserver" in window)) return;
+
+    duels.forEach(d => d.classList.add("est-en-attente"));
+    void liste.offsetWidth;
+
+    const pas = Math.min(DECALAGE_DUELS, DUELS_MAX / Math.max(duels.length - 1, 1));
+    const obs = new IntersectionObserver(entries => {
+      entries.forEach(e => {
+        if (!e.isIntersecting) return;
+        obs.unobserve(e.target);
+        duels.forEach((d, i) => {
+          window.setTimeout(function () { d.classList.remove("est-en-attente"); }, i * pas);
+        });
+      });
+    }, { threshold: 0.25 });
+    obs.observe(liste);
+  }
+
+  /* ---------- DÉMARRAGE ---------- */
+  function demarrer() {
+    allumerPays();
+    survolerPays();
+    construireBarres();
+    observerChiffres();
+    observerApparitions();
+    dessinerTrait();
+    placerCurseur();
+    dessinerLigneDeVie();
+    ajusterNomAccroche();
+    deciderDuels();
+  }
+  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", demarrer);
+  else demarrer();
+})();
+</script>
+
+</body>
+</html>

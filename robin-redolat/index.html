@@ -550,8 +550,19 @@ section {
   line-height: var(--titre-interligne);
 }
 .contact__sub { font-size: 1.1rem; color: var(--texte-85); margin: .6rem 0 2.3rem; }
+/* La grille COMPTE ses boutons au lieu de supposer un nombre.
+   auto-fit place autant de colonnes que la largeur en autorise, jamais plus
+   étroites que 150px, et répartit l'espace restant entre celles qui existent.
+   Un client sans réseau social n'a que Mail et Téléphone sur la première
+   rangée : avec un nombre de colonnes figé, ces deux boutons se retrouvaient
+   dans des colonnes de 148px et le mot « Téléphone » se coupait en deux.
+   Le minimum de 10rem est calé sur le plus long libellé de bouton, « Ajouter
+   à mes contacts » mis à part puisqu'il occupe toute la largeur. En dessous
+   de 380px de fenêtre, les boutons passent donc l'un sous l'autre plutôt que
+   de se couper : c'est voulu. */
 .contact__links {
-  display: grid; grid-template-columns: repeat(2, 1fr); gap: .8rem;
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(10rem, 1fr));
+  gap: .8rem;
   max-width: 460px; margin-inline: auto;
 }
 .contact-link {
@@ -594,7 +605,10 @@ section {
 
   .stats__grid { grid-template-columns: repeat(4, 1fr); }
 
-  .contact__links { grid-template-columns: repeat(3, 1fr); }
+  /* Plus large sur grand écran : avec trois réseaux, les colonnes font 187px
+     et « Téléphone » tient. Le nombre de colonnes, lui, reste calculé par
+     auto-fit à partir du nombre réel de boutons. */
+  .contact__links { max-width: 560px; }
   .contact-link--cv { grid-column: 1 / -1; }
 }
 
@@ -1104,14 +1118,6 @@ section {
 .galerie__photo:nth-child(3) { --format: 3 / 2; }
 .galerie__photo:nth-child(4) { --format: 3 / 2; }
 
-/* ══════ RÉGLAGE PROPRE À CETTE PAGE : LE CONTACT ══════
-   Il n'a donné aucun réseau social : la première rangée ne porte que Mail et
-   Téléphone. Sur grand écran la grille passe à trois colonnes, qui ne font
-   plus que 150 pixels de large, et le mot « Téléphone » se coupe en deux.
-   Avec deux boutons, deux colonnes. */
-@media (min-width: 760px) {
-  .contact__links { grid-template-columns: repeat(2, 1fr); }
-}
 </style>
 </head>
 

@@ -1,0 +1,12 @@
+# Netlify lit ce fichier tout seul. Une ligne par redirection :
+#   depuis            vers                 code
+#
+# LES ADRESSES DES QR CODES
+# Le QR imprimé sur une carte pointe TOUJOURS sur /a/prenom-nom, jamais
+# directement sur la page. Le papier ne se corrige pas : cette ligne est ce
+# qui permet de changer la destination plus tard sans réimprimer.
+# Code 302 et non 301 : un 301 est mis en cache pour toujours par le
+# navigateur, et la destination ne serait plus modifiable en pratique.
+
+/a/andrea-dupuis    /andrea-dupuis    302
+/a/robin-redolat    /robin-redolat    302
